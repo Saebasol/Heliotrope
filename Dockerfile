@@ -9,6 +9,6 @@ COPY requirements.txt .
 RUN python -m pip install -U pip && \
     pip install -r requirements.txt
 
-COPY /Heliotrope ./Heliotrope
+COPY /heliotrope ./heliotrope
 
-CMD [ "python", "-m", "Heliotrope" ]
+ENTRYPOINT [ "python", "-m", "heliotrope" ]
