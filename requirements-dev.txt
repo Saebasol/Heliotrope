@@ -3,6 +3,6 @@ black==20.8b1
 isort==5.8.0
 
 # Test code
-pytest==6.2.3
+pytest==6.2.4
 pytest-cov==2.11.1
 sanic-testing==0.3.0
