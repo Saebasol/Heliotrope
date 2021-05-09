@@ -12,8 +12,18 @@ variables:
 trigger:
 - master
 
+resources:
+  containers:
+    - container: mariadb
+      image: mariadb:latest
+      options: -p 127.0.0.1:3306:3306
+      env:
+        MYSQL_DATABASE: test_heliotrope
+        MYSQL_ROOT_PASSWORD: test
+
 pool:
   vmImage: 'ubuntu-latest'
+
 
 stages:
   - stage: Test
@@ -24,23 +34,14 @@ stages:
           Python39:
             python.version: '3.9'
 
+      services:
+        mariadb: mariadb
+
       steps:
       - task: UsePythonVersion@0
         inputs:
           versionSpec: '$(python.version)'
         displayName: 'Use Python $(python.version)'
-      
-      - script: |
-          sudo apt-get -y purge mysql-server mysql-client mysql-common mysql-server-core-* mysql-client-core-*
-          sudo rm -rf /etc/mysql /var/lib/mysql
-          sudo apt-get install -y software-properties-common
-          sudo apt-key adv --fetch-keys 'https://mariadb.org/mariadb_release_signing_key.asc'
-          sudo add-apt-repository 'deb [arch=amd64,arm64,ppc64el] http://nyc2.mirrors.digitalocean.com/mariadb/repo/10.5/ubuntu focal main'
-          sudo apt-get -y update
-          sudo apt-get install -y mariadb-server
-          sudo mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('test')"
-          sudo mysql -uroot -ptest -e 'create database test_heliotrope;'
-        displayName: 'Install mariadb and setup'
 
       - script: |
           python -m pip install --upgrade pip
