@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, release, hotfix ]
+  pull_request:
+    branches: [ main, develop, release, hotfix ]
+  release:
+    types: [ published ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  IS_TEST: "True"
+  DB_URL: "mysql://root:test@127.0.0.1/test_heliotrope"
+  MONGO_DB_URL: "mongodb://root:test@127.0.0.1"
+
+jobs:
+
+  style:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install -U pip
+        pip install -r requirements/style.txt
+    - name: Checking style
+      run: |
+        black ./heliotrope --check
+        isort ./heliotrope --check --profile=black
+
+  type:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install Dependencies
+      run: |
+        python -m pip install -U pip
+        pip install mypy
+        pip install -r requirements/deps.txt
+    - name: Mypy cheking
+      run: mypy ./heliotrope --strict
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: test_heliotrope
+        ports:
+          - 127.0.0.1:3306:3306
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: test
+        ports:
+          - 27017:27017
+        options:
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Make MongoDB collection
+        run: |
+          mongo -u root -p test --eval "db.getSiblingDB('hitomi').createCollection('info')"
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          pip install -r requirements/deps.txt
+          pip install -r requirements/test.txt
+      - name: Temp Task
+        run: |
+          pip uninstall -y tortoise-orm
+          pip install -U git+https://github.com/SaidBySolo/tortoise-orm@patch-1 
+      - name: Run tests
+        run: |
+          pytest --cov=heliotrope --cov-report=xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    needs: [ type, test, style ]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: ${{ github.event_name == 'release' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
