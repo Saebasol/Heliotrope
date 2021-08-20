@@ -20,7 +20,7 @@ class HitomiSearchView(HTTPMethodView):
             else 0
         )
 
-        if (query := request.json.get("query")) and (
+        if (query := request.json.get("query")) and query and (
             search_result := await request.app.ctx.nosql_query.search_info_list(
                 query, offset
             )
