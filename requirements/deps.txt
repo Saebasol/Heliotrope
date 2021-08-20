@@ -5,7 +5,7 @@ beautifulsoup4==4.9.3
 tortoise-orm==0.17.6
 lxml==4.6.3
 aiomysql==0.0.21
-motor==2.5.0
+motor==2.5.1
 dnspython==2.1.0
 pydantic==1.8.2
 sanic_openapi==21.6.1
