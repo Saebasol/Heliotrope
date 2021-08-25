@@ -1,4 +1,3 @@
----
 name: Bug Report
 description: Create reports to help improve Heliotrope
 labels: [bug]
@@ -61,8 +60,6 @@ body:
     label: Additional Description
     description: If you have something to write here, please write more.
 
-validations:
-  required: true
 - type: checkboxes
   id: terms
   attributes:
