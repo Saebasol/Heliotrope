@@ -1,8 +1,9 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from heliotrope.sanic import HeliotropeRequest
 from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
+
+from heliotrope.sanic import HeliotropeRequest
 
 hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")
 

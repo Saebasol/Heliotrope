@@ -3,7 +3,6 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
 
-
 from heliotrope.sanic import HeliotropeRequest
 
 hitomi_list = Blueprint("hitomi_list", url_prefix="/list")

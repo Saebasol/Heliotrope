@@ -3,6 +3,7 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_openapi.openapi3.openapi import body, summary, tag  # type: ignore
 from sanic_openapi.openapi3.types import Integer, Object, Schema  # type: ignore
+
 from heliotrope.sanic import HeliotropeRequest
 
 hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
