@@ -12,8 +12,8 @@ hitomi_images = Blueprint("hitomi_images", url_prefix="/images")
 
 
 class HitomiImagesView(HTTPMethodView):
-    @summary("Get hitomi shuffled image url list")
-    @tag("hitomi")
+    @summary("Get hitomi shuffled image url list")  # type: ignore
+    @tag("hitomi")  # type: ignore
     async def get(self, request: HeliotropeRequest, index_id: int) -> HTTPResponse:
         galleryinfo = await request.app.ctx.sql_query.get_galleryinfo(
             index_id

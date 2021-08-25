@@ -22,7 +22,7 @@ class HitomiSearchView(HTTPMethodView):
         },
         description="This is the request body for the search.",
         required=True,
-    )  # type: ignore
+    )
     async def post(self, request: HeliotropeRequest) -> HTTPResponse:
         offset = (
             int(offset) - 1
