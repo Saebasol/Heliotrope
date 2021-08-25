@@ -55,10 +55,10 @@ body:
       placeholder: >-
         ex) Ubuntu, Windows, macOS, etc.
 
-- type: textarea
-  attributes:
-    label: Additional Description
-    description: If you have something to write here, please write more.
+  - type: textarea
+    attributes:
+      label: Additional Description
+      description: If you have something to write here, please write more.
 
   validations:
     required: true
