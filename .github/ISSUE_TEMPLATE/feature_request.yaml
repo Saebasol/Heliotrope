@@ -1,0 +1,42 @@
+# 
+name: Feature request
+description: Suggest an idea for Heliotrope.
+labels: enhancement
+body:
+- type: markdown
+  attributes:
+    value: |
+      Before making a feature request, please check if there is a similar feature request requested in the issue first.
+
+- type: textarea
+  attributes:
+    label: Is your feature request related to a problem?
+    description: Please write a concise and accurate description
+
+- type: textarea
+  attributes:
+    label: Describe the solution you'd like
+    description: A clear and concise description of what you want to happen.
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Describe alternatives you've considered
+    description: A clear and concise description of any alternative solutions or features you've considered.
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Additional Description
+    description: If you have more to write, please write more here.
+
+- type: checkboxes
+  id: terms
+  attributes:
+    label: Code of Conduct
+    description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Saebasol/Heliotrope/blob/main/CODE_OF_CONDUCT.md)
+    options:
+      - label: I agree to follow this project's Code of Conduct
+        required: true

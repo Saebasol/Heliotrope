@@ -1,0 +1,70 @@
+name: Bug Report
+description: Create reports to help improve Heliotrope
+labels: [bug]
+assignees:
+  - Saebasol/core-python
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this bug report!
+      Before writing a report, check to see if any issues have already been reported.
+
+- type: textarea
+  attributes:
+    label: Please explain the bug.
+    description: >-
+      Please write as concise and clear as possible.
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: How can I reproduce it?
+    description: Please describe how you can reproduce the bug.
+    placeholder: ex) Requested endpoint and body
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Logs/tracebacks
+    description: If the problem occurred during self-hosting, please submit a log or traceback.
+    render: python-traceback
+
+- type: textarea
+  attributes:
+    label: Heliotrope version or Docker image version
+    description: If the problem occurred during self-hosting, attach your version of Heliotrope.
+    render: console
+    value: |
+      $ python -c "import heliotrope; print(heliotrope.__detailed_version__)"
+
+- type: textarea
+  attributes:
+    label: Python Version
+    description: If the problem occurred during self-hosting, attach your version of Python.
+    render: console
+    value: |
+      $ python --version
+
+- type: textarea
+  attributes:
+    label: OS
+    description: If the problem occurred during self-hosting, please attach the os hosted here as well
+    placeholder: >-
+      ex) Ubuntu, Windows, macOS, etc.
+
+- type: textarea
+  attributes:
+    label: Additional Description
+    description: If you have more to write, please write more here.
+
+- type: checkboxes
+  id: terms
+  attributes:
+    label: Code of Conduct
+    description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/Saebasol/Heliotrope/blob/main/CODE_OF_CONDUCT.md)
+    options:
+      - label: I agree to follow this project's Code of Conduct
+        required: true
