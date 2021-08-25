@@ -58,7 +58,7 @@ body:
 - type: textarea
   attributes:
     label: Additional Description
-    description: If you have something to write here, please write more.
+    description: If you have more to write, please write more here.
 
 - type: checkboxes
   id: terms
