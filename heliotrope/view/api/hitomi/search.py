@@ -1,16 +1,28 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from sanic_openapi import openapi  # type: ignore
-
+from sanic_openapi.openapi3.openapi import body, summary, tag  # type: ignore
+from sanic_openapi.openapi3.types import Integer, Object, Schema  # type: ignore
 from heliotrope.sanic import HeliotropeRequest
 
 hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 
 
 class HitomiSearchView(HTTPMethodView):
-    @openapi.summary("Get search result in hitomi")  # type: ignore
-    @openapi.tag("hitomi")  # type: ignore
+    @summary("Get search result in hitomi")  # type: ignore
+    @tag("hitomi")  # type: ignore
+    @body(
+        {
+            "application/json": Object(
+                {
+                    "offset": Integer(name=1),
+                    "query": Schema.make(value=["sekigahara", "artist:tsukako"]),  # type: ignore
+                }
+            )
+        },
+        description="This is the request body for the search.",
+        required=True,
+    )  # type: ignore
     async def post(self, request: HeliotropeRequest) -> HTTPResponse:
         offset = (
             int(offset) - 1

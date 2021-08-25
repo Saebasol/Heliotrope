@@ -1,16 +1,15 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from sanic_openapi import openapi  # type: ignore
-
 from heliotrope.sanic import HeliotropeRequest
+from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
 
 hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")
 
 
 class HitomiGalleryinfoView(HTTPMethodView):
-    @openapi.summary("Get hitomi galleryinfo")  # type: ignore
-    @openapi.tag("hitomi")  # type: ignore
+    @summary("Get hitomi galleryinfo")
+    @tag("hitomi")
     async def get(self, request: HeliotropeRequest, index_id: int) -> HTTPResponse:
         if galleryinfo := await request.app.ctx.sql_query.get_galleryinfo(index_id):
             return json({"status": 200, **galleryinfo})

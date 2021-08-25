@@ -1,7 +1,8 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from sanic_openapi import openapi  # type: ignore
+from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
+
 
 from heliotrope.sanic import HeliotropeRequest
 
@@ -9,8 +10,8 @@ hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
 
 
 class HitomiListView(HTTPMethodView):
-    @openapi.summary("Get latest hitomi info list")  # type: ignore
-    @openapi.tag("hitomi")  # type: ignore
+    @summary("Get latest hitomi info list")
+    @tag("hitomi")
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
         total = request.app.ctx.mirroring.total // 15
 

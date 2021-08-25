@@ -1,7 +1,7 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from sanic_openapi import openapi  # type: ignore
+from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
 
 from heliotrope.hitomi.common import image_url_from_image
 from heliotrope.hitomi.models import HitomiFiles, HitomiGalleryinfo
@@ -12,8 +12,8 @@ hitomi_images = Blueprint("hitomi_images", url_prefix="/images")
 
 
 class HitomiImagesView(HTTPMethodView):
-    @openapi.summary("Get hitomi shuffled image url list")  # type: ignore
-    @openapi.tag("hitomi")  # type: ignore
+    @summary("Get hitomi shuffled image url list")
+    @tag("hitomi")
     async def get(self, request: HeliotropeRequest, index_id: int) -> HTTPResponse:
         galleryinfo = await request.app.ctx.sql_query.get_galleryinfo(
             index_id
