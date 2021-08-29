@@ -9,9 +9,12 @@ class HitomiFilesJSON(TypedDict):
     height: int
 
 
-class HitomiTagsJSON(TypedDict):
+class _HitomiTagsJSONOptional(TypedDict, total=False):
     male: Optional[Literal["", "1"]]
     female: Optional[Literal["", "1"]]
+
+
+class HitomiTagsJSON(_HitomiTagsJSONOptional):
     url: str
     tag: str
 
