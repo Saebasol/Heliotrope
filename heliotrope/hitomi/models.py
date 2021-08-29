@@ -83,7 +83,7 @@ class HitomiTags:
     @classmethod
     def parse_tags(cls, tag: HitomiTagsJSON) -> dict[str, str]:
         return {
-            "value": f"{'female' if tag['female'] else 'male' if tag['male'] else 'tag'}: {tag['tag']}",
+            "value": f"{'female' if tag.get('female') else 'male' if tag.get('male') else 'tag'}: {tag['tag']}",
             "url": tag["url"],
         }
 
