@@ -89,6 +89,7 @@ def image_url_from_image(galleryid: int, image: HitomiFiles, no_webp: bool) -> s
 
     return url_from_url_from_hash(galleryid, image, webp)
 
+
 def rewrite_tn_paths(html: str) -> str:
     return re.sub(
         r"/\/tn\.hitomi\.la\/[^\/]+\/[0-9a-f]\/[0-9a-f]{2}", url_from_url(html, "tn")
