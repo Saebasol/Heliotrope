@@ -27,7 +27,7 @@ class Mirroring(HitomiRequest):
         return mirroring
 
     async def compare_index_list(self) -> list[int]:
-        remote_index_list = await self.fetch_index()
+        remote_index_list = await self.fetch_index(include_range=False)
         local_index_list = await self.__sql_query.get_index()
         return list(set(remote_index_list) - set(local_index_list))
 
@@ -39,7 +39,9 @@ class Mirroring(HitomiRequest):
 
             if info := await self.get_info(index):
                 if not await self.__nosql_query.find_info(index):
-                    await self.__nosql_query.insert_info(info.to_dict())
+                    await self.__nosql_query.insert_info(
+                        {"index": index, **info.to_dict()}
+                    )
 
             if index not in await self.__sql_query.get_index():
                 await self.__sql_query.add_index(index)
