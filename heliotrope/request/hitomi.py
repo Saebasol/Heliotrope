@@ -64,18 +64,23 @@ class HitomiRequest(BaseRequest):
         return HitomiGalleryinfo(js_to_json)
 
     async def fetch_index(
-        self, page: int = 1, item: int = 25, index_file: str = "index-korean.nozomi"
+        self,
+        page: int = 1,
+        item: int = 25,
+        index_file: str = "index-korean.nozomi",
+        include_range: bool = True,
     ) -> tuple[int, ...]:
         byte_start = (page - 1) * item * 4
         byte_end = byte_start + item * 4 - 1
 
+        headers = {
+            "origin": f"http://{self.domain}",
+        }
+        if include_range:
+            headers.update({"Range": f"bytes={byte_start}-{byte_end}"})
+
         response = await self.get(
-            f"{self.ltn_url}/{index_file}",
-            "read",
-            headers={
-                "Range": f"bytes={byte_start}-{byte_end}",
-                "origin": f"http://{self.domain}",
-            },
+            f"{self.ltn_url}/{index_file}", "read", headers=headers
         )
 
         total_items = len(response.returned) // 4
