@@ -16,6 +16,7 @@ class NoSQLQuery:
     async def get_info_list(
         self, offset: int = 0, limit: int = 15
     ) -> list[dict[str, Any]]:
+        offset = offset * limit
         return cast(
             list[dict[str, Any]],
             await self.__collection.find({}, {"_id": 0})
@@ -28,6 +29,7 @@ class NoSQLQuery:
     async def search_info_list(
         self, query: list[str], offset: int = 0, limit: int = 15
     ) -> Optional[tuple[dict[str, Any], int]]:
+        offset = offset * limit
         search_query: dict[str, Any] = {"$search": {"compound": {"must": []}}}
         for q in query:
             if ":" not in q:
