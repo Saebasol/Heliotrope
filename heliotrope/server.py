@@ -4,7 +4,6 @@ from os import environ, getenv
 
 from aiohttp.client import ClientSession
 from sanic.app import Sanic
-from sanic_openapi import openapi3_blueprint  # type: ignore
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 from tortoise import Tortoise
@@ -23,16 +22,10 @@ heliotrope = Sanic("heliotrope")
 
 # NOTE: Will fixed
 heliotrope.blueprint(view)  # type: ignore
-heliotrope.blueprint(openapi3_blueprint)  # type: ignore
 
 # TODO: Type hint
 @heliotrope.main_process_start  # type: ignore
 async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
-    heliotrope.config.API_VERSION = __version__
-    heliotrope.config.API_TITLE = "Heliotrope"
-    heliotrope.config.API_DESCRIPTION = "Hitomi.la mirror api"
-    heliotrope.config.API_LICENSE_NAME = "MIT"
-
     if not getenv("IS_TEST"):
         init(
             dsn=environ["SENTRY_DSN"],
