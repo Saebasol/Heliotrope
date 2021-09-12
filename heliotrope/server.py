@@ -17,8 +17,10 @@ from heliotrope.response import Response
 from heliotrope.sanic import Heliotrope
 from heliotrope.tasks.mirroring import Mirroring
 from heliotrope.view import view
+from sanic_cors import CORS
 
 heliotrope = Sanic("heliotrope")
+CORS(heliotrope, origins=["https://hibiskus.sabasol.org"])
 
 # NOTE: Will fixed
 heliotrope.blueprint(view)  # type: ignore
