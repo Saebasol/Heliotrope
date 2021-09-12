@@ -32,8 +32,6 @@ async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             integrations=[SanicIntegration()],
             release=f"heliotrope@{__version__}",
         )
-        heliotrope.config.FORWARDED_SECRET = environ["FORWARDED_SECRET"]
-        heliotrope.config.API_SCHEMES = ["https"]
 
     await Tortoise.init(
         db_url=environ["DB_URL"],
