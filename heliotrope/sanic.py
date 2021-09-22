@@ -24,9 +24,16 @@ class HeliotropeContext(SimpleNamespace):
     mirroring_task: Task[NoReturn]
 
 
+class HeliotropeConfig(Config):
+    index_file: str
+    delay: int
+    nosql: str
+    sql: str
+
+
 class Heliotrope(Sanic):
     ctx: HeliotropeContext
-    config: Config
+    config: HeliotropeConfig
 
 
 class HeliotropeRequest(Request):
