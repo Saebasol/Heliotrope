@@ -32,6 +32,14 @@ parser.add_argument(
 config = parser.add_argument_group("Config")
 
 config.add_argument(
+    "--test",
+    "-T",
+    type=bool,
+    default=False,
+    help="Run the server in test mode (default: False)",
+)
+
+config.add_argument(
     "--index-file",
     "-I",
     type=str,

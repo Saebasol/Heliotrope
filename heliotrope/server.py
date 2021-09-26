@@ -33,7 +33,7 @@ async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.config.API_DESCRIPTION = "Hitomi.la mirror api"
     heliotrope.config.API_LICENSE_NAME = "MIT"
 
-    if not getenv("IS_TEST"):
+    if not heliotrope.config.TESTING:
         init(
             dsn=environ["SENTRY_DSN"],
             integrations=[SanicIntegration()],

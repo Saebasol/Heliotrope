@@ -1,3 +1,4 @@
+import json
 import os
 
 from _pytest.config import Config
@@ -34,5 +35,8 @@ def pytest_configure(config: Config):
 
 @fixture()
 def app() -> Sanic:
+    with open("./tests/config.json", "r") as f:
+        config = json.load(f)
+    heliotrope.update_config(config)
     TestManager(heliotrope)
     return heliotrope

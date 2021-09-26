@@ -29,6 +29,7 @@ class HeliotropeConfig(Config):
     delay: int
     nosql: str
     sql: str
+    TESTING: bool
 
 
 class Heliotrope(Sanic):
