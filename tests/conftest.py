@@ -21,7 +21,7 @@ def get_config():
 
 def pytest_configure(config: Config):
     async def query():
-        mongo = NoSQLQuery(get_config()["mongo"])
+        mongo = NoSQLQuery(get_config()["nosql"])
         await Tortoise.init(
             db_url=os.environ["DB_URL"],
             modules={
