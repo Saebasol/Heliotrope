@@ -20,10 +20,11 @@ def get_config():
 
 
 def pytest_configure(config: Config):
+    heliotrope_config = get_config()
     async def query():
-        mongo = NoSQLQuery(get_config()["nosql"])
+        mongo = NoSQLQuery(heliotrope_config["nosql"])
         await Tortoise.init(
-            db_url=os.environ["DB_URL"],
+            db_url=heliotrope_config["sql"],
             modules={
                 "models": [
                     "heliotrope.database.models.hitomi",
