@@ -12,8 +12,9 @@ from heliotrope.typing import HitomiGalleryinfoJSON
 
 
 class HitomiRequest(BaseRequest):
-    def __init__(self, session: ClientSession):
+    def __init__(self, session: ClientSession, index_file: str = "index-korean.nozomi"):
         super().__init__(session)
+        self.index_file = index_file
 
     @property
     def domain(self) -> str:
@@ -36,8 +37,9 @@ class HitomiRequest(BaseRequest):
 
     @classmethod
     async def setup(cls, **kwargs: Any) -> "HitomiRequest":
+        index_file = kwargs.pop("index_file", "index-korean.nozomi")
         session = ClientSession(**kwargs)
-        hitomi_request = cls(session)
+        hitomi_request = cls(session, index_file)
         hitomi_request.session.headers.update(hitomi_request.headers)
         return hitomi_request
 
@@ -67,7 +69,6 @@ class HitomiRequest(BaseRequest):
         self,
         page: int = 1,
         item: int = 25,
-        index_file: str = "index-korean.nozomi",
         include_range: bool = True,
     ) -> tuple[int, ...]:
         byte_start = (page - 1) * item * 4
@@ -80,7 +81,7 @@ class HitomiRequest(BaseRequest):
             headers.update({"Range": f"bytes={byte_start}-{byte_end}"})
 
         response = await self.get(
-            f"{self.ltn_url}/{index_file}", "read", headers=headers
+            f"{self.ltn_url}/{self.index_file}", "read", headers=headers
         )
 
         total_items = len(response.returned) // 4

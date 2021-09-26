@@ -24,9 +24,17 @@ class HeliotropeContext(SimpleNamespace):
     mirroring_task: Task[NoReturn]
 
 
+class HeliotropeConfig(Config):
+    INDEX_FILE: str
+    DELAY: int
+    MONGO_DB_URL: str
+    DB_URL: str
+    TESTING: bool
+
+
 class Heliotrope(Sanic):
     ctx: HeliotropeContext
-    config: Config
+    config: HeliotropeConfig
 
 
 class HeliotropeRequest(Request):
