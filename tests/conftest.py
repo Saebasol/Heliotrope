@@ -14,9 +14,14 @@ from heliotrope.server import heliotrope
 from tests.case import galleryinfo, info
 
 
+def get_config():
+    with open("./tests/config.json", "r") as f:
+        return json.load(f)
+
+
 def pytest_configure(config: Config):
     async def query():
-        mongo = NoSQLQuery(os.environ["MONGO_DB_URL"])
+        mongo = NoSQLQuery(get_config()["mongo"])
         await Tortoise.init(
             db_url=os.environ["DB_URL"],
             modules={
@@ -35,8 +40,6 @@ def pytest_configure(config: Config):
 
 @fixture()
 def app() -> Sanic:
-    with open("./tests/config.json", "r") as f:
-        config = json.load(f)
-    heliotrope.update_config(config)
+    heliotrope.update_config(get_config())
     TestManager(heliotrope)
     return heliotrope
