@@ -25,10 +25,10 @@ class HeliotropeContext(SimpleNamespace):
 
 
 class HeliotropeConfig(Config):
-    index_file: str
-    delay: int
-    nosql: str
-    sql: str
+    INDEX_FILE: str
+    DELAY: int
+    MONGO_DB_URL: str
+    DB_URL: str
     TESTING: bool
 
 

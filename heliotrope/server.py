@@ -43,24 +43,24 @@ async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         heliotrope.config.API_SCHEMES = ["https"]
 
     await Tortoise.init(
-        db_url=heliotrope.config.sql,
+        db_url=heliotrope.config.DB_URL,
         modules={"models": ["heliotrope.database.models.hitomi"]},
     )
     await Tortoise.generate_schemas()
     heliotrope.config.FALLBACK_ERROR_FORMAT = "json"
     heliotrope.ctx.sql_query = SQLQuery()
-    heliotrope.ctx.nosql_query = NoSQLQuery(heliotrope.config.nosql)
+    heliotrope.ctx.nosql_query = NoSQLQuery(heliotrope.config.MONGO_DB_URL)
     heliotrope.ctx.response = Response()
     heliotrope.ctx.base_request = BaseRequest(ClientSession())
     heliotrope.ctx.hitomi_request = await HitomiRequest.setup(
-        index_file=heliotrope.config.index_file
+        index_file=heliotrope.config.INDEX_FILE
     )
     heliotrope.ctx.mirroring = await Mirroring.setup(
         sql_query=heliotrope.ctx.sql_query,
         nosql_query=heliotrope.ctx.nosql_query,
     )
     heliotrope.ctx.mirroring_task = create_task(
-        heliotrope.ctx.mirroring.task(heliotrope.config.delay)
+        heliotrope.ctx.mirroring.task(heliotrope.config.DELAY)
     )
 
 

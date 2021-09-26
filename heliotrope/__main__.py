@@ -82,10 +82,11 @@ config.add_argument(
 args = parser.parse_args()
 
 options = {
-    "index_file": args.index_file,
-    "delay": args.delay,
-    "nosql": args.nosql,
-    "sql": args.sql,
+    "INDEX_FILE": args.index_file,
+    "DELAY": args.delay,
+    "MONGO_DB_URL": args.nosql,
+    "DB_URL": args.sql,
+    "TESTING": args.test,
 }
 
 if args.config:
