@@ -38,7 +38,7 @@ class HitomiRequest(BaseRequest):
     @classmethod
     async def setup(cls, **kwargs: Any) -> "HitomiRequest":
         session = ClientSession(**kwargs)
-        index_file = kwargs.get("INDEX_FILE", "index-korean.nozomi")
+        index_file = kwargs.pop("INDEX_FILE", "index-korean.nozomi")
         hitomi_request = cls(session, index_file)
         hitomi_request.session.headers.update(hitomi_request.headers)
         return hitomi_request
