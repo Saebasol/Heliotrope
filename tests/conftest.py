@@ -19,25 +19,25 @@ def get_config():
         return json.load(f)
 
 
-# def pytest_configure(config: Config):
-#     heliotrope_config = get_config()
+def pytest_configure(config: Config):
+    heliotrope_config = get_config()
 
-#     async def query():
-#         mongo = NoSQLQuery(heliotrope_config["nosql"])
-#         await Tortoise.init(
-#             db_url=heliotrope_config["sql"],
-#             modules={
-#                 "models": [
-#                     "heliotrope.database.models.hitomi",
-#                 ]
-#             },
-#         )
-#         await Tortoise.generate_schemas()
-#         orm = SQLQuery()
-#         await orm.add_galleryinfo(HitomiGalleryinfo(galleryinfo))
-#         await mongo.insert_info(info)
+    async def query():
+        mongo = NoSQLQuery(heliotrope_config["nosql"])
+        await Tortoise.init(
+            db_url=heliotrope_config["sql"],
+            modules={
+                "models": [
+                    "heliotrope.database.models.hitomi",
+                ]
+            },
+        )
+        await Tortoise.generate_schemas()
+        orm = SQLQuery()
+        await orm.add_galleryinfo(HitomiGalleryinfo(galleryinfo))
+        await mongo.insert_info(info)
 
-#     run_async(query())
+    run_async(query())
 
 
 @fixture()
