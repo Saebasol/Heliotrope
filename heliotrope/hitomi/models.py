@@ -228,7 +228,7 @@ class HitomiInfo:
             "type": self.type,
             "language": self.language,
             "series": self.series,
-            "character": self.character,
+            "characters": self.character,
             "tags": self.tags,
             "date": self.date,
         }
