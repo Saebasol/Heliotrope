@@ -96,4 +96,4 @@ if args.config:
 heliotrope.update_config(options)
 
 # NOTE: Will fixed
-heliotrope.run(args.host, args.port, workers=args.worker)
+heliotrope.run(args.host, args.port, workers=args.workers)
