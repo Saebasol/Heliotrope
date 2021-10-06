@@ -1,5 +1,5 @@
 aiohttp==3.7.4.post0
-sanic==21.6.2
+sanic==21.9.1
 sentry-sdk==1.4.3
 beautifulsoup4==4.10.0
 tortoise-orm==0.17.8
