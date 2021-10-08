@@ -24,5 +24,4 @@ class HitomiListView(HTTPMethodView):
         return json({"status": 200, "list": info_list, "total": total})
 
 
-# TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
-hitomi_list.add_route(HitomiListView.as_view(), "/<index:int>")  # type: ignore
+hitomi_list.add_route(HitomiListView.as_view(), "/<index:int>")

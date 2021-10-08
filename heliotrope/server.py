@@ -22,11 +22,11 @@ from heliotrope.view import view
 heliotrope = Sanic("heliotrope")
 
 # NOTE: Will fixed
-heliotrope.blueprint(view)  # type: ignore
-heliotrope.blueprint(openapi3_blueprint)  # type: ignore
+heliotrope.blueprint(view)
+heliotrope.blueprint(openapi3_blueprint)
 
 # TODO: Type hint
-@heliotrope.main_process_start  # type: ignore
+@heliotrope.main_process_start
 async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.config.API_VERSION = __version__
     heliotrope.config.API_TITLE = "Heliotrope"
@@ -65,7 +65,7 @@ async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
 
 # TODO: Type hint
-@heliotrope.main_process_stop  # type: ignore
+@heliotrope.main_process_stop
 async def stop(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     await Tortoise.close_connections()
     heliotrope.ctx.nosql_query.close()

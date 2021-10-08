@@ -41,5 +41,4 @@ class HeliotropeImageProxyView(HTTPMethodView):
         return request.app.ctx.response.bad_request
 
 
-# TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
-proxy.add_route(HeliotropeImageProxyView.as_view(), "/<shuffled_image_url>")  # type: ignore
+proxy.add_route(HeliotropeImageProxyView.as_view(), "/<shuffled_image_url>")
