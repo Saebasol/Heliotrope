@@ -37,16 +37,14 @@ body:
     label: Heliotrope version or Docker image version
     description: If the problem occurred during self-hosting, attach your version of Heliotrope.
     render: console
-    value: |
-      $ python -c "import heliotrope; print(heliotrope.__detailed_version__)"
+    placeholder: $ python -c "import heliotrope; print(heliotrope.__detailed_version__)"
 
 - type: textarea
   attributes:
     label: Python Version
     description: If the problem occurred during self-hosting, attach your version of Python.
     render: console
-    value: |
-      $ python --version
+    value: $ python --version
 
 - type: textarea
   attributes:
