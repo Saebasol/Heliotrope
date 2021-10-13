@@ -46,3 +46,4 @@ def app() -> Sanic:
     TestManager(heliotrope)
     yield heliotrope
     heliotrope.router.reset()
+    heliotrope.signal_router.reset()
