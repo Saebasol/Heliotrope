@@ -45,4 +45,4 @@ def app() -> Sanic:
     heliotrope.update_config(get_config())
     TestManager(heliotrope)
     yield heliotrope
-    heliotrope.router.clear()
+    heliotrope.router.reset()
