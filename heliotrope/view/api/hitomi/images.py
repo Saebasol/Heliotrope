@@ -41,5 +41,4 @@ class HitomiImagesView(HTTPMethodView):
         )
 
 
-# TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
-hitomi_images.add_route(HitomiImagesView.as_view(), "/<index_id:int>")  # type: ignore
+hitomi_images.add_route(HitomiImagesView.as_view(), "/<index_id:int>")

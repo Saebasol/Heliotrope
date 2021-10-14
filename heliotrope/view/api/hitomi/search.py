@@ -54,5 +54,4 @@ class HitomiSearchView(HTTPMethodView):
         return request.app.ctx.response.not_found
 
 
-# TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
-hitomi_search.add_route(HitomiSearchView.as_view(), "")  # type: ignore
+hitomi_search.add_route(HitomiSearchView.as_view(), "")

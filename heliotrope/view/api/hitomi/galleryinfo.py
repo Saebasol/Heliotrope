@@ -23,5 +23,4 @@ class HitomiGalleryinfoView(HTTPMethodView):
         return request.app.ctx.response.not_found
 
 
-# TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
-hitomi_galleryinfo.add_route(HitomiGalleryinfoView.as_view(), "/<index_id:int>")  # type: ignore
+hitomi_galleryinfo.add_route(HitomiGalleryinfoView.as_view(), "/<index_id:int>")
