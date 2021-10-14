@@ -44,6 +44,4 @@ def pytest_configure(config: Config):
 def app() -> Sanic:
     heliotrope.update_config(get_config())
     TestManager(heliotrope)
-    yield heliotrope
-    heliotrope.router.reset()
-    heliotrope.signal_router.reset()
+    return heliotrope
