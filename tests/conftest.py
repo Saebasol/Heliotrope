@@ -40,7 +40,7 @@ def pytest_configure(config: Config):
     run_async(query())
 
 
-@fixture(scope="module")
+@fixture(scope="session")
 def app() -> Sanic:
     heliotrope.update_config(get_config())
     TestManager(heliotrope)
