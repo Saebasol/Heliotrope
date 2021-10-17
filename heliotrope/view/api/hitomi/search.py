@@ -16,7 +16,7 @@ class HitomiSearchView(HTTPMethodView):
         {
             "application/json": Object(
                 {
-                    "offset": Integer(name=1),
+                    "offset": Integer(default=1),
                     "query": Schema.make(value=["sekigahara", "artist:tsukako"]),  # type: ignore
                 }
             )
@@ -27,9 +27,7 @@ class HitomiSearchView(HTTPMethodView):
     async def post(self, request: HeliotropeRequest) -> HTTPResponse:
         offset = (
             int(offset) - 1
-            if (offset := request.json.get("offset"))
-            and (offset.isdigit())
-            and not (int(offset) - 1 < 0)
+            if (offset := request.json.get("offset")) and not (int(offset) - 1 < 0)
             else 0
         )
 
