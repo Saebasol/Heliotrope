@@ -68,7 +68,7 @@ class NoSQLQuery:
                     {"$skip": offset},
                     {"$limit": limit},
                     {"$project": {"_id": 0}},
-                    {"$orderby": {"index", -1}},
+                    {"$sort": {"index", -1}},
                 ]
             ).to_list(15)
 
