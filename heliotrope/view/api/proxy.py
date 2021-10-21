@@ -3,7 +3,7 @@ from typing import Optional
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse
 from sanic.views import HTTPMethodView
-from sanic_openapi.openapi3.openapi import summary  # type: ignore
+from sanic_ext.extensions.openapi.openapi import summary  # type: ignore
 
 from heliotrope.sanic import HeliotropeRequest
 from heliotrope.shuffle import solve_shuffle_image_url

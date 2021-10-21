@@ -1,10 +1,10 @@
 from asyncio.events import AbstractEventLoop
 from asyncio.tasks import create_task
-from os import environ, getenv
+from os import environ
 
 from aiohttp.client import ClientSession
 from sanic.app import Sanic
-from sanic_openapi import openapi3_blueprint  # type: ignore
+from sanic_ext import Extend  # type: ignore
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 from tortoise import Tortoise
@@ -20,10 +20,10 @@ from heliotrope.tasks.mirroring import Mirroring
 from heliotrope.view import view
 
 heliotrope = Sanic("heliotrope")
+Extend(heliotrope, config={"oas_ui_default": "swagger"})
 
 # NOTE: Will fixed
 heliotrope.blueprint(view)
-heliotrope.blueprint(openapi3_blueprint)
 
 # TODO: Type hint
 @heliotrope.main_process_start

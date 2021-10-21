@@ -1,7 +1,7 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
+from sanic_ext.extensions.openapi.openapi import summary, tag  # type: ignore
 
 from heliotrope.sanic import HeliotropeRequest
 
