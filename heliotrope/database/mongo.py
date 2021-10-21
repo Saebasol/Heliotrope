@@ -62,14 +62,18 @@ class NoSQLQuery:
                 [search_query, {"$count": "count"}]
             ).to_list(1)
         ):
-            result = await self.__collection.aggregate(
-                [
-                    search_query,
-                    {"$skip": offset},
-                    {"$limit": limit},
-                    {"$project": {"_id": 0}},
-                ]
-            ).to_list(15)
+            result = (
+                await self.__collection.aggregate(
+                    [
+                        search_query,
+                        {"$skip": offset},
+                        {"$limit": limit},
+                        {"$project": {"_id": 0}},
+                    ]
+                )
+                .to_list(15)
+                .sort("index", -1)
+            )
 
             return result, count[0]["count"]
 
