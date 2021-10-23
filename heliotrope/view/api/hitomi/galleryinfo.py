@@ -15,7 +15,7 @@ class HitomiGalleryinfoView(HTTPMethodView):
         if galleryinfo := await request.app.ctx.sql_query.get_galleryinfo(index_id):
             return json({"status": 200, **galleryinfo})
 
-        if requested_galleryinfo := await request.app.ctx.hitomi_request.get_galleyinfo(
+        if requested_galleryinfo := await request.app.ctx.hitomi_request.get_galleryinfo(
             index_id
         ):
             return json({"status": 200, **requested_galleryinfo.to_dict()})

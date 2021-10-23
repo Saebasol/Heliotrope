@@ -52,10 +52,10 @@ class SQLQuery:
 
     async def get_galleryinfo(self, index_id: int) -> Optional[HitomiGalleryinfoJSON]:
         if galleryinfo := await GalleryInfo.get_or_none(id=index_id):
-            galleyinfo_pydantic_model = (
+            galleryinfo_pydantic_model = (
                 await self.pydantic_galleryinfo.from_tortoise_orm(galleryinfo)
             )
-            galleryinfo_json = galleyinfo_pydantic_model.dict(
+            galleryinfo_json = galleryinfo_pydantic_model.dict(
                 exclude={
                     "files": {"__all__": {"index_id", "id"}},
                     "tags": {"__all__": {"index_id", "id"}},

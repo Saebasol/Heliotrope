@@ -33,7 +33,7 @@ class Mirroring(HitomiRequest):
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
-            if galleryinfo := await self.get_galleyinfo(index):
+            if galleryinfo := await self.get_galleryinfo(index):
                 if not await self.__sql_query.get_galleryinfo(index):
                     await self.__sql_query.add_galleryinfo(galleryinfo)
 

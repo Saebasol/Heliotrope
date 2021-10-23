@@ -17,7 +17,7 @@ class HitomiImagesView(HTTPMethodView):
     async def get(self, request: HeliotropeRequest, index_id: int) -> HTTPResponse:
         galleryinfo = await request.app.ctx.sql_query.get_galleryinfo(
             index_id
-        ) or await request.app.ctx.hitomi_request.get_galleyinfo(index_id)
+        ) or await request.app.ctx.hitomi_request.get_galleryinfo(index_id)
 
         if isinstance(galleryinfo, HitomiGalleryinfo):
             galleryinfo = galleryinfo.to_dict()
