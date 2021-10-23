@@ -53,7 +53,7 @@ class HitomiRequest(BaseRequest):
         hitomi_type = urlparse(url).path.split("/")[1]
         return url, hitomi_type
 
-    async def get_galleyinfo(self, index_id: int) -> Optional[HitomiGalleryinfo]:
+    async def get_galleryinfo(self, index_id: int) -> Optional[HitomiGalleryinfo]:
         response = await self.get(f"{self.ltn_url}/galleries/{index_id}.js", "text")
 
         if response.status != 200:
