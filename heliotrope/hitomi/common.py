@@ -31,7 +31,7 @@ def subdomain_from_url(url: str, base: Optional[str] = None) -> str:
 
     if not isnan(g):
         o = 0
-        if g < 0x80:
+        if g < 0x7A:
             o = 1
 
         # retval = subdomain_from_galleryid(g, number_of_frontends) + retval
