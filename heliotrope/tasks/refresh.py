@@ -10,33 +10,39 @@ from heliotrope.utils.js import (
 
 
 class RefreshCommonJS:
-    common_js_object: CommonJS
-
     def __init__(
-        self, common_js_request_function: Callable[[], Coroutine[Any, Any, str]]
+        self,
+        common_js_request_function: Callable[[], Coroutine[Any, Any, str]],
+        common_js: CommonJS,
     ) -> None:
+        self.common_js = common_js
         self.get = common_js_request_function
 
-    async def task(self, delay: float) -> NoReturn:
-        common_js = await self.get()
-        self.common_js_object = CommonJS(common_js)
+    @classmethod
+    async def setup(
+        cls, common_js_request_function: Callable[[], Coroutine[Any, Any, str]]
+    ) -> "RefreshCommonJS":
+        common_js = await common_js_request_function()
+        self = cls(common_js_request_function, CommonJS(common_js))
+        return self
 
+    async def task(self, delay: float) -> NoReturn:
         newer: list[dict[str, Any]] = []
 
         while True:
             common_js = await self.get()
             parsed = get_parsed_functions_from_source(
-                common_js, self.common_js_object.FUNCTIONS
+                common_js, self.common_js.FUNCTIONS
             )
 
-            for origin, remote in zip(self.common_js_object.body, parsed):
+            for origin, remote in zip(self.common_js.body, parsed):
                 if origin != remote:
                     newer.append(remote)
 
             if newer:
                 tree = make_js_program(newer)
                 pycode = translate_tree(tree, "")
-                self.common_js_object.engine.exec_pycode(pycode)
+                self.common_js.engine.exec_pycode(pycode)
 
             newer.clear()
 

@@ -31,7 +31,7 @@ class HitomiImagesView(HTTPMethodView):
                     {
                         "name": file.name,
                         "url": shuffle_image_url(
-                            request.app.ctx.refresh_common_js.common_js_object.image_url_from_image(
+                            request.app.ctx.refresh_common_js.common_js.image_url_from_image(
                                 index_id, file.to_dict(), True
                             )
                         ),
