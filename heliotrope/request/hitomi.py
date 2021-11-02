@@ -45,7 +45,7 @@ class HitomiRequest(BaseRequest):
 
     async def get_common_js(self) -> str:
         response = await self.get(f"{self.ltn_url}/common.js", "text")
-        return response.returned
+        return cast(str, response.returned)
 
     async def get_redirect_url(self, index_id: int) -> Optional[tuple[str, str]]:
         response = await self.get(f"{self.url}/galleries/{index_id}.html", "text")
