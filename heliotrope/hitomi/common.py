@@ -1,4 +1,5 @@
 from typing import cast
+
 from heliotrope.typing import HitomiFilesJSON
 from heliotrope.utils.js import (
     ExtendEvalJS,

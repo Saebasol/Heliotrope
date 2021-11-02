@@ -1,12 +1,12 @@
+from asyncio import sleep
 from typing import Any, Callable, Coroutine, NoReturn
+
 from heliotrope.hitomi.common import CommonJS
 from heliotrope.utils.js import (
     get_parsed_functions_from_source,
     make_js_program,
     translate_tree,
 )
-
-from asyncio import sleep
 
 
 class RefreshCommonJS:
