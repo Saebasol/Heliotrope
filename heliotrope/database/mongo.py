@@ -65,10 +65,10 @@ class NoSQLQuery:
             result = await self.__collection.aggregate(
                 [
                     search_query,
+                    {"$sort": {"index": -1}},
                     {"$skip": offset},
                     {"$limit": limit},
                     {"$project": {"_id": 0}},
-                    {"$sort": {"index": -1}},
                 ]
             ).to_list(15)
 
