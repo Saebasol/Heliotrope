@@ -79,6 +79,14 @@ config.add_argument(
     help="The config file to use (default: None)",
 )
 
+config.add_argument(
+    "--refresh-delay",
+    "-R",
+    type=str,
+    default=86400,
+    help="The delay between refresh commonjs (default: 86400)",
+)
+
 args = parser.parse_args()
 
 options = {
@@ -87,6 +95,7 @@ options = {
     "MONGO_DB_URL": args.nosql,
     "DB_URL": args.sql,
     "TESTING": args.test,
+    "REFRESH_DELAY": args.refresh_delay,
 }
 
 if args.config:

@@ -12,6 +12,7 @@ from heliotrope.request.base import BaseRequest
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.response import Response
 from heliotrope.tasks.mirroring import Mirroring
+from heliotrope.tasks.refresh import RefreshCommonJS
 
 
 class HeliotropeContext(SimpleNamespace):
@@ -22,11 +23,14 @@ class HeliotropeContext(SimpleNamespace):
     base_request: BaseRequest
     mirroring: Mirroring
     mirroring_task: Task[NoReturn]
+    refresh_common_js: RefreshCommonJS
+    refresh_common_js_task: Task[NoReturn]
 
 
 class HeliotropeConfig(Config):
     INDEX_FILE: str
     DELAY: int
+    REFRESH_DELAY: int
     MONGO_DB_URL: str
     DB_URL: str
     TESTING: bool
