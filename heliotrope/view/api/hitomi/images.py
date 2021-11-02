@@ -3,7 +3,6 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_openapi.openapi3.openapi import summary, tag  # type: ignore
 
-from heliotrope.hitomi.common import image_url_from_image
 from heliotrope.hitomi.models import HitomiFiles, HitomiGalleryinfo
 from heliotrope.sanic import HeliotropeRequest
 from heliotrope.shuffle import shuffle_image_url
@@ -32,7 +31,9 @@ class HitomiImagesView(HTTPMethodView):
                     {
                         "name": file.name,
                         "url": shuffle_image_url(
-                            image_url_from_image(index_id, file, True)
+                            request.app.ctx.refresh_common_js.common_js.image_url_from_image(
+                                index_id, file.to_dict(), True
+                            )
                         ),
                     }
                     for file in map(HitomiFiles, galleryinfo["files"])

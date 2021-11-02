@@ -17,6 +17,7 @@ from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.response import Response
 from heliotrope.sanic import Heliotrope
 from heliotrope.tasks.mirroring import Mirroring
+from heliotrope.tasks.refresh import RefreshCommonJS
 from heliotrope.view import view
 
 heliotrope = Sanic("heliotrope")
@@ -62,6 +63,12 @@ async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.mirroring_task = create_task(
         heliotrope.ctx.mirroring.task(heliotrope.config.DELAY)
     )
+    heliotrope.ctx.refresh_common_js = await RefreshCommonJS.setup(
+        heliotrope.ctx.hitomi_request.get_common_js
+    )
+    heliotrope.ctx.refresh_common_js_task = create_task(
+        heliotrope.ctx.refresh_common_js.task(heliotrope.config.REFRESH_DELAY)
+    )
 
 
 # TODO: Type hint
@@ -73,3 +80,4 @@ async def stop(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     await heliotrope.ctx.hitomi_request.close()
     await heliotrope.ctx.mirroring.close()
     heliotrope.ctx.mirroring_task.cancel()
+    heliotrope.ctx.refresh_common_js_task.cancel()

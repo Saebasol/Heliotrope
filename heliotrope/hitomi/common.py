@@ -1,96 +1,40 @@
-# https://ltn.hitomi.la/common.js
+from typing import cast
 
-import re
-from math import isnan
-from typing import Optional
-
-from heliotrope.hitomi.models import HitomiFiles
-
-
-def subdomain_from_galleryid(g: int, number_of_frontends: int) -> str:
-    o = g % number_of_frontends
-    return chr(97 + o)
+from heliotrope.typing import HitomiFilesJSON
+from heliotrope.utils.js import (
+    ExtendEvalJS,
+    get_parsed_functions_from_source,
+    make_js_program,
+    translate_tree,
+)
 
 
-def subdomain_from_url(url: str, base: Optional[str] = None) -> str:
-    retval = "b"
+class CommonJS:
+    FUNCTIONS = [
+        "subdomain_from_galleryid",
+        "subdomain_from_url",
+        "url_from_url",
+        "full_path_from_hash",
+        "url_from_hash",
+        "url_from_url_from_hash",
+        "rewrite_tn_paths",
+    ]
 
-    if base:
-        retval = base
+    def __init__(self, common_js: str) -> None:
+        self.engine = ExtendEvalJS()
+        self.body = get_parsed_functions_from_source(common_js, self.FUNCTIONS)
+        tree = make_js_program(self.body)
+        pycode = translate_tree(tree, "")
+        self.engine.exec_pycode(pycode)
 
-    # number_of_frontends = 3
-    b = 16
+    def rewrite_tn_paths(self, html: str) -> str:
+        return cast(str, self.engine.rewrite_tn_paths(html))
 
-    r = re.compile(r"\/[0-9a-f]\/([0-9a-f]{2})\/")
-    m = r.search(url)
+    def image_url_from_image(
+        self, galleryid: int, image: HitomiFilesJSON, no_webp: bool
+    ) -> str:
+        webp = None
+        if image["hash"] and image["haswebp"] and not no_webp:
+            webp = "webp"
 
-    if not m:
-        return "a"
-
-    g = int(m[1], b)
-
-    if not isnan(g):
-        o = 0
-        if g < 0x7C:
-            o = 1
-
-        # retval = subdomain_from_galleryid(g, number_of_frontends) + retval
-        retval = chr(97 + o) + retval
-
-    return retval
-
-
-def url_from_url(url: str, base: Optional[str] = None) -> str:
-    return re.sub(
-        r"\/\/..?\.hitomi\.la\/",
-        "//" + subdomain_from_url(url, base) + ".hitomi.la/",
-        url,
-    )
-
-
-def full_path_from_hash(hash: str) -> str:
-    if len(hash) < 3:
-        return hash
-
-    return re.sub(r"^.*(..)(.)$", r"\2/\1/" + hash, hash)
-
-
-def url_from_hash(
-    galleryid: int,
-    image: HitomiFiles,
-    dir: Optional[str] = None,
-    ext: Optional[str] = None,
-) -> str:
-    ext = ext or dir or image.name.split(".")[-1]
-    dir = dir or "images"
-
-    return (
-        "https://a.hitomi.la/" + dir + "/" + full_path_from_hash(image.hash) + "." + ext
-    )
-
-
-def url_from_url_from_hash(
-    galleryid: int,
-    image: HitomiFiles,
-    dir: Optional[str] = None,
-    ext: Optional[str] = None,
-    base: Optional[str] = None,
-) -> str:
-    return url_from_url(url_from_hash(galleryid, image, dir, ext), base)
-
-
-def image_url_from_image(galleryid: int, image: HitomiFiles, no_webp: bool) -> str:
-    webp = None
-    if image.hash and image.haswebp and not no_webp:
-        webp = "webp"
-
-    return url_from_url_from_hash(galleryid, image, webp)
-
-
-def rewrite_tn_paths(html: str) -> str:
-    url = re.search(r"/\/tn\.hitomi\.la\/[^\/]+\/[0-9a-f]\/[0-9a-f]{2}\/", html).group(0)  # type: ignore
-    return re.sub(
-        r"/\/tn\.hitomi\.la\/[^\/]+\/[0-9a-f]\/[0-9a-f]{2}\/",
-        url_from_url(url, "tn"),
-        html,
-    )
+        return cast(str, self.engine.url_from_url_from_hash(galleryid, image, webp))
