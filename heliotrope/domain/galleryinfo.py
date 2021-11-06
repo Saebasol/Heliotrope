@@ -55,3 +55,6 @@ class HitomiGalleryInfo(DomainModel):
             language_localname=self.language_localname,
             tags=[tag.to_dict() for tag in self.tags],
         )
+
+    def __eq__(self, other: DomainModel) -> bool:
+        return self.to_dict() == other.to_dict()
