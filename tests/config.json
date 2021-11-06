@@ -1,8 +1,0 @@
-{
-    "INDEX_FILE": "index-korean.nozomi",
-    "DELAY": 3600,
-    "REFRESH_DELAY": 86400,
-    "MONGO_DB_URL": "mongodb://root:test@127.0.0.1",
-    "DB_URL": "mysql://root:test@127.0.0.1/test_heliotrope",
-    "TESTING": true
-}
