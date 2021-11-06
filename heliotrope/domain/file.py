@@ -1,4 +1,5 @@
 from typing import Literal, Optional
+
 from heliotrope.shared.domain_model import DomainModel
 from heliotrope.types import HitomiFileJSON
 
