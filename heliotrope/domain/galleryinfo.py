@@ -1,4 +1,5 @@
 from typing import Optional
+
 from heliotrope.domain.file import HitomiFile
 from heliotrope.domain.tag import HitomiTag
 from heliotrope.shared.domain_model import DomainModel

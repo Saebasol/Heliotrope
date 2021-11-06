@@ -1,5 +1,4 @@
-from typing import TypeVar, Literal, Optional, TypedDict
-
+from typing import Literal, Optional, TypedDict, TypeVar
 
 T = TypeVar("T")
 
