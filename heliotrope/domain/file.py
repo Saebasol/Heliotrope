@@ -50,3 +50,6 @@ class HitomiFile(DomainModel):
             hitomi_file_json["hasavifsmalltn"] = self.hasavifsmalltn
 
         return hitomi_file_json
+
+    def __eq__(self, other: DomainModel) -> bool:
+        return self.to_dict() == other.to_dict()
