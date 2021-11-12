@@ -1,0 +1,28 @@
+{
+	// Place your Heliotrope 작업 영역 snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"Make endpoint": {
+		"scope": "python",
+		"prefix": "make endpoint",
+		"body": [
+			"from sanic.blueprints import Blueprint",
+			"from sanic.response import HTTPResponse, json",
+			"from sanic.views import HTTPMethodView",
+			"",
+			"${1:${TM_FILENAME_BASE}} = Blueprint('${1:${TM_FILENAME_BASE}}', url_prefix='/${1:${TM_FILENAME_BASE}}')",
+			"",
+			"",
+			"class ${2:${TM_FILENAME_BASE}}View(HTTPMethodView):",
+			"    async def get(self, request) -> HTTPResponse:",
+			"        ...",
+			"",
+			"${1:${TM_FILENAME_BASE}}.add_route(${2:${TM_FILENAME_BASE}}View.as_view(), '/')",
+		],
+		"description": "Make new endpoint"
+	}
+}
