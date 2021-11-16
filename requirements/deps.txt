@@ -4,7 +4,7 @@ sentry-sdk==1.4.3
 beautifulsoup4==4.10.0
 tortoise-orm==0.17.8
 lxml==4.6.4
-aiomysql==0.0.21
+aiomysql==0.0.22
 motor==2.5.1
 dnspython==2.1.0
 pydantic==1.8.2
