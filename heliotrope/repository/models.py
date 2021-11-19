@@ -16,7 +16,7 @@ class Galleryinfo:
         mapper_registry.metadata,
         Column("id", String, primary_key=True),
         Column("title", String, nullable=False),
-        Column("japanese_title ", String),
+        Column("japanese_title", String),
         Column("language", String, nullable=False),
         Column("language_localname", String, nullable=False),
         Column("type", String, nullable=False),
@@ -56,7 +56,7 @@ class File:
     )
 
     id: int
-    galleryinfo_id: Optional[str]
+    galleryinfo_id: str
     name: str
     width: int
     height: int
