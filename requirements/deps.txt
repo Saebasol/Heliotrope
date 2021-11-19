@@ -2,7 +2,7 @@ aiohttp==3.8.0
 sanic==21.9.1
 sentry-sdk==1.4.3
 beautifulsoup4==4.10.0
-tortoise-orm==0.17.8
+SQLAlchemy==1.4.27
 lxml==4.6.3
 aiomysql==0.0.21
 motor==2.5.1
