@@ -18,7 +18,7 @@ class CommonJS:
     ]
 
     @staticmethod
-    def get_js_function(code: str):
+    def get_js_function(code: str) -> str:
         functions: list[str] = []
         lines = StringIO(code).readlines()
 
@@ -39,7 +39,7 @@ class CommonJS:
         return "".join(functions)
 
     @classmethod
-    def setup(cls, code: str):
+    def setup(cls, code: str) -> "CommonJS":
         body = cls.get_js_function(code)
         return cls(body)
 
