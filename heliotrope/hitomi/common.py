@@ -17,13 +17,14 @@ class CommonJS:
         "rewrite_tn_paths",
     ]
 
-    def get_js_function(self, code: str, function_names: list[str]):
+    @staticmethod
+    def get_js_function(code: str):
         functions: list[str] = []
         lines = StringIO(code).readlines()
 
         finded = False
 
-        for func_name in function_names:
+        for func_name in CommonJS.FUNCTIONS:
             for line in lines:
                 if finded:
                     functions.append(line)
@@ -34,13 +35,19 @@ class CommonJS:
                     functions.append(line)
                     finded = True
                     continue
+
         return "".join(functions)
+
+    @classmethod
+    def setup(cls, code: str):
+        body = cls.get_js_function(code)
+        return cls(body)
 
     def __init__(self, common_js: str) -> None:
         super().__init__()
-        self.common_js = self.get_js_function(common_js, self.FUNCTIONS)
+        self.body = common_js
         self.engine: Any = EvalJs()
-        self.engine.execute(self.common_js)
+        self.engine.execute(common_js)
 
     def rewrite_tn_paths(self, html: str) -> str:
         return cast(str, self.engine.rewrite_tn_paths(html))
