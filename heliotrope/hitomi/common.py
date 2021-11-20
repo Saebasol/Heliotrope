@@ -1,12 +1,9 @@
-from typing import cast
+from io import StringIO
+from typing import Any, cast
+
+from js2py.evaljs import EvalJs  # type: ignore
 
 from heliotrope.typing import HitomiFilesJSON
-from heliotrope.utils.js import (
-    ExtendEvalJS,
-    get_parsed_functions_from_source,
-    make_js_program,
-    translate_tree,
-)
 
 
 class CommonJS:
@@ -20,12 +17,37 @@ class CommonJS:
         "rewrite_tn_paths",
     ]
 
+    @staticmethod
+    def get_js_function(code: str) -> str:
+        functions: list[str] = []
+        lines = StringIO(code).readlines()
+
+        finded = False
+
+        for func_name in CommonJS.FUNCTIONS:
+            for line in lines:
+                if finded:
+                    functions.append(line)
+                    if line.startswith("}"):
+                        finded = False
+                        continue
+                if line.startswith(f"function {func_name}"):
+                    functions.append(line)
+                    finded = True
+                    continue
+
+        return "".join(functions)
+
+    @classmethod
+    def setup(cls, code: str) -> "CommonJS":
+        body = cls.get_js_function(code)
+        return cls(body)
+
     def __init__(self, common_js: str) -> None:
-        self.engine = ExtendEvalJS()
-        self.body = get_parsed_functions_from_source(common_js, self.FUNCTIONS)
-        tree = make_js_program(self.body)
-        pycode = translate_tree(tree, "")
-        self.engine.exec_pycode(pycode)
+        super().__init__()
+        self.body = common_js
+        self.engine: Any = EvalJs()
+        self.engine.execute(common_js)
 
     def rewrite_tn_paths(self, html: str) -> str:
         return cast(str, self.engine.rewrite_tn_paths(html))
