@@ -1,4 +1,4 @@
-from heliotrope.domain.galleryinfo import HitomiGalleryInfo, HitomiFile, HitomiTag
+from heliotrope.domain.galleryinfo import HitomiGalleryinfo, HitomiFile, HitomiTag
 from heliotrope.types import HitomiFileJSON, HitomiGalleryinfoJSON, HitomiTagJSON
 
 tags: list[HitomiTagJSON] = [
@@ -49,7 +49,7 @@ galleryinfo: HitomiGalleryinfoJSON = {
 
 
 def test_hitomi_galleryinfo_init():
-    hitomi_galleryinfo = HitomiGalleryInfo(
+    hitomi_galleryinfo = HitomiGalleryinfo(
         language_localname="한국어",
         language="korean",
         date="2020-02-14 07=57=00-06",
@@ -73,7 +73,7 @@ def test_hitomi_galleryinfo_init():
 
 
 def test_hitomi_galleryinfo_from_dict():
-    hitomi_galleryinfo = HitomiGalleryInfo.from_dict(galleryinfo)
+    hitomi_galleryinfo = HitomiGalleryinfo.from_dict(galleryinfo)
 
     assert hitomi_galleryinfo.language_localname == "한국어"
     assert hitomi_galleryinfo.language == "korean"
@@ -87,7 +87,7 @@ def test_hitomi_galleryinfo_from_dict():
 
 
 def test_hitomi_galleryinfo_to_dict():
-    hitomi_galleryinfo = HitomiGalleryInfo(
+    hitomi_galleryinfo = HitomiGalleryinfo(
         language_localname="한국어",
         language="korean",
         date="2020-02-14 07=57=00-06",
@@ -103,7 +103,7 @@ def test_hitomi_galleryinfo_to_dict():
 
 
 def test_hitomi_galleryinfo_comparsion():
-    hitomi_galleryinfo1 = HitomiGalleryInfo.from_dict(galleryinfo)
-    hitomi_galleryinfo2 = HitomiGalleryInfo.from_dict(galleryinfo)
+    hitomi_galleryinfo1 = HitomiGalleryinfo.from_dict(galleryinfo)
+    hitomi_galleryinfo2 = HitomiGalleryinfo.from_dict(galleryinfo)
 
-    assert hitomi_galleryinfo1 == hitomi_galleryinfo2
+    assert hitomi_galleryinfo1.to_dict() == hitomi_galleryinfo2.to_dict()

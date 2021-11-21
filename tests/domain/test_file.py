@@ -68,4 +68,4 @@ def test_hitomi_file_model_comparison():
     hitomi_file1 = HitomiFile.from_dict(hitomi_file_exclude_dict)
     hitomi_file2 = HitomiFile.from_dict(hitomi_file_exclude_dict)
 
-    assert hitomi_file1 == hitomi_file2
+    assert hitomi_file1.to_dict() == hitomi_file2.to_dict()
