@@ -33,6 +33,3 @@ class HitomiTag(DomainModel):
             hitomi_tag_json["female"] = self.female
 
         return hitomi_tag_json
-
-    def __eq__(self, other: DomainModel) -> bool:
-        return self.to_dict() == other.to_dict()
