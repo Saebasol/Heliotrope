@@ -53,4 +53,4 @@ def test_hitomi_tag_model_comparison():
     hitomi_tag1 = HitomiTag.from_dict(hitomi_tag_include_dict)
     hitomi_tag2 = HitomiTag.from_dict(hitomi_tag_include_dict)
 
-    assert hitomi_tag1 == hitomi_tag2
+    assert hitomi_tag1.to_dict() == hitomi_tag2.to_dict()

@@ -6,7 +6,7 @@ from heliotrope.shared.domain_model import DomainModel
 from heliotrope.types import HitomiFileJSON, HitomiGalleryinfoJSON, HitomiTagJSON
 
 
-class HitomiGalleryInfo(DomainModel):
+class HitomiGalleryinfo(DomainModel):
     def __init__(
         self,
         title: str,
@@ -30,7 +30,7 @@ class HitomiGalleryInfo(DomainModel):
         self.tags: list[HitomiTag] = [HitomiTag.from_dict(tag) for tag in tags]
 
     @classmethod
-    def from_dict(cls, d: HitomiGalleryinfoJSON) -> "HitomiGalleryInfo":
+    def from_dict(cls, d: HitomiGalleryinfoJSON) -> "HitomiGalleryinfo":
         return cls(
             title=d["title"],
             date=d["date"],
@@ -55,6 +55,3 @@ class HitomiGalleryInfo(DomainModel):
             language_localname=self.language_localname,
             tags=[tag.to_dict() for tag in self.tags],
         )
-
-    def __eq__(self, other: DomainModel) -> bool:
-        return self.to_dict() == other.to_dict()
