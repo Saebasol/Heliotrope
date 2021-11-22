@@ -1,47 +1,22 @@
+from dataclasses import dataclass, field
 from typing import Optional
 
-from heliotrope.domain.file import HitomiFile
-from heliotrope.domain.tag import HitomiTag
-from heliotrope.shared.domain_model import DomainModel
-from heliotrope.types import HitomiFileJSON, HitomiGalleryinfoJSON, HitomiTagJSON
+from heliotrope.domain.file import File
+from heliotrope.domain.tag import Tag
+from heliotrope.types import HitomiGalleryinfoJSON
 
 
-class HitomiGalleryinfo(DomainModel):
-    def __init__(
-        self,
-        title: str,
-        date: str,
-        type: str,
-        japanese_title: Optional[str],
-        language: str,
-        files: list[HitomiFileJSON],
-        id: str,
-        language_localname: str,
-        tags: list[HitomiTagJSON],
-    ) -> None:
-        self.title = title
-        self.date = date
-        self.type = type
-        self.japanese_title = japanese_title
-        self.language = language
-        self.files: list[HitomiFile] = [HitomiFile.from_dict(file) for file in files]
-        self.id = id
-        self.language_localname = language_localname
-        self.tags: list[HitomiTag] = [HitomiTag.from_dict(tag) for tag in tags]
-
-    @classmethod
-    def from_dict(cls, d: HitomiGalleryinfoJSON) -> "HitomiGalleryinfo":
-        return cls(
-            title=d["title"],
-            date=d["date"],
-            type=d["type"],
-            japanese_title=d["japanese_title"],
-            language=d["language"],
-            files=d["files"],
-            id=d["id"],
-            language_localname=d["language_localname"],
-            tags=d["tags"],
-        )
+@dataclass
+class Galleryinfo:
+    id: str
+    title: str
+    japanese_title: Optional[str]
+    language: str
+    language_localname: str
+    type: str
+    date: str
+    files: list[File] = field(default_factory=list)
+    tags: list[Tag] = field(default_factory=list)
 
     def to_dict(self) -> HitomiGalleryinfoJSON:
         return HitomiGalleryinfoJSON(
@@ -54,4 +29,18 @@ class HitomiGalleryinfo(DomainModel):
             id=self.id,
             language_localname=self.language_localname,
             tags=[tag.to_dict() for tag in self.tags],
+        )
+
+    @classmethod
+    def from_dict(cls, d: HitomiGalleryinfoJSON):
+        return cls(
+            id=d["id"],
+            title=d["title"],
+            japanese_title=d["japanese_title"],
+            language=d["language"],
+            language_localname=d["language_localname"],
+            type=d["type"],
+            date=d["date"],
+            files=[File.from_dict(d["id"], file) for file in d["files"]],
+            tags=[Tag.from_dict(d["id"], tag) for tag in d["tags"]],
         )
