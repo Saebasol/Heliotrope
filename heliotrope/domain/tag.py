@@ -1,27 +1,17 @@
+from dataclasses import dataclass
 from typing import Literal, Optional
 
-from heliotrope.shared.domain_model import DomainModel
 from heliotrope.types import HitomiTagJSON
 
 
-class HitomiTag(DomainModel):
-    def __init__(
-        self,
-        url: str,
-        tag: str,
-        male: Optional[Literal["", "1"]] = None,
-        female: Optional[Literal["", "1"]] = None,
-    ) -> None:
-        self.url = url
-        self.tag = tag
-        self.male: Optional[Literal["", "1"]] = male
-        self.female: Optional[Literal["", "1"]] = female
-
-    @classmethod
-    def from_dict(cls, d: HitomiTagJSON) -> "HitomiTag":
-        return cls(
-            url=d["url"], tag=d["tag"], male=d.get("male"), female=d.get("female")
-        )
+@dataclass
+class Tag:
+    index_id: str
+    male: Optional[Literal["", "1"]]
+    female: Optional[Literal["", "1"]]
+    tag: str
+    url: str
+    id: Optional[int] = None
 
     def to_dict(self) -> HitomiTagJSON:
         hitomi_tag_json = HitomiTagJSON(url=self.url, tag=self.tag)
@@ -33,3 +23,13 @@ class HitomiTag(DomainModel):
             hitomi_tag_json["female"] = self.female
 
         return hitomi_tag_json
+
+    @classmethod
+    def from_dict(cls, index_id: str, d: HitomiTagJSON):
+        return cls(
+            index_id=index_id,
+            male=d.get("male"),
+            female=d.get("female"),
+            tag=d["tag"],
+            url=d["url"],
+        )
