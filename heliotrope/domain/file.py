@@ -1,39 +1,20 @@
+from dataclasses import dataclass
 from typing import Literal, Optional
 
-from heliotrope.shared.domain_model import DomainModel
 from heliotrope.types import HitomiFileJSON
 
 
-class HitomiFile(DomainModel):
-    def __init__(
-        self,
-        width: int,
-        hash: str,
-        haswebp: Literal[0, 1],
-        name: str,
-        height: int,
-        hasavif: Optional[Literal[1]] = None,
-        hasavifsmalltn: Optional[Literal[1]] = None,
-    ) -> None:
-        self.width = width
-        self.hash = hash
-        self.haswebp: Literal[0, 1] = haswebp
-        self.name = name
-        self.height = height
-        self.hasavif: Optional[Literal[1]] = hasavif
-        self.hasavifsmalltn: Optional[Literal[1]] = hasavifsmalltn
-
-    @classmethod
-    def from_dict(cls, d: HitomiFileJSON) -> "HitomiFile":
-        return cls(
-            width=d["width"],
-            hash=d["hash"],
-            haswebp=d["haswebp"],
-            name=d["name"],
-            height=d["height"],
-            hasavif=d.get("hasavif"),
-            hasavifsmalltn=d.get("hasavifsmalltn"),
-        )
+@dataclass
+class File:
+    index_id: str
+    name: str
+    width: int
+    height: int
+    hash: str
+    haswebp: Literal[0, 1]
+    hasavifsmalltn: Optional[Literal[1]] = None
+    hasavif: Optional[Literal[1]] = None
+    id: Optional[int] = None
 
     def to_dict(self) -> HitomiFileJSON:
         hitomi_file_json = HitomiFileJSON(
@@ -50,3 +31,16 @@ class HitomiFile(DomainModel):
             hitomi_file_json["hasavifsmalltn"] = self.hasavifsmalltn
 
         return hitomi_file_json
+
+    @classmethod
+    def from_dict(cls, index_id: str, d: HitomiFileJSON):
+        return cls(
+            index_id=index_id,
+            name=d["name"],
+            width=d["width"],
+            height=d["height"],
+            hash=d["hash"],
+            haswebp=d["haswebp"],
+            hasavifsmalltn=d.get("hasavifsmalltn"),
+            hasavif=d.get("hasavif"),
+        )
