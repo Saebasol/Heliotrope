@@ -30,7 +30,7 @@ class _SessionManager:
             await self.session.close()
 
 
-class Database:
+class ORM:
     def __init__(self, engine: AsyncEngine) -> None:
         self.engine = engine
 
@@ -57,9 +57,7 @@ class Database:
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
         async with _SessionManager(self.engine) as manager:
             async with manager.session.begin():
-                manager.session.add(
-                    galleryinfo,
-                )
+                manager.session.add(galleryinfo)
 
         return None
 
