@@ -58,7 +58,7 @@ class ORM:
         self.engine = engine
 
     @staticmethod
-    def mapping():
+    def mapping() -> None:
         mapper(
             Galleryinfo,
             galleryinfo_table,
@@ -68,7 +68,7 @@ class ORM:
         mapper(File, file_table)
 
     @classmethod
-    async def setup(cls, db_url: str):
+    async def setup(cls, db_url: str) -> "ORM":
         cls.mapping()
         engine = create_async_engine(db_url, echo=True)
         async with engine.begin() as connection:

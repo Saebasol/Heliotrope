@@ -48,7 +48,7 @@ class Tag:
         return hitomi_tag_json
 
     @classmethod
-    def from_dict(cls, index_id: str, d: HitomiTagJSON):
+    def from_dict(cls, index_id: str, d: HitomiTagJSON) -> "Tag":
         return cls(
             index_id=index_id,
             male=d.get("male"),
