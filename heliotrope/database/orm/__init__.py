@@ -29,6 +29,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import mapper, relationship, selectinload
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
+from heliotrope.abc import AbstractORM
 
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.database.orm.table import *
@@ -53,12 +54,12 @@ class _SessionManager:
             await self.session.close()
 
 
-class ORM:
+class ORM(AbstractORM):
     def __init__(self, engine: AsyncEngine) -> None:
         self.engine = engine
 
     @staticmethod
-    def mapping() -> None:
+    def mapping():
         mapper(
             Galleryinfo,
             galleryinfo_table,
@@ -68,7 +69,7 @@ class ORM:
         mapper(File, file_table)
 
     @classmethod
-    async def setup(cls, db_url: str) -> "ORM":
+    async def setup(cls, db_url: str):
         cls.mapping()
         engine = create_async_engine(db_url, echo=True)
         async with engine.begin() as connection:
