@@ -30,9 +30,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 from yarl import URL
 
-from heliotrope.domain import Galleryinfo
+from heliotrope.domain import Galleryinfo, Info
 from heliotrope.request.base import BaseRequest
-from heliotrope.types import HitomiGalleryinfoJSON
 
 
 class HitomiRequest(BaseRequest):
@@ -92,6 +91,17 @@ class HitomiRequest(BaseRequest):
         js_to_json = loads(str(response.returned).replace("var galleryinfo = ", ""))
 
         return Galleryinfo.from_dict(js_to_json)
+
+    async def get_info(self, index_id: int) -> Optional[Info]:
+        response = await self.get_redirect_url(index_id)
+        if not response:
+            return None
+
+        url, hitomi_type = response
+
+        html = await self.get(url, "text")
+
+        return Info.from_html(html.returned, hitomi_type)
 
     async def fetch_index(
         self,
