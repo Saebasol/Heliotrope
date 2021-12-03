@@ -91,9 +91,7 @@ class HitomiRequest(BaseRequest):
 
         js_to_json = loads(str(response.returned).replace("var galleryinfo = ", ""))
 
-        galleryinfo_json = HitomiGalleryinfoJSON(**js_to_json)
-
-        return Galleryinfo.from_dict(galleryinfo_json)
+        return Galleryinfo.from_dict(js_to_json)
 
     async def fetch_index(
         self,

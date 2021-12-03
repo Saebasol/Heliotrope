@@ -56,7 +56,7 @@ class File:
         return hitomi_file_json
 
     @classmethod
-    def from_dict(cls, index_id: str, d: HitomiFileJSON):
+    def from_dict(cls, index_id: str, d: HitomiFileJSON) -> "File":
         return cls(
             index_id=index_id,
             name=d["name"],
