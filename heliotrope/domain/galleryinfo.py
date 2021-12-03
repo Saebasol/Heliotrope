@@ -55,7 +55,7 @@ class Galleryinfo:
         )
 
     @classmethod
-    def from_dict(cls, d: HitomiGalleryinfoJSON):
+    def from_dict(cls, d: HitomiGalleryinfoJSON) -> "Galleryinfo":
         return cls(
             id=d["id"],
             title=d["title"],
