@@ -21,9 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Literal, Optional, TypedDict, TypeVar
-
-T = TypeVar("T")
+from typing import Literal, Optional, TypedDict
 
 
 class _HitomiFileJSONOptional(TypedDict, total=False):
@@ -59,3 +57,21 @@ class HitomiGalleryinfoJSON(TypedDict):
     id: str
     language_localname: str
     tags: list[HitomiTagJSON]
+
+
+class HitomiInfoValueUrlJSON(TypedDict):
+    value: str
+    url: str
+
+
+class HitomiInfoJSON(TypedDict):
+    title: str
+    thumbnail: str
+    artist: list[HitomiInfoValueUrlJSON]
+    group: list[HitomiInfoValueUrlJSON]
+    type: HitomiInfoValueUrlJSON
+    language: HitomiInfoValueUrlJSON
+    series: list[HitomiInfoValueUrlJSON]
+    character: list[HitomiInfoValueUrlJSON]
+    tags: list[HitomiInfoValueUrlJSON]
+    date: str
