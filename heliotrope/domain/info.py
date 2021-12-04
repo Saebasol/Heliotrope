@@ -24,85 +24,96 @@ SOFTWARE.
 from dataclasses import dataclass
 from heliotrope.parser import Parser
 from bs4.element import Tag
-from heliotrope.types import HitomiInfoValueUrlJSON, HitomiInfoJSON
+from heliotrope.types import HitomiInfoJSON
 
 
-@dataclass
-class ValueUrl:
-    value: str
-    url: str
+def from_element(element: Tag) -> str:
+    return element.text.strip().replace(" ", "_")
 
-    def to_dict(self) -> HitomiInfoValueUrlJSON:
-        return HitomiInfoValueUrlJSON(value=self.value, url=self.url)
 
-    @classmethod
-    def from_element(cls, element: Tag) -> "ValueUrl":
-        return cls(value=element.text.strip(), url=element.attrs["href"])
+def from_elements(elements: list[Tag]) -> list[str]:
+    return [from_element(element) for element in elements]
 
-    @classmethod
-    def from_elements_with_tags_replacer(cls, elements: list[Tag]):
-        replaced: list[ValueUrl] = []
 
-        for element in elements:
-            value = element.text.strip()
+def tags_replacer(values: list[str]) -> list[str]:
+    replaced: list[str] = []
 
-            if value in " ♀":
-                removed_icon = value.replace(" ♀", "")
-                value = f"female:{removed_icon}"
-            elif value in " ♂":
-                removed_icon = value.replace(" ♂", "")
-                value = f"male:{removed_icon}"
-            else:
-                value = f"tag:{value}"
+    for value in values:
+        if "♀" in value:
+            removed_icon = value.replace(" ♀", "")
+            space_to_under_bar = removed_icon.replace(" ", "_")
+            value = f"female:{space_to_under_bar}"
+        elif "♂" in value:
+            removed_icon = value.replace(" ♂", "")
+            space_to_under_bar = removed_icon.replace(" ", "_")
+            value = f"male:{space_to_under_bar}"
+        else:
+            space_to_under_bar = value.replace(" ", "_")
+            value = f"tag:{space_to_under_bar}"
 
-            replaced.append(cls(value=value, url=element.attrs["href"]))
+        replaced.append(value)
 
-        return replaced
-
-    @classmethod
-    def from_elements(cls, elements: list[Tag]) -> list["ValueUrl"]:
-        return [cls.from_element(element) for element in elements]
+    return replaced
 
 
 @dataclass
 class Info:
+    id: int
     title: str
     thumbnail: str
-    artist: list[ValueUrl]
-    group: list[ValueUrl]
-    type: ValueUrl
-    language: ValueUrl
-    series: list[ValueUrl]
-    character: list[ValueUrl]
-    tags: list[ValueUrl]
+    artist: list[str]
+    group: list[str]
+    type: str
+    language: str
+    series: list[str]
+    character: list[str]
+    tags: list[str]
     date: str
 
     @classmethod
-    def from_html(cls, html: str, hitomi_type: str) -> "Info":
+    def from_html(cls, id: int, html: str, hitomi_type: str) -> "Info":
         parser = Parser(html, hitomi_type)
         return cls(
+            id=id,
             title=parser.title_element.text,
             thumbnail=parser.thumbnail_element.attrs["src"],
-            artist=ValueUrl.from_elements(parser.artist_elements),
-            group=ValueUrl.from_elements(parser.group_elements),
-            type=ValueUrl.from_element(parser.type_element),
-            language=ValueUrl.from_element(parser.language_element),
-            series=ValueUrl.from_elements(parser.series_elements),
-            character=ValueUrl.from_elements(parser.character_elements),
-            tags=ValueUrl.from_elements_with_tags_replacer(parser.tags_elements),
+            artist=from_elements(parser.artist_elements),
+            group=from_elements(parser.group_elements),
+            type=from_element(parser.type_element),
+            language=from_element(parser.language_element),
+            series=from_elements(parser.series_elements),
+            character=from_elements(parser.character_elements),
+            tags=tags_replacer(from_elements(parser.tags_elements)),
             date=parser.date_element.text,
+        )
+
+    @classmethod
+    def from_dict(cls, d: HitomiInfoJSON) -> "Info":
+        return cls(
+            id=d["id"],
+            title=d["title"],
+            thumbnail=d["thumbnail"],
+            artist=d["artist"],
+            group=d["group"],
+            type=d["type"],
+            language=d["language"],
+            series=d["series"],
+            character=d["character"],
+            tags=d["tags"],
+            date=d["date"],
         )
 
     def to_dict(self) -> HitomiInfoJSON:
         return HitomiInfoJSON(
+            id=self.id,
             title=self.title,
             thumbnail=self.thumbnail,
-            artist=[artist.to_dict() for artist in self.artist],
-            group=[group.to_dict() for group in self.group],
-            type=self.type.to_dict(),
-            language=self.language.to_dict(),
-            series=[series.to_dict() for series in self.series],
-            character=[character.to_dict() for character in self.character],
-            tags=[tags.to_dict() for tags in self.tags],
+            artist=self.artist,
+            group=self.group,
+            type=self.type,
+            language=self.language,
+            series=self.series,
+            character=self.character,
+            tags=self.tags,
             date=self.date,
         )

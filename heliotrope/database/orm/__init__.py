@@ -29,7 +29,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import mapper, relationship, selectinload
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
-from heliotrope.abc import AbstractORM
+from heliotrope.abc import AbstractSQL
 
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.database.orm.table import *
@@ -54,7 +54,7 @@ class _SessionManager:
             await self.session.close()
 
 
-class ORM(AbstractORM):
+class ORM(AbstractSQL):
     def __init__(self, engine: AsyncEngine) -> None:
         self.engine = engine
 
