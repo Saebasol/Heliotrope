@@ -41,6 +41,9 @@ class AbstractSQL:
 
 
 class AbstractNoSQL:
+    info_tags = ["artist", "group", "type", "language", "series", "character"]
+    gender_common_tags = ["female", "tags", "male"]
+
     async def add_infos(self, infos: list[Info]) -> None:
         ...
 
