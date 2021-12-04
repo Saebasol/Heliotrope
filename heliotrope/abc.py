@@ -22,12 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from typing import Optional
-from heliotrope.domain import Galleryinfo
+from heliotrope.domain import Galleryinfo, Info
 from heliotrope.types import HitomiGalleryinfoJSON
 from typing import NoReturn
 
 
-class AbstractORM:
+class AbstractSQL:
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
         raise NotImplementedError
 
@@ -38,6 +38,25 @@ class AbstractORM:
 
     async def get_all_index(self) -> list[int]:
         raise NotImplementedError
+
+
+class AbstractNoSQL:
+    async def add_infos(self, infos: list[Info]) -> None:
+        ...
+
+    async def get_info(self, id: int) -> Info:
+        ...
+
+    async def get_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
+        ...
+
+    async def search(
+        self,
+        tags: list[str],
+        offset: int = 0,
+        limit: int = 15,
+    ) -> list[Info]:
+        ...
 
 
 class AbstractTask:
