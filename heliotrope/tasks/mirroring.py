@@ -25,11 +25,11 @@ from asyncio.tasks import sleep
 from typing import Any, NoReturn
 
 from heliotrope.request.hitomi import HitomiRequest
-from heliotrope.abc import AbstractTask, AbstractORM
+from heliotrope.abc import AbstractTask, AbstractSQL
 
 
 class MirroringTask(AbstractTask):
-    def __init__(self, request: HitomiRequest, orm: AbstractORM, odm: Any) -> None:
+    def __init__(self, request: HitomiRequest, orm: AbstractSQL, odm: Any) -> None:
         self.request = request
         self.orm = orm
         self.odm = odm

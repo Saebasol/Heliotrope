@@ -59,19 +59,15 @@ class HitomiGalleryinfoJSON(TypedDict):
     tags: list[HitomiTagJSON]
 
 
-class HitomiInfoValueUrlJSON(TypedDict):
-    value: str
-    url: str
-
-
 class HitomiInfoJSON(TypedDict):
+    id: int
     title: str
     thumbnail: str
-    artist: list[HitomiInfoValueUrlJSON]
-    group: list[HitomiInfoValueUrlJSON]
-    type: HitomiInfoValueUrlJSON
-    language: HitomiInfoValueUrlJSON
-    series: list[HitomiInfoValueUrlJSON]
-    character: list[HitomiInfoValueUrlJSON]
-    tags: list[HitomiInfoValueUrlJSON]
+    artist: list[str]
+    group: list[str]
+    type: str
+    language: str
+    series: list[str]
+    character: list[str]
+    tags: list[str]
     date: str

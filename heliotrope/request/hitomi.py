@@ -81,8 +81,8 @@ class HitomiRequest(BaseRequest):
         hitomi_type = URL(url).path.split("/")[1]
         return url, hitomi_type
 
-    async def get_galleryinfo(self, index_id: int) -> Optional[Galleryinfo]:
-        request_url = self.ltn_url.with_path(f"galleries/{index_id}.js").human_repr()
+    async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
+        request_url = self.ltn_url.with_path(f"galleries/{id}.js").human_repr()
         response = await self.get(request_url, "text")
 
         if response.status != 200:
@@ -92,8 +92,8 @@ class HitomiRequest(BaseRequest):
 
         return Galleryinfo.from_dict(js_to_json)
 
-    async def get_info(self, index_id: int) -> Optional[Info]:
-        response = await self.get_redirect_url(index_id)
+    async def get_info(self, id: int) -> Optional[Info]:
+        response = await self.get_redirect_url(id)
         if not response:
             return None
 
@@ -101,7 +101,7 @@ class HitomiRequest(BaseRequest):
 
         html = await self.get(url, "text")
 
-        return Info.from_html(html.returned, hitomi_type)
+        return Info.from_html(id, html.returned, hitomi_type)
 
     async def fetch_index(
         self,
