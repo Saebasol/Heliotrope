@@ -68,8 +68,8 @@ class HitomiRequest(BaseRequest):
         response = await self.get(request_url, "text")
         return str(response.returned)
 
-    async def get_redirect_url(self, index_id: int) -> Optional[tuple[str, str]]:
-        request_url = self.url.with_path(f"galleries/{index_id}.html").human_repr()
+    async def get_redirect_url(self, id: int) -> Optional[tuple[str, str]]:
+        request_url = self.url.with_path(f"galleries/{id}.html").human_repr()
         response = await self.get(request_url, "text")
         if response.status != 200:
             return None

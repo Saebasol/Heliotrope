@@ -29,7 +29,7 @@ from heliotrope.types import HitomiTagJSON
 
 @dataclass
 class Tag:
-    index_id: str
+    index_id: int
     male: Optional[Literal["", "1"]]
     female: Optional[Literal["", "1"]]
     tag: str
@@ -48,7 +48,7 @@ class Tag:
         return hitomi_tag_json
 
     @classmethod
-    def from_dict(cls, index_id: str, d: HitomiTagJSON) -> "Tag":
+    def from_dict(cls, index_id: int, d: HitomiTagJSON) -> "Tag":
         return cls(
             index_id=index_id,
             male=d.get("male"),

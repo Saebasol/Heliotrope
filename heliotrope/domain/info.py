@@ -22,8 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
-from heliotrope.parser import Parser
+
 from bs4.element import Tag
+
+from heliotrope.parser import Parser
 from heliotrope.types import HitomiInfoJSON
 
 
@@ -90,7 +92,7 @@ class Info:
     @classmethod
     def from_dict(cls, d: HitomiInfoJSON) -> "Info":
         return cls(
-            id=d["id"],
+            id=int(d["id"]),
             title=d["title"],
             thumbnail=d["thumbnail"],
             artist=d["artist"],
@@ -105,7 +107,7 @@ class Info:
 
     def to_dict(self) -> HitomiInfoJSON:
         return HitomiInfoJSON(
-            id=self.id,
+            id=str(self.id),
             title=self.title,
             thumbnail=self.thumbnail,
             artist=self.artist,

@@ -29,12 +29,11 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import mapper, relationship, selectinload
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
-from heliotrope.abc import AbstractSQL
 
+from heliotrope.abc import AbstractSQL
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.database.orm.table import *
 from heliotrope.domain import *
-from heliotrope.types import HitomiGalleryinfoJSON
 
 _base_model_session_ctx: ContextVar[AsyncSession] = ContextVar("session")
 
@@ -85,18 +84,16 @@ class ORM(AbstractSQL):
 
         return None
 
-    async def get_galleryinfo(
-        self, galleryinfo_id: int
-    ) -> Optional[HitomiGalleryinfoJSON]:
+    async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
         async with _SessionManager(self.engine) as manager:
             async with manager.session.begin():
                 r = await manager.session.get(
                     Galleryinfo,
-                    galleryinfo_id,
+                    id,
                     [selectinload(Galleryinfo.files), selectinload(Galleryinfo.tags)],
                 )
                 if r:
-                    return r.to_dict()
+                    return r
 
         return None
 
