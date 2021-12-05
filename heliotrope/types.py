@@ -60,7 +60,7 @@ class HitomiGalleryinfoJSON(TypedDict):
 
 
 class HitomiInfoJSON(TypedDict):
-    id: int
+    id: str
     title: str
     thumbnail: str
     artist: list[str]

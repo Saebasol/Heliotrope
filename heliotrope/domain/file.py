@@ -29,7 +29,7 @@ from heliotrope.types import HitomiFileJSON
 
 @dataclass
 class File:
-    index_id: str
+    index_id: int
     name: str
     width: int
     height: int
@@ -56,7 +56,7 @@ class File:
         return hitomi_file_json
 
     @classmethod
-    def from_dict(cls, index_id: str, d: HitomiFileJSON) -> "File":
+    def from_dict(cls, index_id: int, d: HitomiFileJSON) -> "File":
         return cls(
             index_id=index_id,
             name=d["name"],

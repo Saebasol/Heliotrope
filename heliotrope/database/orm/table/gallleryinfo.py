@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from sqlalchemy.sql.schema import Column, Table
-from sqlalchemy.sql.sqltypes import String
+from sqlalchemy.sql.sqltypes import String, Integer
 
 from heliotrope.database.orm.base import mapper_registry
 
 galleryinfo_table = Table(
     "galleryinfo",
     mapper_registry.metadata,
-    Column("id", String, primary_key=True, nullable=False),
+    Column("id", Integer, primary_key=True, nullable=False),
     Column("title", String, nullable=False),
     Column("japanese_title", String),
     Column("language", String, nullable=False),

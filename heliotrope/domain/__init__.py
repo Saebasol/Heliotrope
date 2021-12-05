@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from heliotrope.domain.file import File
 from heliotrope.domain.galleryinfo import Galleryinfo
-from heliotrope.domain.tag import Tag
 from heliotrope.domain.info import Info
+from heliotrope.domain.tag import Tag
 
 __all__ = ["File", "Galleryinfo", "Tag", "Info"]
