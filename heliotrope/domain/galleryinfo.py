@@ -31,7 +31,7 @@ from heliotrope.types import HitomiGalleryinfoJSON
 
 @dataclass
 class Galleryinfo:
-    id: str
+    id: int
     title: str
     japanese_title: Optional[str]
     language: str
@@ -49,21 +49,22 @@ class Galleryinfo:
             japanese_title=self.japanese_title,
             language=self.language,
             files=[file.to_dict() for file in self.files],
-            id=self.id,
+            id=str(self.id),
             language_localname=self.language_localname,
             tags=[tag.to_dict() for tag in self.tags],
         )
 
     @classmethod
     def from_dict(cls, d: HitomiGalleryinfoJSON) -> "Galleryinfo":
+        int_id = int(d["id"])
         return cls(
-            id=d["id"],
+            id=int_id,
             title=d["title"],
             japanese_title=d["japanese_title"],
             language=d["language"],
             language_localname=d["language_localname"],
             type=d["type"],
             date=d["date"],
-            files=[File.from_dict(d["id"], file) for file in d["files"]],
-            tags=[Tag.from_dict(d["id"], tag) for tag in d["tags"]],
+            files=[File.from_dict(int_id, file) for file in d["files"]],
+            tags=[Tag.from_dict(int_id, tag) for tag in d["tags"]],
         )

@@ -21,19 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Optional
+from typing import NoReturn, Optional
+
 from heliotrope.domain import Galleryinfo, Info
-from heliotrope.types import HitomiGalleryinfoJSON
-from typing import NoReturn
 
 
 class AbstractSQL:
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
         raise NotImplementedError
 
-    async def get_galleryinfo(
-        self, galleryinfo_id: int
-    ) -> Optional[HitomiGalleryinfoJSON]:
+    async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
         raise NotImplementedError
 
     async def get_all_index(self) -> list[int]:
@@ -50,7 +47,10 @@ class AbstractNoSQL:
     async def get_info(self, id: int) -> Info:
         ...
 
-    async def get_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
+    async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
+        ...
+
+    async def get_random_info(self) -> Info:
         ...
 
     async def search(
