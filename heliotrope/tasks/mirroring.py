@@ -24,36 +24,53 @@ SOFTWARE.
 from asyncio.tasks import sleep
 from typing import NoReturn
 
-from heliotrope.abc import AbstractSQL, AbstractTask, AbstractNoSQL
+from heliotrope.abc import (
+    AbstractInfoDatabase,
+    AbstractTask,
+    AbstractGalleryinfoDatabase,
+)
 from heliotrope.request.hitomi import HitomiRequest
+from asyncio.tasks import create_task, Task
+
+from heliotrope.sanic import Heliotrope
+from heliotrope.tasks import HeliotropeTask
 
 
+@HeliotropeTask.register("MIRRORING_DELAY")
 class MirroringTask(AbstractTask):
     def __init__(
-        self, request: HitomiRequest, sql: AbstractSQL, nosql: AbstractNoSQL
+        self,
+        request: HitomiRequest,
+        galleryinfo_database: AbstractGalleryinfoDatabase,
+        info_database: AbstractInfoDatabase,
     ) -> None:
         self.request = request
-        self.sql = sql
-        self.nosql = nosql
+        self.galleryinfo_database = galleryinfo_database
+        self.info_database = info_database
+
+    @classmethod
+    async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
+        instance = cls(app.ctx.hitomi_request, app.ctx.orm, app.ctx.meilisearch)
+        return create_task(instance.start(delay))
 
     async def compare_index_list(self) -> list[int]:
         remote_index_list = await self.request.fetch_index(include_range=False)
-        local_index_list = await self.sql.get_all_index()
+        local_index_list = await self.galleryinfo_database.get_all_index()
         return list(set(remote_index_list) - set(local_index_list))
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
             if galleryinfo := await self.request.get_galleryinfo(index):
-                if not await self.sql.get_galleryinfo(index):
-                    await self.sql.add_galleryinfo(galleryinfo)
+                if not await self.galleryinfo_database.get_galleryinfo(index):
+                    await self.galleryinfo_database.add_galleryinfo(galleryinfo)
 
             if info := await self.request.get_info(index):
-                if not await self.nosql.get_info(index):
-                    await self.nosql.add_infos([info])
+                if not await self.info_database.get_info(index):
+                    await self.info_database.add_infos([info])
 
     async def start(self, delay: float) -> NoReturn:
         while True:
             if index_list := await self.compare_index_list():
                 await self.mirroring(index_list)
-                self.total = len(await self.sql.get_all_index())
+                self.total = len(await self.galleryinfo_database.get_all_index())
             await sleep(delay)

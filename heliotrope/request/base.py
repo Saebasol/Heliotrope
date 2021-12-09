@@ -45,6 +45,10 @@ class BaseRequest:
     def user_agent(self) -> str:
         return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
 
+    @classmethod
+    async def setup(cls) -> "BaseRequest":
+        return cls(ClientSession())
+
     async def close(self) -> None:
         if self.session:
             await self.session.close()
