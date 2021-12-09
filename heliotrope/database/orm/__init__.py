@@ -30,7 +30,7 @@ from sqlalchemy.orm import mapper, relationship, selectinload
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
 
-from heliotrope.abc import AbstractSQL
+from heliotrope.abc.database import AbstractGalleryinfoDatabase
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.database.orm.table import *
 from heliotrope.domain import *
@@ -53,7 +53,7 @@ class _SessionManager:
             await self.session.close()
 
 
-class ORM(AbstractSQL):
+class ORM(AbstractGalleryinfoDatabase):
     def __init__(self, engine: AsyncEngine) -> None:
         self.engine = engine
 
