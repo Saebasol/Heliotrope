@@ -26,17 +26,21 @@ from typing import Optional, cast
 
 from ameilisearch.client import Client
 
-from heliotrope.abc import AbstractNoSQL
+from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info
 from heliotrope.types import HitomiInfoJSON
 
 
-class MeiliSearch(AbstractNoSQL):
-    def __init__(
-        self, url: str, api_key: Optional[str] = None, uid: str = "hitomi"
-    ) -> None:
-        self.client = Client(url, api_key)
+class MeiliSearch(AbstractInfoDatabase):
+    def __init__(self, client: Client, uid: str) -> None:
+        self.client = client
         self.index = self.client.index(uid)
+
+    @classmethod
+    def setup(
+        cls, url: str, api_key: Optional[str] = None, uid: str = "hitomi"
+    ) -> "MeiliSearch":
+        return cls(Client(url, api_key), uid)
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
         parsed_query: list[str] = []

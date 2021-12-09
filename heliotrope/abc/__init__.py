@@ -21,17 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from heliotrope.abc.database import AbstractInfoDatabase, AbstractGalleryinfoDatabase
 from heliotrope.abc.task import AbstractTask
 
-
-class HeliotropeTask:
-    task_info_dict: dict[str, type[AbstractTask]] = {}
-
-    @classmethod
-    def register(cls, config_name: str):
-        def wrapper(wrapped_class: type[AbstractTask]):
-
-            cls.task_info_dict[config_name] = wrapped_class
-            return wrapped_class
-
-        return wrapper
+__all__ = ["AbstractGalleryinfoDatabase", "AbstractInfoDatabase", "AbstractTask"]

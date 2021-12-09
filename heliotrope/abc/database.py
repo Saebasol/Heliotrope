@@ -21,37 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import NoReturn, Optional
-
+from typing import Optional
 from heliotrope.domain import Galleryinfo, Info
 
 
-class AbstractSQL:
-    async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
-        raise NotImplementedError
-
-    async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
-        raise NotImplementedError
-
-    async def get_all_index(self) -> list[int]:
-        raise NotImplementedError
-
-
-class AbstractNoSQL:
+class AbstractInfoDatabase:
     info_tags = ["artist", "group", "type", "language", "series", "character"]
     gender_common_tags = ["female", "tags", "male"]
 
     async def add_infos(self, infos: list[Info]) -> None:
-        ...
+        raise NotImplementedError
 
     async def get_info(self, id: int) -> Info:
-        ...
+        raise NotImplementedError
 
     async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
-        ...
+        raise NotImplementedError
 
     async def get_random_info(self) -> Info:
-        ...
+        raise NotImplementedError
 
     async def search(
         self,
@@ -59,9 +47,15 @@ class AbstractNoSQL:
         offset: int = 0,
         limit: int = 15,
     ) -> list[Info]:
-        ...
+        raise NotImplementedError
 
 
-class AbstractTask:
-    async def start(self, delay: float) -> NoReturn:
+class AbstractGalleryinfoDatabase:
+    async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
+        raise NotImplementedError
+
+    async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
+        raise NotImplementedError
+
+    async def get_all_index(self) -> list[int]:
         raise NotImplementedError

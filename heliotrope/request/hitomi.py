@@ -34,10 +34,11 @@ from heliotrope.domain import Galleryinfo, Info
 from heliotrope.request.base import BaseRequest
 
 
-class HitomiRequest(BaseRequest):
-    def __init__(self, session: ClientSession, index_file: str):
-        super().__init__(session)
+class HitomiRequest:
+    def __init__(self, request: BaseRequest, index_file: str):
+        self.request = request
         self.index_file = index_file
+        request.session.headers.update(self.headers)
 
     @property
     def url(self) -> URL:
@@ -51,26 +52,25 @@ class HitomiRequest(BaseRequest):
     def headers(self) -> dict[str, str]:
         return {
             "referer": self.url.human_repr(),
-            "User-Agent": self.user_agent,
+            "User-Agent": self.request.user_agent,
         }
 
     @classmethod
     async def setup(
         cls, *, index_file: str = "index-korean.nozomi", **session_options: Any
     ) -> "HitomiRequest":
-        session = ClientSession(**session_options)
-        hitomi_request_instance = cls(session, index_file)
-        hitomi_request_instance.session.headers.update(hitomi_request_instance.headers)
-        return hitomi_request_instance
+        request = BaseRequest(ClientSession(**session_options))
+        hitomi_request = cls(request, index_file)
+        return hitomi_request
 
     async def get_common_js(self) -> str:
         request_url = self.ltn_url.with_path("common.js").human_repr()
-        response = await self.get(request_url, "text")
+        response = await self.request.get(request_url, "text")
         return str(response.returned)
 
     async def get_redirect_url(self, id: int) -> Optional[tuple[str, str]]:
         request_url = self.url.with_path(f"galleries/{id}.html").human_repr()
-        response = await self.get(request_url, "text")
+        response = await self.request.get(request_url, "text")
         if response.status != 200:
             return None
 
@@ -83,7 +83,7 @@ class HitomiRequest(BaseRequest):
 
     async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
         request_url = self.ltn_url.with_path(f"galleries/{id}.js").human_repr()
-        response = await self.get(request_url, "text")
+        response = await self.request.get(request_url, "text")
 
         if response.status != 200:
             return None
@@ -99,7 +99,7 @@ class HitomiRequest(BaseRequest):
 
         url, hitomi_type = response
 
-        html = await self.get(url, "text")
+        html = await self.request.get(url, "text")
 
         return Info.from_html(id, html.returned, hitomi_type)
 
@@ -119,7 +119,7 @@ class HitomiRequest(BaseRequest):
             headers.update({"Range": f"bytes={byte_start}-{byte_end}"})
 
         request_url = self.ltn_url.with_path(self.index_file).human_repr()
-        response = await self.get(request_url, "read", headers=headers)
+        response = await self.request.get(request_url, "read", headers=headers)
 
         total_items = len(response.returned) // 4
         return unpack(f">{total_items}i", bytes(response.returned))
