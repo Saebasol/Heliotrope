@@ -21,18 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio.tasks import Task, create_task, sleep
 from typing import NoReturn
-from heliotrope.abc import AbstractTask
-from heliotrope.request.hitomi import HitomiRequest
+
+from heliotrope.abc.task import AbstractTask
 from heliotrope.interpreter import CommonJS
+from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
-from asyncio.tasks import Task, sleep, create_task
-
-from heliotrope.tasks import HeliotropeTask
 
 
-@HeliotropeTask.register("REFRESH_COMMON_JS_DELAY")
 class RefreshCommonJS(AbstractTask):
+    config_name = "REFRESH_COMMON_JS_DELAY"
+
     def __init__(self, request: HitomiRequest, common_js: CommonJS) -> None:
         self.request = request
         self.common_js = common_js
