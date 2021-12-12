@@ -75,7 +75,7 @@ class ORM(AbstractGalleryinfoDatabase):
     @classmethod
     async def setup(cls, db_url: str) -> "ORM":
         cls.mapping()
-        engine = create_async_engine(db_url, echo=True)
+        engine = create_async_engine(db_url)
         async with engine.begin() as connection:
             await connection.run_sync(
                 mapper_registry.metadata.create_all, checkfirst=True
