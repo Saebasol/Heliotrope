@@ -32,8 +32,12 @@ from sqlalchemy.sql.expression import select
 
 from heliotrope.abc.database import AbstractGalleryinfoDatabase
 from heliotrope.database.orm.base import mapper_registry
-from heliotrope.database.orm.table import *
-from heliotrope.domain import *
+from heliotrope.database.orm.table.file import file_table
+from heliotrope.database.orm.table.gallleryinfo import galleryinfo_table
+from heliotrope.database.orm.table.tag import tag_table
+from heliotrope.domain.file import File
+from heliotrope.domain.galleryinfo import Galleryinfo
+from heliotrope.domain.tag import Tag
 
 _base_model_session_ctx: ContextVar[AsyncSession] = ContextVar("session")
 
@@ -58,7 +62,7 @@ class ORM(AbstractGalleryinfoDatabase):
         self.engine = engine
 
     @staticmethod
-    def mapping():
+    def mapping() -> None:
         mapper(
             Galleryinfo,
             galleryinfo_table,
@@ -66,9 +70,10 @@ class ORM(AbstractGalleryinfoDatabase):
         )
         mapper(Tag, tag_table)
         mapper(File, file_table)
+        return None
 
     @classmethod
-    async def setup(cls, db_url: str):
+    async def setup(cls, db_url: str) -> "ORM":
         cls.mapping()
         engine = create_async_engine(db_url, echo=True)
         async with engine.begin() as connection:
