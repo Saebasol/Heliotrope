@@ -26,12 +26,20 @@ from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 
+from heliotrope.sanic import HeliotropeRequest
+
 hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
 
 
 class HitomiInfoView(HTTPMethodView):
-    async def get(self, request) -> HTTPResponse:
+    async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
+        if info := await request.app.ctx.meilisearch.get_info(id):
+            return json({"status": 200, **info.to_dict()})
+
+        if requested_info := await request.app.ctx.hitomi_request.get_info(id):
+            return json({"status": 200, **requested_info.to_dict()})
+
         raise NotFound
 
 
-hitomi_info.add_route(HitomiInfoView.as_view(), "/")
+hitomi_info.add_route(HitomiInfoView.as_view(), "/id:int>")

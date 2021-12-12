@@ -22,16 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from sanic.blueprints import Blueprint
-from sanic.exceptions import NotFound
+from sanic.exceptions import InvalidUsage
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
+
+from heliotrope.sanic import HeliotropeRequest
 
 hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
 
 
 class HitomiListView(HTTPMethodView):
-    async def get(self, request) -> HTTPResponse:
-        raise NotFound
+    async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
+        total = len(await request.app.ctx.orm.get_all_index())
+
+        start_at_zero = index - 1
+
+        if start_at_zero < 0 or total < start_at_zero:
+            raise InvalidUsage
+
+        info_list = await request.app.ctx.meilisearch.get_info_list(start_at_zero)
+
+        return json(
+            {
+                "status": 200,
+                "list": [info.to_dict() for info in info_list],
+                "total": total,
+            }
+        )
 
 
-hitomi_list.add_route(HitomiListView.as_view(), "/")
+hitomi_list.add_route(HitomiListView.as_view(), "/<index:int>")
