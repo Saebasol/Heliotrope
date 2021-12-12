@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from typing import Optional
-from heliotrope.domain import Galleryinfo, Info
+
+from heliotrope.domain.galleryinfo import Galleryinfo
+from heliotrope.domain.info import Info
 
 
 class AbstractInfoDatabase:
@@ -32,7 +34,7 @@ class AbstractInfoDatabase:
     async def add_infos(self, infos: list[Info]) -> None:
         raise NotImplementedError
 
-    async def get_info(self, id: int) -> Info:
+    async def get_info(self, id: int) -> Optional[Info]:
         raise NotImplementedError
 
     async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
@@ -46,7 +48,7 @@ class AbstractInfoDatabase:
         tags: list[str],
         offset: int = 0,
         limit: int = 15,
-    ) -> list[Info]:
+    ) -> tuple[list[Info], int]:
         raise NotImplementedError
 
 

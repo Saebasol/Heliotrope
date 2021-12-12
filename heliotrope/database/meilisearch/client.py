@@ -25,22 +25,34 @@ from random import randrange
 from typing import Optional, cast
 
 from ameilisearch.client import Client
+from ameilisearch.index import Index
 
 from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info
 from heliotrope.types import HitomiInfoJSON
+from ameilisearch.errors import MeiliSearchApiError
 
 
 class MeiliSearch(AbstractInfoDatabase):
-    def __init__(self, client: Client, uid: str) -> None:
+    def __init__(self, client: Client, index: Index) -> None:
         self.client = client
-        self.index = self.client.index(uid)
+        self.index = index
+
+    async def close(self):
+        if session := self.client.http.session:
+            await session.close()
+        if session := self.index.http.session:
+            await session.close()
 
     @classmethod
-    def setup(
+    async def setup(
         cls, url: str, api_key: Optional[str] = None, uid: str = "hitomi"
     ) -> "MeiliSearch":
-        return cls(Client(url, api_key), uid)
+        client = Client(url, api_key)
+        await client.health()
+        index = await client.get_or_create_index(uid)
+        instance = cls(client, index)
+        return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
         parsed_query: list[str] = []
@@ -61,41 +73,39 @@ class MeiliSearch(AbstractInfoDatabase):
         return title, parsed_query
 
     async def add_infos(self, infos: list[Info]) -> None:
-        async with self.index as index:
-            await index.add_documents([dict(info.to_dict()) for info in infos])
+        await self.index.add_documents([dict(info.to_dict()) for info in infos])
 
-    async def get_info(self, id: int) -> Info:
-        async with self.index as index:
-            d = cast(HitomiInfoJSON, await index.get_document(str(id)))
-            return Info.from_dict(d)
+    async def get_info(self, id: int) -> Optional[Info]:
+        try:
+            d = cast(HitomiInfoJSON, await self.index.get_document(str(id)))
+        except MeiliSearchApiError:
+            return None
+        return Info.from_dict(d)
 
     async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
-        async with self.index as index:
-            response = await index.search(
-                "", {"sort": ["id:desc"], "offset": offset, "limit": limit}
-            )
-            return list(map(Info.from_dict, response["hits"]))
+        response = await self.index.search(
+            "", {"sort": ["id:desc"], "offset": offset, "limit": limit}
+        )
+        return list(map(Info.from_dict, response["hits"]))
 
     async def get_random_info(self) -> Info:
-        async with self.index as index:
-            stats = await index.get_stats()
-            total = stats["numberOfDocuments"]
-            response = await index.get_documents(
-                {"offset": randrange(total), "limit": 1}
-            )
-            d = cast(HitomiInfoJSON, response[0])
-            return Info.from_dict(d)
+        stats = await self.index.get_stats()
+        total = stats["numberOfDocuments"]
+        response = await self.index.get_documents(
+            {"offset": randrange(total), "limit": 1}
+        )
+        d = cast(HitomiInfoJSON, response[0])
+        return Info.from_dict(d)
 
     async def search(
         self,
         tags: list[str],
         offset: int = 0,
         limit: int = 15,
-    ) -> list[Info]:
+    ) -> tuple[list[Info], int]:
         title, tags = self.parse_query(tags)
-        async with self.index as index:
-            response = await index.search(
-                title,
-                {"sort": ["id:desc"], "filter": tags, "offset": offset, "limit": limit},
-            )
-            return list(map(Info.from_dict, response["hits"]))
+        response = await self.index.search(
+            title,
+            {"sort": ["id:desc"], "filter": tags, "offset": offset, "limit": limit},
+        )
+        return list(map(Info.from_dict, response["hits"])), response["nbHits"]

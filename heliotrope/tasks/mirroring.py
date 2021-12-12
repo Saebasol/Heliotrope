@@ -21,23 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from asyncio.tasks import sleep
+from asyncio.tasks import Task, create_task, sleep
 from typing import NoReturn
 
-from heliotrope.abc import (
-    AbstractInfoDatabase,
-    AbstractTask,
-    AbstractGalleryinfoDatabase,
-)
+from heliotrope.abc.database import AbstractGalleryinfoDatabase, AbstractInfoDatabase
+from heliotrope.abc.task import AbstractTask
 from heliotrope.request.hitomi import HitomiRequest
-from asyncio.tasks import create_task, Task
-
 from heliotrope.sanic import Heliotrope
-from heliotrope.tasks import HeliotropeTask
 
 
-@HeliotropeTask.register("MIRRORING_DELAY")
 class MirroringTask(AbstractTask):
+    config_name = "MIRRORING_DELAY"
+
     def __init__(
         self,
         request: HitomiRequest,
@@ -60,10 +55,12 @@ class MirroringTask(AbstractTask):
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
+            # Check galleryinfo first
             if galleryinfo := await self.request.get_galleryinfo(index):
                 if not await self.galleryinfo_database.get_galleryinfo(index):
                     await self.galleryinfo_database.add_galleryinfo(galleryinfo)
 
+            # Then check info
             if info := await self.request.get_info(index):
                 if not await self.info_database.get_info(index):
                     await self.info_database.add_infos([info])

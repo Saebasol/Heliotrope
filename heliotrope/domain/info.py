@@ -42,16 +42,13 @@ def tags_replacer(values: list[str]) -> list[str]:
 
     for value in values:
         if "♀" in value:
-            removed_icon = value.replace(" ♀", "")
-            space_to_under_bar = removed_icon.replace(" ", "_")
-            value = f"female:{space_to_under_bar}"
+            removed_icon = value.replace("_♀", "")
+            value = f"female:{removed_icon}"
         elif "♂" in value:
-            removed_icon = value.replace(" ♂", "")
-            space_to_under_bar = removed_icon.replace(" ", "_")
-            value = f"male:{space_to_under_bar}"
+            removed_icon = value.replace("_♂", "")
+            value = f"male:{removed_icon}"
         else:
-            space_to_under_bar = value.replace(" ", "_")
-            value = f"tag:{space_to_under_bar}"
+            value = f"tag:{value}"
 
         replaced.append(value)
 
