@@ -23,7 +23,9 @@ SOFTWARE.
 """
 from io import StringIO
 from typing import cast
+
 from js2py.evaljs import EvalJs  # type: ignore
+
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
 
@@ -34,7 +36,7 @@ class CommonJS:
         self.code = ""
 
     @classmethod
-    async def setup(cls, request: HitomiRequest):
+    async def setup(cls, request: HitomiRequest) -> "CommonJS":
         common_js_code = await request.get_common_js()
         instance = cls()
         instance.update_common_js_code(common_js_code)
@@ -69,9 +71,9 @@ class CommonJS:
 
         return "".join(functions)
 
-    def update_common_js_code(self, common_js_code: str):
+    def update_common_js_code(self, common_js_code: str) -> None:
         self.code = common_js_code
-        self.interpreter.execute(self.get_using_functions(common_js_code))  # type: ignore
+        self.interpreter.execute(self.get_using_functions(common_js_code))
 
     def rewrite_tn_paths(self, html: str) -> str:
         return cast(str, self.interpreter.rewrite_tn_paths(html))

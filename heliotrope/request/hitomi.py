@@ -30,7 +30,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 from yarl import URL
 
-from heliotrope.domain import Galleryinfo, Info
+from heliotrope.domain.galleryinfo import Galleryinfo
+from heliotrope.domain.info import Info
 from heliotrope.request.base import BaseRequest
 
 

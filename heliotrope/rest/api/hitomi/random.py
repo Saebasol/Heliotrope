@@ -22,16 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from sanic.blueprints import Blueprint
-from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
+
+from heliotrope.sanic import HeliotropeRequest
 
 hitomi_random = Blueprint("hitomi_random", url_prefix="/random")
 
 
 class HitomiRandomView(HTTPMethodView):
-    async def get(self, request) -> HTTPResponse:
-        raise NotFound
+    async def get(self, request: HeliotropeRequest) -> HTTPResponse:
+        info = await request.app.ctx.meilisearch.get_random_info()
+        return json({"status": 200, **info.to_dict()})
 
 
 hitomi_random.add_route(HitomiRandomView.as_view(), "/")
