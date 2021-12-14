@@ -60,8 +60,6 @@ jobs:
         image: getmeili/meilisearch
         ports:
           - 7700:7700
-        options: |
-          --master-key=masterKey
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
