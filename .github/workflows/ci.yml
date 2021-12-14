@@ -13,7 +13,6 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-
   style:
     runs-on: ubuntu-latest
     steps:
@@ -50,34 +49,25 @@ jobs:
   test:
     runs-on: ubuntu-latest
     services:
-      mariadb:
-        image: mariadb
+      postgres:
+        image: postgres
         env:
-          MYSQL_ROOT_PASSWORD: test
-          MYSQL_DATABASE: test_heliotrope
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_heliotrope
         ports:
-          - 127.0.0.1:3306:3306
-      mongo:
-        image: mongo
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: test
+          - 127.0.0.1:5432:5432
+      meilisearch:
+        image: getmeili/meilisearch
         ports:
-          - 27017:27017
-        options:
-          --health-cmd mongo
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          - 7700:7700
+        options: |
+          --no-analytics=true --master-key=masterKey
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Make MongoDB collection
-        run: |
-          mongo -u root -p test --eval "db.getSiblingDB('hitomi').createCollection('info')"
       - name: Install dependencies
         run: |
           python -m pip install -U pip

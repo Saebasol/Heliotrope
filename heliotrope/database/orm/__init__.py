@@ -27,6 +27,8 @@ from typing import Any, Optional
 from sqlalchemy.ext.asyncio.engine import AsyncEngine, create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import mapper, relationship, selectinload
+from sqlalchemy.orm.exc import UnmappedClassError
+from sqlalchemy.orm.mapper import class_mapper
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
 
@@ -74,7 +76,10 @@ class ORM(AbstractGalleryinfoDatabase):
 
     @classmethod
     async def setup(cls, db_url: str) -> "ORM":
-        cls.mapping()
+        try:
+            class_mapper(Galleryinfo)
+        except UnmappedClassError:
+            cls.mapping()
         engine = create_async_engine(db_url)
         async with engine.begin() as connection:
             await connection.run_sync(

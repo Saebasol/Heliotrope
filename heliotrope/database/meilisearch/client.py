@@ -25,12 +25,12 @@ from random import randrange
 from typing import Optional, cast
 
 from ameilisearch.client import Client
+from ameilisearch.errors import MeiliSearchApiError
 from ameilisearch.index import Index
 
 from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info
 from heliotrope.types import HitomiInfoJSON
-from ameilisearch.errors import MeiliSearchApiError
 
 
 class MeiliSearch(AbstractInfoDatabase):
@@ -38,11 +38,9 @@ class MeiliSearch(AbstractInfoDatabase):
         self.client = client
         self.index = index
 
-    async def close(self):
-        if session := self.client.http.session:
-            await session.close()
-        if session := self.index.http.session:
-            await session.close()
+    async def close(self) -> None:
+        await self.client.close()  # type: ignore
+        await self.index.close()  # type: ignore
 
     @classmethod
     async def setup(
@@ -52,6 +50,11 @@ class MeiliSearch(AbstractInfoDatabase):
         await client.health()
         index = await client.get_or_create_index(uid)
         instance = cls(client, index)
+        await index.update_filterable_attributes(
+            ["tags", "artist", "group", "type", "language", "series", "character"]
+        )
+        await index.update_sortable_attributes(["id"])
+        await index.update_searchable_attributes(["title"])
         return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:

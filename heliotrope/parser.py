@@ -21,8 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from typing import Optional
+
 from bs4 import BeautifulSoup
-from bs4.element import Tag
+from bs4.element import NavigableString, Tag
 
 
 class BaseParser:
@@ -98,9 +100,9 @@ class Parser:
         return type_element
 
     @property
-    def language_element(self) -> Tag:
+    def language_element(self) -> Optional[Tag]:
         language_element = self.base_parser.infos[2].find("a")
-        assert isinstance(language_element, Tag)
+        assert not isinstance(language_element, NavigableString)
         return language_element
 
     @property

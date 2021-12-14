@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
+from typing import Optional
 
 from bs4.element import Tag
 
@@ -63,7 +64,7 @@ class Info:
     artist: list[str]
     group: list[str]
     type: str
-    language: str
+    language: Optional[str]
     series: list[str]
     character: list[str]
     tags: list[str]
@@ -79,7 +80,9 @@ class Info:
             artist=from_elements(parser.artist_elements),
             group=from_elements(parser.group_elements),
             type=from_element(parser.type_element),
-            language=from_element(parser.language_element),
+            language=from_element(parser.language_element)
+            if parser.language_element
+            else None,
             series=from_elements(parser.series_elements),
             character=from_elements(parser.character_elements),
             tags=tags_replacer(from_elements(parser.tags_elements)),
