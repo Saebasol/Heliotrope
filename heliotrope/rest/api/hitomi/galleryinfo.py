@@ -44,4 +44,4 @@ class HitomiGalleryinfoView(HTTPMethodView):
         raise NotFound
 
 
-hitomi_galleryinfo.add_route(HitomiGalleryinfoView.as_view(), "/id:int>")
+hitomi_galleryinfo.add_route(HitomiGalleryinfoView.as_view(), "/<id:int>")

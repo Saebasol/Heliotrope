@@ -34,7 +34,7 @@ class Galleryinfo:
     id: int
     title: str
     japanese_title: Optional[str]
-    language: str
+    language: Optional[str]
     language_localname: str
     type: str
     date: str

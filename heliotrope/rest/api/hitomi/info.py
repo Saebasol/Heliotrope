@@ -42,4 +42,4 @@ class HitomiInfoView(HTTPMethodView):
         raise NotFound
 
 
-hitomi_info.add_route(HitomiInfoView.as_view(), "/id:int>")
+hitomi_info.add_route(HitomiInfoView.as_view(), "/<id:int>")
