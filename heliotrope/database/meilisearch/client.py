@@ -39,10 +39,8 @@ class MeiliSearch(AbstractInfoDatabase):
         self.index = index
 
     async def close(self):
-        if session := self.client.http.session:
-            await session.close()
-        if session := self.index.http.session:
-            await session.close()
+        await self.client.close()
+        await self.index.close()
 
     @classmethod
     async def setup(
@@ -52,6 +50,11 @@ class MeiliSearch(AbstractInfoDatabase):
         await client.health()
         index = await client.get_or_create_index(uid)
         instance = cls(client, index)
+        await index.update_filterable_attributes(
+            ["tags", "artist", "group", "type", "language", "series", "character"]
+        )
+        await index.update_sortable_attributes(["id"])
+        await index.update_searchable_attributes(["title"])
         return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
