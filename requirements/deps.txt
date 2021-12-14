@@ -1,11 +1,11 @@
 aiohttp==3.8.0
-sanic==21.9.1
-sanic-ext==21.9.1
+sanic==21.9.3
+sanic-ext==21.9.3
 sentry-sdk==1.4.3
-beautifulsoup4==4.10.0
-types-beautifulsoup4==4.10.0
+beautifulsoup4==4.10.5
+types-beautifulsoup4==4.10.5
 SQLAlchemy[mypy,asyncio]==1.4.27
-ameilisearch==0.1.1
+ameilisearch==0.2.0
 lxml==4.6.3
 asyncpg==0.25.0
 Js2Py==0.71
