@@ -61,7 +61,7 @@ jobs:
         ports:
           - 7700:7700
         options: |
-          --no-analytics=true --master-key=masterKey
+          --master-key=masterKey
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
