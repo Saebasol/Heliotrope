@@ -38,6 +38,8 @@ from heliotrope.database.orm.table.tag import tag_table
 from heliotrope.domain.file import File
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.tag import Tag
+from sqlalchemy.orm.mapper import class_mapper
+from sqlalchemy.orm.exc import UnmappedClassError
 
 _base_model_session_ctx: ContextVar[AsyncSession] = ContextVar("session")
 
@@ -74,7 +76,10 @@ class ORM(AbstractGalleryinfoDatabase):
 
     @classmethod
     async def setup(cls, db_url: str) -> "ORM":
-        cls.mapping()
+        try:
+            class_mapper(Galleryinfo)
+        except UnmappedClassError:
+            cls.mapping()
         engine = create_async_engine(db_url)
         async with engine.begin() as connection:
             await connection.run_sync(
