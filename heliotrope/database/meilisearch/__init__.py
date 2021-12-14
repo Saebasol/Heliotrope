@@ -21,27 +21,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from sanic.blueprints import Blueprint
-from sanic.exceptions import NotFound
-from sanic.response import HTTPResponse, json
-from sanic.views import HTTPMethodView
-
-from heliotrope.sanic import HeliotropeRequest
-
-hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")
-
-
-class HitomiGalleryinfoView(HTTPMethodView):
-    async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
-        if galleryinfo := await request.app.ctx.orm.get_galleryinfo(id):
-            return json({"status": 200, **galleryinfo.to_dict()})
-
-        if requested_galleryinfo := await request.app.ctx.hitomi_request.get_galleryinfo(
-            id
-        ):
-            return json({"status": 200, **requested_galleryinfo.to_dict()})
-
-        raise NotFound
-
-
-hitomi_galleryinfo.add_route(HitomiGalleryinfoView.as_view(), "/<id:int>")

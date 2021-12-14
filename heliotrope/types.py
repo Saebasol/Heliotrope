@@ -52,7 +52,7 @@ class HitomiGalleryinfoJSON(TypedDict):
     title: str
     type: str
     japanese_title: Optional[str]
-    language: str
+    language: Optional[str]
     files: list[HitomiFileJSON]
     id: str
     language_localname: str
@@ -66,7 +66,7 @@ class HitomiInfoJSON(TypedDict):
     artist: list[str]
     group: list[str]
     type: str
-    language: str
+    language: Optional[str]
     series: list[str]
     character: list[str]
     tags: list[str]
