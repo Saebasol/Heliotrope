@@ -27,6 +27,8 @@ from typing import Any, Optional
 from sqlalchemy.ext.asyncio.engine import AsyncEngine, create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import mapper, relationship, selectinload
+from sqlalchemy.orm.exc import UnmappedClassError
+from sqlalchemy.orm.mapper import class_mapper
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
 
@@ -38,8 +40,6 @@ from heliotrope.database.orm.table.tag import tag_table
 from heliotrope.domain.file import File
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.tag import Tag
-from sqlalchemy.orm.mapper import class_mapper
-from sqlalchemy.orm.exc import UnmappedClassError
 
 _base_model_session_ctx: ContextVar[AsyncSession] = ContextVar("session")
 

@@ -25,12 +25,12 @@ from random import randrange
 from typing import Optional, cast
 
 from ameilisearch.client import Client
+from ameilisearch.errors import MeiliSearchApiError
 from ameilisearch.index import Index
 
 from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info
 from heliotrope.types import HitomiInfoJSON
-from ameilisearch.errors import MeiliSearchApiError
 
 
 class MeiliSearch(AbstractInfoDatabase):

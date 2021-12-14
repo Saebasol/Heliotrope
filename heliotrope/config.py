@@ -1,5 +1,6 @@
 from typing import Optional, Union
-from sanic.config import Config, SANIC_PREFIX
+
+from sanic.config import SANIC_PREFIX, Config
 
 
 class HeliotropeConfig(Config):

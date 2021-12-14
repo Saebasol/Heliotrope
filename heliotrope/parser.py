@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from typing import Optional
+
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString, Tag
 
