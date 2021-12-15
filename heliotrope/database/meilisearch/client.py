@@ -46,16 +46,24 @@ class MeiliSearch(AbstractInfoDatabase):
     async def setup(
         cls, url: str, api_key: Optional[str] = None, uid: str = "hitomi"
     ) -> "MeiliSearch":
-        client = Client(url, api_key)
-        await client.health()
-        index = await client.get_or_create_index(uid)
-        instance = cls(client, index)
-        await index.update_filterable_attributes(
-            ["tags", "artist", "group", "type", "language", "series", "character"]
-        )
-        await index.update_sortable_attributes(["id"])
-        await index.update_searchable_attributes(["title"])
-        return instance
+        async with Client(url, api_key) as client:
+            await client.health()
+            async with await client.get_or_create_index(uid) as index:
+                await index.update_filterable_attributes(
+                    [
+                        "tags",
+                        "artist",
+                        "group",
+                        "type",
+                        "language",
+                        "series",
+                        "character",
+                    ]
+                )
+                await index.update_sortable_attributes(["id"])
+                await index.update_searchable_attributes(["title"])
+                instance = cls(client, index)
+                return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
         parsed_query: list[str] = []
