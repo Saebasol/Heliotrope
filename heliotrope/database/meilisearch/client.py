@@ -39,8 +39,8 @@ class MeiliSearch(AbstractInfoDatabase):
         self.index = index
 
     async def close(self) -> None:
-        await self.client.close()  # type: ignore
-        await self.index.close()  # type: ignore
+        await self.client.close()
+        await self.index.close()
 
     @classmethod
     async def setup(
