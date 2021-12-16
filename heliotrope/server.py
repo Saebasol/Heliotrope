@@ -24,6 +24,7 @@ SOFTWARE.
 from asyncio.events import AbstractEventLoop
 from asyncio.tasks import all_tasks, current_task
 
+from sanic_ext import Extend  # type: ignore
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
@@ -40,6 +41,14 @@ from heliotrope.tasks.refresh import RefreshCommonJS
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
+    # DB and http setup
+    heliotrope.ctx.meilisearch = await MeiliSearch.setup(heliotrope.config.INFO_DB_URL)
+    heliotrope.ctx.orm = await ORM.setup(heliotrope.config.GALLERYINFO_DB_URL)
+    heliotrope.ctx.request = await BaseRequest.setup()
+    heliotrope.ctx.hitomi_request = await HitomiRequest.setup(
+        index_file=heliotrope.config.INDEX_FILE
+    )
+    heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
     # Sentry
     if not heliotrope.config.TESTING:
         init(heliotrope.config.SENTRY_DSN, integrations=[SanicIntegration()])
@@ -50,15 +59,6 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         heliotrope.add_task(
             RefreshCommonJS.setup(heliotrope, heliotrope.config.REFRESH_COMMON_JS_DELAY)
         )
-
-    # DB and http setup
-    heliotrope.ctx.meilisearch = await MeiliSearch.setup(heliotrope.config.INFO_DB_URL)
-    heliotrope.ctx.orm = await ORM.setup(heliotrope.config.GALLERYINFO_DB_URL)
-    heliotrope.ctx.request = await BaseRequest.setup()
-    heliotrope.ctx.hitomi_request = await HitomiRequest.setup(
-        index_file=heliotrope.config.INDEX_FILE
-    )
-    heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -76,6 +76,7 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:
     heliotrope = Heliotrope("heliotrope")
+    Extend(heliotrope)
     heliotrope.config.update(config)
 
     heliotrope.blueprint(rest)
