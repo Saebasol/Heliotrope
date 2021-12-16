@@ -25,6 +25,7 @@ from sanic.blueprints import Blueprint
 from sanic.exceptions import InvalidUsage
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
+from sanic_ext.extensions.openapi import openapi  # type: ignore
 
 from heliotrope.sanic import HeliotropeRequest
 
@@ -32,6 +33,9 @@ hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
 
 
 class HitomiListView(HTTPMethodView):
+    @openapi.tag("hitomi")  # type: ignore
+    @openapi.summary("Get latest hitomi info list")  # type: ignore
+    @openapi.parameter(name="index", location="path", schema=int)  # type: ignore
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
         total = len(await request.app.ctx.orm.get_all_index())
 
