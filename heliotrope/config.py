@@ -49,9 +49,19 @@ class HeliotropeConfig(Config):
                 "INFO_DB_URL": "",
                 "INFO_DB_API_KEY": "",
                 "INDEX_FILE": "index-korean.nozomi",
-                "FALLBACK_ERROR_FORMAT": "json",
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_COMMON_JS_DELAY": 86400,
+                # Sanic config
+                "FALLBACK_ERROR_FORMAT": "json",
+                # Sanic ext config
+                "OAS_UI_DEFAULT": "swagger",
+                "OAS_URI_TO_REDOC": False,
+                # Open API config
+                "API_TITLE": "Heliotrope",
+                "API_VERSION": __version__,
+                "API_DESCRIPTION": "Hitomi.la mirror api",
+                "API_LICENSE_NAME": "MIT",
+                "API_LICENSE_URL": "https://github.com/Saebasol/Heliotrope/blob/main/LICENSE",
             }
         )
 
