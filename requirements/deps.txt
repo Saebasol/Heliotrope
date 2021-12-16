@@ -1,7 +1,7 @@
 aiohttp==3.8.0
 sanic==21.9.3
 sanic-ext==21.9.3
-sentry-sdk==1.4.3
+sentry-sdk==1.5.1
 beautifulsoup4==4.10.0
 types-beautifulsoup4==4.10.5
 SQLAlchemy[mypy,asyncio]==1.4.27
