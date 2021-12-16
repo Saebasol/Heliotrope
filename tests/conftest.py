@@ -1,16 +1,16 @@
-from asyncio.events import AbstractEventLoop
 import json
+from asyncio.events import AbstractEventLoop
 
-from pytest import fixture
-from pytest import mark
+from pytest import fixture, mark
 from sanic_testing import TestManager  # type:ignore
-from heliotrope.sanic import Heliotrope
+
 from heliotrope.config import HeliotropeConfig
+from heliotrope.database.orm.base import mapper_registry
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.info import Info
-from tests.common import galleryinfo, info
+from heliotrope.sanic import Heliotrope
 from heliotrope.server import create_app
-from heliotrope.database.orm.base import mapper_registry
+from tests.common import galleryinfo, info
 
 
 def get_config():
@@ -31,9 +31,9 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     await heliotrope.ctx.meilisearch.index.delete()
 
 
-@fixture
+@fixture(scope="session")
 @mark.asyncio
-async def app():
+def app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
     TestManager(heliotrope)
