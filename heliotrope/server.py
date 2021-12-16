@@ -76,7 +76,8 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:
     heliotrope = Heliotrope("heliotrope")
-    Extend(heliotrope)
+    if not config.TESTING:
+        Extend(heliotrope)
     heliotrope.config.update(config)
 
     heliotrope.blueprint(rest)

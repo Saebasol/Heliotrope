@@ -31,7 +31,7 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     await heliotrope.ctx.meilisearch.index.delete()
 
 
-@fixture(scope="session")
+@fixture
 @mark.asyncio
 def app():
     heliotrope_config = get_config()
