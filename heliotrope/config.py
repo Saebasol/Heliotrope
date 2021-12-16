@@ -25,6 +25,8 @@ from typing import Optional, Union
 
 from sanic.config import SANIC_PREFIX, Config
 
+from heliotrope import __version__
+
 
 class HeliotropeConfig(Config):
     def __init__(
