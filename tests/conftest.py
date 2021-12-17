@@ -13,6 +13,10 @@ from heliotrope.server import create_app
 from tests.common import galleryinfo, info
 
 
+from sanic_ext.extensions.http.extension import HTTPExtension
+from sanic_ext.extensions.injection.extension import InjectionExtension
+from sanic_ext.extensions.openapi.extension import OpenAPIExtension
+
 def get_config():
     with open("./tests/config.json", "r") as f:
         config = HeliotropeConfig()
@@ -41,6 +45,11 @@ def app():
     heliotrope.main_process_stop(closeup_test)
     yield heliotrope
 
+@fixture(autouse=True)
+def reset_extensions():
+    yield
+    for ext in (HTTPExtension, InjectionExtension, OpenAPIExtension):
+        ext._singleton = None
 
 @fixture
 @mark.asyncio
@@ -56,3 +65,4 @@ async def fake_app():
     yield heliotrope
     for listener in heliotrope.listeners["main_process_stop"]:
         await listener(heliotrope, None)
+    
