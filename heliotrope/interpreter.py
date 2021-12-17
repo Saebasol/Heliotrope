@@ -29,6 +29,28 @@ from js2py.evaljs import EvalJs  # type: ignore
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
 
+# js2py.internals.simplex.JsException: TypeError: 'undefined' is not a function (tried calling property 'padStart' of 'String')
+polyfill = """
+// https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+if (!String.prototype.padStart) {
+    String.prototype.padStart = function padStart(targetLength,padString) {
+        targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
+        padString = String((typeof padString !== 'undefined' ? padString : ' '));
+        if (this.length > targetLength) {
+            return String(this);
+        }
+        else {
+            targetLength = targetLength-this.length;
+            if (targetLength > padString.length) {
+                padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+            }
+            return padString.slice(0,targetLength) + String(this);
+        }
+    };
+}
+"""
+
 
 class CommonJS:
     def __init__(self) -> None:
@@ -48,6 +70,7 @@ class CommonJS:
             "subdomain_from_url",
             "url_from_url",
             "full_path_from_hash",
+            "real_full_path_from_hash",
             "url_from_hash",
             "url_from_url_from_hash",
             "rewrite_tn_paths",
@@ -56,9 +79,12 @@ class CommonJS:
         lines = StringIO(code).readlines()
 
         finded = False
-
+        functions.append(polyfill)
         for func_name in export_functions_name:
             for line in lines:
+                if line.startswith("var gg"):
+                    functions.append(line)
+                    continue
                 if finded:
                     functions.append(line)
                     if line.startswith("}"):
