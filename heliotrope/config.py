@@ -44,7 +44,7 @@ class HeliotropeConfig(Config):
             env_prefix=env_prefix,
             keep_alive=keep_alive,
         )
-        # Defualt
+        # Default
         self.update(
             {
                 "TESTING": False,
