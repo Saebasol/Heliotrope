@@ -70,7 +70,7 @@ def parse_args(argv: list[str]) -> Namespace:
 
     config.add_argument(
         "--refresh-delay",
-        type=str,
+        type=int,
         default=86400,
         help="The delay between refresh commonjs (default: 86400)",
     )
