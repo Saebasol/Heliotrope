@@ -21,12 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from abc import ABC, abstractmethod
 from typing import Optional
 
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.info import Info
-
-from abc import ABC, abstractmethod
 
 
 class AbstractInfoDatabase(ABC):
