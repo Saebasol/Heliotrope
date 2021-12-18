@@ -21,18 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from abc import ABC, abstractmethod
 from asyncio.tasks import Task
 from typing import NoReturn
 
 from heliotrope.sanic import Heliotrope
 
 
-class AbstractTask:
+class AbstractTask(ABC):
     config_name: str
 
     @classmethod
+    @abstractmethod
     async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
-        raise NotImplementedError
+        """
+        Setup the task.
+        """
 
+    @abstractmethod
     async def start(self, delay: float) -> NoReturn:
-        raise NotImplementedError
+        """
+        Start the task.
+        """
