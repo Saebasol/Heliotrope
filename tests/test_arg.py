@@ -25,7 +25,7 @@ def test_parse_args():
             "0",
         ]
     )
-    assert args.host == ""
+    assert args.host == "127.0.0.1"
     assert args.port == 8000
     assert args.workers == 1
     assert args.test == True
