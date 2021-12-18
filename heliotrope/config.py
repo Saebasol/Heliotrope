@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from argparse import Namespace
+from json import loads
 from typing import Optional, Union
 
 from sanic.config import SANIC_PREFIX, Config
@@ -75,3 +77,22 @@ class HeliotropeConfig(Config):
     MIRRORING_DELAY: float
     REFRESH_COMMON_JS_DELAY: float
     INDEX_FILE: str
+
+    def update_with_args(self, args: Namespace) -> None:
+        if args.config:
+            with open(args.config, "r") as f:
+                config = loads(f.read())
+                self.update_config(config)
+        else:
+            self.update_config(
+                {
+                    "TESTING": args.test,
+                    "SENTRY_DSN": args.sentry_dsn,
+                    "GALLERYINFO_DB_URL": args.galleryinfo_db_url,
+                    "INFO_DB_URL": args.info_db_url,
+                    "INDEX_FILE": args.index_file,
+                    "MIRRORING_DELAY": args.mirroring_delay,
+                    "REFRESH_COMMON_JS_DELAY": args.refresh_delay,
+                }
+            )
+        return None

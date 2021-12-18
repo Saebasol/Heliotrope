@@ -1,36 +1,19 @@
-from argparse import ArgumentParser
+def main() -> None:  # pragma: no cover
+    # I've done all of my testing on this.
+    from sys import argv
 
-from heliotrope.config import HeliotropeConfig
-from heliotrope.server import create_app
+    from heliotrope.argparser import parse_args
+    from heliotrope.config import HeliotropeConfig
+    from heliotrope.server import create_app
 
-config = HeliotropeConfig()
+    heliotrope_config = HeliotropeConfig()
 
-parser = ArgumentParser("heliotrope")
+    args = parse_args(argv[1:])
 
-parser.add_argument(
-    "--host",
-    "-H",
-    type=str,
-    default="127.0.0.1",
-    help="The hostname to listen on (default: 127.0.0.1)",
-)
-parser.add_argument(
-    "--port",
-    "-P",
-    type=int,
-    default=8000,
-    help="The port of the webserver (default: 8000)",
-)
+    heliotrope_config.update_with_args(args)
 
-parser.add_argument(
-    "--workers",
-    "-W",
-    type=int,
-    default=1,
-    help="The number of worker processes to spawn (default: 1)",
-)
+    create_app(heliotrope_config).run(args.host, args.port, workers=args.workers)
 
 
-args = parser.parse_args()
-
-create_app(config).run(args.host, args.port, workers=args.workers)
+if __name__ == "__main__":  # pragma: no cover
+    main()
