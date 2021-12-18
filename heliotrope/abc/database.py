@@ -26,38 +26,64 @@ from typing import Optional
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.info import Info
 
+from abc import ABC, abstractmethod
 
-class AbstractInfoDatabase:
+
+class AbstractInfoDatabase(ABC):
     info_tags = ["artist", "group", "type", "language", "series", "character"]
     gender_common_tags = ["female", "tags", "male"]
 
+    @abstractmethod
     async def add_infos(self, infos: list[Info]) -> None:
-        raise NotImplementedError
+        """
+        Add infos to the database.
+        """
 
+    @abstractmethod
     async def get_info(self, id: int) -> Optional[Info]:
-        raise NotImplementedError
+        """
+        Get info by id.
+        """
 
+    @abstractmethod
     async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
-        raise NotImplementedError
+        """
+        Get info list.
+        """
 
+    @abstractmethod
     async def get_random_info(self) -> Info:
-        raise NotImplementedError
+        """
+        Get random info.
+        """
 
+    @abstractmethod
     async def search(
         self,
         tags: list[str],
         offset: int = 0,
         limit: int = 15,
     ) -> tuple[list[Info], int]:
-        raise NotImplementedError
+        """
+        Search info by tags.
+        """
 
 
-class AbstractGalleryinfoDatabase:
+class AbstractGalleryinfoDatabase(ABC):
+    @abstractmethod
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
-        raise NotImplementedError
+        """
+        Add galleryinfo to the database.
+        """
 
+    @abstractmethod
     async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
-        raise NotImplementedError
+        """
+        Get galleryinfo by id.
+        """
 
+    @abstractmethod
     async def get_all_index(self) -> list[int]:
-        raise NotImplementedError
+        """
+        Get all index.
+        """
