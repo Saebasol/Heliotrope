@@ -78,21 +78,21 @@ class CommonJS:
         functions: list[str] = []
         lines = StringIO(code).readlines()
 
-        finded = False
+        founded = False
         functions.append(polyfill)
         for func_name in export_functions_name:
             for line in lines:
                 if line.startswith("var gg"):
                     functions.append(line)
                     continue
-                if finded:
+                if founded:
                     functions.append(line)
                     if line.startswith("}"):
-                        finded = False
+                        founded = False
                         continue
                 if line.startswith(f"function {func_name}"):
                     functions.append(line)
-                    finded = True
+                    founded = True
                     continue
 
         return "".join(functions)
