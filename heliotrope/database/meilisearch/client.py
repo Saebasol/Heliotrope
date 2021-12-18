@@ -65,13 +65,13 @@ class MeiliSearch(AbstractInfoDatabase):
                 instance = cls(client, index)
                 return instance
 
-    def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
+    def parse_query(self, queries: list[str]) -> tuple[str, list[str]]:
         parsed_query: list[str] = []
         title = ""
-        for query in querys:
+        for query in queries:
             if any(info_tag in query for info_tag in self.info_tags):
-                splited = query.split(":")
-                parsed_query.append(f"{splited[0]} = '{splited[1]}'")
+                splitted = query.split(":")
+                parsed_query.append(f"{splitted[0]} = '{splitted[1]}'")
 
             elif any(
                 gender_common_tag in query
