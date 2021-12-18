@@ -5,26 +5,17 @@ from heliotrope.argparser import parse_args
 from heliotrope.config import HeliotropeConfig
 from heliotrope.server import create_app
 
-heliotrope_config = HeliotropeConfig()
 
-args = parse_args(argv[1:])
+def main():  # pragma: no cover
+    # I've done all of my testing on this.
+    heliotrope_config = HeliotropeConfig()
 
-if args.config:
-    with open(args.config, "r") as f:
-        config = loads(f.read())
-        heliotrope_config.update(config)
-else:
-    heliotrope_config.update_config(
-        {
-            "TESTING": args.test,
-            "SENTRY_DSN": args.sentry_dsn,
-            "GALLERYINFO_DB_URL": args.galleryinfo_db_url,
-            "INFO_DB_URL": args.info_db_url,
-            "INDEX_FILE": args.index_file,
-            "MIRRORING_DELAY": args.mirroring_delay,
-            "REFRESH_COMMON_JS_DELAY": args.refresh_delay,
-        }
-    )
+    args = parse_args(argv[1:])
+
+    heliotrope_config.update_with_args(args)
+
+    create_app(heliotrope_config).run(args.host, args.port, workers=args.workers)
 
 
-create_app(heliotrope_config).run(args.host, args.port, workers=args.workers)
+if __name__ == "__main__":  # pragma: no cover
+    main()
