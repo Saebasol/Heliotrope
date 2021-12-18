@@ -1,8 +1,9 @@
-from sys import argv
 from json import loads
+from sys import argv
+
+from heliotrope.argparser import parse_args
 from heliotrope.config import HeliotropeConfig
 from heliotrope.server import create_app
-from heliotrope.argparser import parse_args
 
 heliotrope_config = HeliotropeConfig()
 
