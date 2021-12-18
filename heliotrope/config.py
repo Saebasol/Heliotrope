@@ -78,7 +78,7 @@ class HeliotropeConfig(Config):
     REFRESH_COMMON_JS_DELAY: float
     INDEX_FILE: str
 
-    def update_with_args(self, args: Namespace):
+    def update_with_args(self, args: Namespace) -> None:
         if args.config:
             with open(args.config, "r") as f:
                 config = loads(f.read())
@@ -95,3 +95,4 @@ class HeliotropeConfig(Config):
                     "REFRESH_COMMON_JS_DELAY": args.refresh_delay,
                 }
             )
+        return None
