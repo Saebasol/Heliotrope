@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio.threads import to_thread
 from io import StringIO
 from typing import cast
 
@@ -28,7 +29,6 @@ from js2py.evaljs import EvalJs  # type: ignore
 
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
-from asyncio.threads import to_thread
 
 
 class CommonJS:

@@ -21,15 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from re import match
+from urllib.parse import unquote
+
 from sanic.blueprints import Blueprint
+from sanic.exceptions import InvalidUsage, NotFound
 from sanic.response import HTTPResponse
-from sanic.exceptions import NotFound, InvalidUsage
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
 
 from heliotrope.sanic import HeliotropeRequest
-from urllib.parse import unquote
-from re import match
 
 heliotrope_image_proxy = Blueprint("proxy", url_prefix="/proxy")
 
