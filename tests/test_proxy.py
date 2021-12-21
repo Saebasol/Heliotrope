@@ -26,4 +26,4 @@ def test_proxy_invalid(app: Heliotrope):
 def test_proxy_not_found(app: Heliotrope):
     image_url = "https://i.pximg.net/img-master/img/1234/56/78/91/07/34/7312310_p0_master1200.jpg"
     _, response = app.test_client.get(url + image_url)
-    assert response.status == 200
+    assert response.status == 404
