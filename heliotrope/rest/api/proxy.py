@@ -68,7 +68,7 @@ class HeliotropeImageProxyView(HTTPMethodView):
             # If read is used, oof may occur if many images are requested.
             async for data, _ in request_response.content.iter_chunks():
                 await response.send(data)
-            await response.eof()
+            await response.eof()  # type: ignore
             return response
 
 
