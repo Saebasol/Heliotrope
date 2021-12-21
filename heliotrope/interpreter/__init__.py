@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio.threads import to_thread
 from io import StringIO
 from typing import cast
 
@@ -29,38 +30,20 @@ from js2py.evaljs import EvalJs  # type: ignore
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
 
-# js2py.internals.simplex.JsException: TypeError: 'undefined' is not a function (tried calling property 'padStart' of 'String')
-polyfill = """
-// https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
-if (!String.prototype.padStart) {
-    String.prototype.padStart = function padStart(targetLength,padString) {
-        targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
-        padString = String((typeof padString !== 'undefined' ? padString : ' '));
-        if (this.length > targetLength) {
-            return String(this);
-        }
-        else {
-            targetLength = targetLength-this.length;
-            if (targetLength > padString.length) {
-                padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
-            }
-            return padString.slice(0,targetLength) + String(this);
-        }
-    };
-}
-"""
-
 
 class CommonJS:
-    def __init__(self) -> None:
+    def __init__(self, polyfill: str) -> None:
         self.interpreter = EvalJs()
+        self.polyfill = polyfill
         self.code = ""
 
     @classmethod
     async def setup(cls, request: HitomiRequest) -> "CommonJS":
         common_js_code = await request.get_common_js()
-        instance = cls()
+        # Because it is executed only once for the first time, it is safe to block
+        with open("./heliotrope/interpreter/polyfill.js") as f:
+            polyfill = f.read()
+        instance = cls(polyfill)
         instance.update_common_js_code(common_js_code)
         return instance
 
@@ -79,7 +62,7 @@ class CommonJS:
         lines = StringIO(code).readlines()
 
         finded = False
-        functions.append(polyfill)
+        functions.append(self.polyfill)
         for func_name in export_functions_name:
             for line in lines:
                 if line.startswith("var gg"):
@@ -101,10 +84,10 @@ class CommonJS:
         self.code = common_js_code
         self.interpreter.execute(self.get_using_functions(common_js_code))
 
-    def rewrite_tn_paths(self, html: str) -> str:
-        return cast(str, self.interpreter.rewrite_tn_paths(html))
+    async def rewrite_tn_paths(self, html: str) -> str:
+        return cast(str, await to_thread(self.interpreter.rewrite_tn_paths, html))
 
-    def image_url_from_image(
+    async def image_url_from_image(
         self, galleryid: int, image: HitomiFileJSON, no_webp: bool
     ) -> str:
         webp = None
@@ -112,5 +95,8 @@ class CommonJS:
             webp = "webp"
 
         return cast(
-            str, self.interpreter.url_from_url_from_hash(galleryid, image, webp)
+            str,
+            await to_thread(
+                self.interpreter.url_from_url_from_hash, galleryid, image, webp
+            ),
         )

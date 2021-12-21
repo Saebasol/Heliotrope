@@ -1,21 +1,22 @@
 import json
 from asyncio.events import AbstractEventLoop
-
+from tests.common import galleryinfo
 from pytest import fixture, mark
+from sanic_ext.extensions.http.extension import HTTPExtension
+from sanic_ext.extensions.injection.extension import InjectionExtension
+from sanic_ext.extensions.openapi.extension import OpenAPIExtension
 from sanic_testing import TestManager  # type:ignore
 
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.info import Info
+from heliotrope.interpreter import CommonJS
+from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
 from heliotrope.server import create_app
 from tests.common import galleryinfo, info
 
-
-from sanic_ext.extensions.http.extension import HTTPExtension
-from sanic_ext.extensions.injection.extension import InjectionExtension
-from sanic_ext.extensions.openapi.extension import OpenAPIExtension
 
 def get_config():
     with open("./tests/config.json", "r") as f:
@@ -45,11 +46,23 @@ def app():
     heliotrope.main_process_stop(closeup_test)
     yield heliotrope
 
+
 @fixture(autouse=True)
 def reset_extensions():
     yield
     for ext in (HTTPExtension, InjectionExtension, OpenAPIExtension):
         ext._singleton = None
+
+
+@fixture
+@mark.asyncio
+async def image_url():
+    hitomi_request = await HitomiRequest.setup()
+    common_js = await CommonJS.setup(hitomi_request)
+    yield await common_js.image_url_from_image(
+        galleryinfo["id"], galleryinfo["files"][0], True
+    )
+
 
 @fixture
 @mark.asyncio
@@ -65,4 +78,3 @@ async def fake_app():
     yield heliotrope
     for listener in heliotrope.listeners["main_process_stop"]:
         await listener(heliotrope, None)
-    
