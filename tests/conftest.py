@@ -17,6 +17,7 @@ from sanic_ext.extensions.http.extension import HTTPExtension
 from sanic_ext.extensions.injection.extension import InjectionExtension
 from sanic_ext.extensions.openapi.extension import OpenAPIExtension
 
+
 def get_config():
     with open("./tests/config.json", "r") as f:
         config = HeliotropeConfig()
@@ -35,34 +36,27 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     await heliotrope.ctx.meilisearch.index.delete()
 
 
-@fixture
-@mark.asyncio
-def app():
-    heliotrope_config = get_config()
-    heliotrope = create_app(heliotrope_config)
-    TestManager(heliotrope)
-    heliotrope.main_process_start(startup_test)
-    heliotrope.main_process_stop(closeup_test)
-    yield heliotrope
-
 @fixture(autouse=True)
 def reset_extensions():
     yield
     for ext in (HTTPExtension, InjectionExtension, OpenAPIExtension):
         ext._singleton = None
 
+
 @fixture
 @mark.asyncio
-async def fake_app():
+async def app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
-    heliotrope.main_process_stop(closeup_test)
     # do not run app
     for listener in heliotrope.listeners["main_process_start"]:
         # None is loop argument but not needed
         await listener(heliotrope, None)
+        heliotrope.listeners["main_process_start"].pop(
+            heliotrope.listeners["main_process_start"].index(listener)
+        )
     # return app
+    heliotrope.main_process_start(startup_test)
+    heliotrope.main_process_stop(closeup_test)
+    TestManager(heliotrope)
     yield heliotrope
-    for listener in heliotrope.listeners["main_process_stop"]:
-        await listener(heliotrope, None)
-    
