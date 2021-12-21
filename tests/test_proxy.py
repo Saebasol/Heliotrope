@@ -1,13 +1,9 @@
 from heliotrope.sanic import Heliotrope
-from tests.common import galleryinfo
 
 url = "/api/proxy/"
 
 
-def test_proxy_hitomi(app: Heliotrope, fake_app: Heliotrope):
-    image_url = fake_app.ctx.common_js.image_url_from_image(
-        galleryinfo["id"], galleryinfo["files"][0], True
-    )
+def test_proxy_hitomi(app: Heliotrope, image_url: str):
     _, response = app.test_client.get(url + image_url)
     assert response.status == 200
 

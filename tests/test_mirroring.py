@@ -1,7 +1,9 @@
-from heliotrope.tasks.mirroring import MirroringTask
-from heliotrope.sanic import Heliotrope
 from asyncio import sleep
+
 from pytest import mark
+
+from heliotrope.sanic import Heliotrope
+from heliotrope.tasks.mirroring import MirroringTask
 
 
 @mark.asyncio
