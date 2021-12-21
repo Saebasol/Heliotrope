@@ -4,8 +4,8 @@ from tests.common import galleryinfo
 url = "/api/proxy/"
 
 
-def test_proxy_hitomi(app: Heliotrope):
-    image_url = Heliotrope.ctx.common_js.image_url_from_image(
+def test_proxy_hitomi(app: Heliotrope, fake_app: Heliotrope):
+    image_url = fake_app.ctx.common_js.image_url_from_image(
         galleryinfo["id"], galleryinfo["files"][0], True
     )
     _, response = app.test_client.get(url + image_url)

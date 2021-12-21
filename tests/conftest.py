@@ -36,6 +36,17 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     await heliotrope.ctx.meilisearch.index.delete()
 
 
+@fixture
+@mark.asyncio
+def app():
+    heliotrope_config = get_config()
+    heliotrope = create_app(heliotrope_config)
+    TestManager(heliotrope)
+    heliotrope.main_process_start(startup_test)
+    heliotrope.main_process_stop(closeup_test)
+    yield heliotrope
+
+
 @fixture(autouse=True)
 def reset_extensions():
     yield
@@ -45,18 +56,15 @@ def reset_extensions():
 
 @fixture
 @mark.asyncio
-async def app():
+async def fake_app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
+    heliotrope.main_process_stop(closeup_test)
     # do not run app
     for listener in heliotrope.listeners["main_process_start"]:
         # None is loop argument but not needed
         await listener(heliotrope, None)
-        heliotrope.listeners["main_process_start"].pop(
-            heliotrope.listeners["main_process_start"].index(listener)
-        )
     # return app
-    heliotrope.main_process_start(startup_test)
-    heliotrope.main_process_stop(closeup_test)
-    TestManager(heliotrope)
     yield heliotrope
+    for listener in heliotrope.listeners["main_process_stop"]:
+        await listener(heliotrope, None)
