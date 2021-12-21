@@ -72,4 +72,6 @@ class HeliotropeImageProxyView(HTTPMethodView):
             return response
 
 
-heliotrope_image_proxy.add_route(HeliotropeImageProxyView.as_view(), "/<image_url:str>")
+heliotrope_image_proxy.add_route(
+    HeliotropeImageProxyView.as_view(), "/<image_url:path>"
+)
