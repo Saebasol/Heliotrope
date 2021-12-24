@@ -25,6 +25,8 @@ def test_parse_args():
             "0",
             "--refresh-delay",
             "0",
+            "--forwarded-secret",
+            "",
         ]
     )
     config.update_with_args(args)
@@ -38,6 +40,7 @@ def test_parse_args():
     assert args.index_file == config.INDEX_FILE
     assert args.mirroring_delay == config.MIRRORING_DELAY
     assert args.refresh_delay == config.REFRESH_COMMON_JS_DELAY
+    assert args.forwarded_secret == config.FORWARDED_SECRET
 
 
 def test_parse_args_with_config():

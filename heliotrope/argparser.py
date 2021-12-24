@@ -99,6 +99,13 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
+        "--forwarded-secret",
+        type=str,
+        default="",
+        help="The secret to use for forwarded headers (default: '')",
+    )
+
+    config.add_argument(
         "--config",
         type=str,
         default="",

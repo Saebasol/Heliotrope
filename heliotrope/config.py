@@ -56,6 +56,7 @@ class HeliotropeConfig(Config):
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_COMMON_JS_DELAY": 86400,
                 # Sanic config
+                "FORWARDED_SECRET": "",
                 "FALLBACK_ERROR_FORMAT": "json",
                 # Sanic ext config
                 "OAS_UI_DEFAULT": "swagger",
@@ -87,6 +88,7 @@ class HeliotropeConfig(Config):
             self.update_config(
                 {
                     "TESTING": args.test,
+                    "FORWARDED_SECRET": args.forwarded_secret,
                     "SENTRY_DSN": args.sentry_dsn,
                     "GALLERYINFO_DB_URL": args.galleryinfo_db_url,
                     "INFO_DB_URL": args.info_db_url,
