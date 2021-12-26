@@ -24,6 +24,8 @@ SOFTWARE.
 from asyncio.tasks import Task, create_task, sleep
 from typing import NoReturn
 
+from sanic.log import logger
+
 from heliotrope.abc.task import AbstractTask
 from heliotrope.interpreter import CommonJS
 from heliotrope.request.hitomi import HitomiRequest
@@ -40,16 +42,21 @@ class RefreshCommonJS(AbstractTask):
     async def start(self, delay: float) -> NoReturn:
         while True:
             if not self.common_js.code:
+                logger.warning("Common js code is empty")
+                logger.info("Update common js code")
                 self.common_js.update_common_js_code(await self.request.get_common_js())
                 await sleep(delay)
 
             code = await self.request.get_common_js()
 
             if self.common_js.code != code:
+                logger.warning("local common js code is different from remote")
+                logger.info("Update common js code")
                 self.common_js.update_common_js_code(code)
             await sleep(delay)
 
     @classmethod
     async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
+        logger.debug(f"Setting up {cls.__name__}")
         instance = cls(app.ctx.hitomi_request, app.ctx.common_js)
         return create_task(instance.start(delay))

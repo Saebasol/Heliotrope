@@ -26,6 +26,7 @@ from io import StringIO
 from typing import cast
 
 from js2py.evaljs import EvalJs  # type: ignore
+from sanic.log import logger
 
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
@@ -39,6 +40,7 @@ class CommonJS:
 
     @classmethod
     async def setup(cls, request: HitomiRequest) -> "CommonJS":
+        logger.debug(f"Setting up {cls.__name__}")
         common_js_code = await request.get_common_js()
         # Because it is executed only once for the first time, it is safe to block
         with open("./heliotrope/interpreter/polyfill.js") as f:

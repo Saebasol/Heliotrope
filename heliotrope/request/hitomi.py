@@ -28,6 +28,7 @@ from typing import Any, Optional
 from aiohttp.client import ClientSession
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+from sanic.log import logger
 from yarl import URL
 
 from heliotrope.domain.galleryinfo import Galleryinfo
@@ -60,6 +61,7 @@ class HitomiRequest:
     async def setup(
         cls, *, index_file: str = "index-korean.nozomi", **session_options: Any
     ) -> "HitomiRequest":
+        logger.debug(f"Setting up {cls.__name__}")
         request = BaseRequest(ClientSession(**session_options))
         hitomi_request = cls(request, index_file)
         return hitomi_request
@@ -67,7 +69,7 @@ class HitomiRequest:
     async def get_common_js(self) -> str:
         request_url = self.ltn_url.with_path("common.js").human_repr()
         response = await self.request.get(request_url, "text")
-        return str(response.returned)
+        return str(response.body)
 
     async def get_redirect_url(self, id: int) -> Optional[tuple[str, str]]:
         request_url = self.url.with_path(f"galleries/{id}.html").human_repr()
@@ -75,7 +77,7 @@ class HitomiRequest:
         if response.status != 200:
             return None
 
-        soup = BeautifulSoup(response.returned, "lxml")
+        soup = BeautifulSoup(response.body, "lxml")
         a_href_element = soup.find("a", href=True)
         assert isinstance(a_href_element, Tag)
         url = a_href_element.attrs["href"]
@@ -89,7 +91,7 @@ class HitomiRequest:
         if response.status != 200:
             return None
 
-        js_to_json = loads(str(response.returned).replace("var galleryinfo = ", ""))
+        js_to_json = loads(str(response.body).replace("var galleryinfo = ", ""))
 
         return Galleryinfo.from_dict(js_to_json)
 
@@ -102,7 +104,10 @@ class HitomiRequest:
 
         html = await self.request.get(url, "text")
 
-        return Info.from_html(id, html.returned, hitomi_type)
+        if "Redirect" in html.body:
+            return None
+
+        return Info.from_html(id, html.body, hitomi_type)
 
     async def fetch_index(
         self,
@@ -122,5 +127,5 @@ class HitomiRequest:
         request_url = self.ltn_url.with_path(self.index_file).human_repr()
         response = await self.request.get(request_url, "read", headers=headers)
 
-        total_items = len(response.returned) // 4
-        return unpack(f">{total_items}i", bytes(response.returned))
+        total_items = len(response.body) // 4
+        return unpack(f">{total_items}i", bytes(response.body))

@@ -24,6 +24,8 @@ SOFTWARE.
 from asyncio.tasks import Task, create_task, sleep
 from typing import NoReturn
 
+from sanic.log import logger
+
 from heliotrope.abc.database import AbstractGalleryinfoDatabase, AbstractInfoDatabase
 from heliotrope.abc.task import AbstractTask
 from heliotrope.request.hitomi import HitomiRequest
@@ -45,6 +47,7 @@ class MirroringTask(AbstractTask):
 
     @classmethod
     async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
+        logger.debug(f"Setting up {cls.__name__}.")
         instance = cls(app.ctx.hitomi_request, app.ctx.orm, app.ctx.meilisearch)
         return create_task(instance.start(delay))
 
@@ -55,19 +58,38 @@ class MirroringTask(AbstractTask):
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
+            logger.info(f"id: {index}")
             # Check galleryinfo first
             if galleryinfo := await self.request.get_galleryinfo(index):
+                logger.info(f"{index} can get galleryinfo from hitomi.la.")
                 if not await self.galleryinfo_database.get_galleryinfo(index):
+                    logger.info(f"{index} couldn't find that galleryinfo locally.")
                     await self.galleryinfo_database.add_galleryinfo(galleryinfo)
+                    logger.info(f"Added galleryinfo {index}.")
+                else:
+                    logger.info(f"{index} already has galleryinfo locally.")
+            else:
+                logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
+                continue
 
             # Then check info
             if info := await self.request.get_info(index):
+                logger.info(f"{index} can get info from hitomi.la.")
                 if not await self.info_database.get_info(index):
+                    logger.info(f"{index} couldn't find that info locally.")
                     await self.info_database.add_infos([info])
+                    logger.info(f"Added info {index}.")
+                else:
+                    logger.info(f"{index} already has info locally.")
+            else:
+                logger.warning(f"{index} can't get info from hitomi.la.")
 
     async def start(self, delay: float) -> NoReturn:
         while True:
             if index_list := await self.compare_index_list():
+                logger.warning(f"{len(index_list)} new index found.")
+                logger.info(f"Start mirroring.")
                 await self.mirroring(index_list)
                 self.total = len(await self.galleryinfo_database.get_all_index())
+                logger.info(f"Mirroring finished.")
             await sleep(delay)

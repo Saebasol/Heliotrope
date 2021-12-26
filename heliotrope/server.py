@@ -24,6 +24,7 @@ SOFTWARE.
 from asyncio.events import AbstractEventLoop
 from asyncio.tasks import all_tasks, current_task
 
+from sanic.log import logger
 from sanic_ext import Extend  # type: ignore
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
@@ -71,6 +72,7 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     current = current_task()
     for task in all_tasks():
         if task is not current:
+            logger.debug(f"Cancel task {task.get_name()}")
             task.cancel()
 
 
