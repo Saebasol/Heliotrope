@@ -37,7 +37,9 @@ def main() -> None:  # pragma: no cover
 
     heliotrope_config.update_with_args(args)
 
-    create_app(heliotrope_config).run(args.host, args.port, workers=args.workers)
+    create_app(heliotrope_config).run(
+        args.host, args.port, workers=args.workers, debug=args.debug
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover

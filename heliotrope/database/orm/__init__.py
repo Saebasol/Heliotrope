@@ -24,6 +24,7 @@ SOFTWARE.
 from contextvars import ContextVar
 from typing import Any, Optional
 
+from sanic.log import logger
 from sqlalchemy.ext.asyncio.engine import AsyncEngine, create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import mapper, relationship, selectinload
@@ -76,6 +77,7 @@ class ORM(AbstractGalleryinfoDatabase):
 
     @classmethod
     async def setup(cls, db_url: str) -> "ORM":
+        logger.debug(f"Setting up {cls.__name__}")
         try:
             class_mapper(Galleryinfo)
         except UnmappedClassError:

@@ -26,13 +26,14 @@ from typing import Any, Literal
 
 from aiohttp.client import ClientSession
 from multidict import CIMultiDictProxy
+from sanic.log import logger
 from yarl import URL
 
 
 @dataclass
 class Response:
     status: int
-    returned: Any
+    body: Any
     url: URL
     headers: CIMultiDictProxy[str]
 
@@ -47,9 +48,11 @@ class BaseRequest:
 
     @classmethod
     async def setup(cls) -> "BaseRequest":
+        logger.debug(f"Setting up {cls.__name__}")
         return cls(ClientSession())
 
     async def close(self) -> None:
+        logger.debug(f"close {self.__class__.__name__}")
         if self.session:
             await self.session.close()
 
@@ -58,7 +61,7 @@ class BaseRequest:
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"],
         url: str,
         return_method: Literal["json", "text", "read"] = "json",
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Response:
 
         async with self.session.request(method, url, **kwargs) as r:
@@ -73,7 +76,7 @@ class BaseRequest:
         self,
         url: str,
         return_method: Literal["json", "text", "read"] = "json",
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Response:
         return await self.request("GET", url, return_method, **kwargs)
 
@@ -81,6 +84,6 @@ class BaseRequest:
         self,
         url: str,
         return_method: Literal["json", "text", "read"] = "json",
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Response:
         return await self.request("POST", url, return_method, **kwargs)

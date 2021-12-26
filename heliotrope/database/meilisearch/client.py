@@ -27,6 +27,7 @@ from typing import Optional, cast
 from ameilisearch.client import Client
 from ameilisearch.errors import MeiliSearchApiError
 from ameilisearch.index import Index
+from sanic.log import logger
 
 from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info
@@ -39,6 +40,7 @@ class MeiliSearch(AbstractInfoDatabase):
         self.index = index
 
     async def close(self) -> None:
+        logger.debug(f"close {self.__class__.__name__}")
         await self.client.close()
         await self.index.close()
 
@@ -46,6 +48,7 @@ class MeiliSearch(AbstractInfoDatabase):
     async def setup(
         cls, url: str, api_key: Optional[str] = None, uid: str = "hitomi"
     ) -> "MeiliSearch":
+        logger.debug(f"Setting up {cls.__name__}")
         async with Client(url, api_key) as client:
             await client.health()
             async with await client.get_or_create_index(uid) as index:

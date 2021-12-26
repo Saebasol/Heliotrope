@@ -106,6 +106,13 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
+        "--debug",
+        action="store_true",
+        default=False,
+        help="The debug mode to use (default: False)",
+    )
+
+    config.add_argument(
         "--config",
         type=str,
         default="",
