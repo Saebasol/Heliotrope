@@ -1,5 +1,5 @@
 aiohttp==3.8.1
-sanic==21.9.3
+sanic==21.12.0
 sanic-ext==21.9.3
 sentry-sdk==1.5.1
 beautifulsoup4==4.10.0
