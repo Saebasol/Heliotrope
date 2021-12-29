@@ -42,11 +42,12 @@ class CommonJS:
     async def setup(cls, request: HitomiRequest) -> "CommonJS":
         logger.debug(f"Setting up {cls.__name__}")
         common_js_code = await request.get_common_js()
+        gg_js_code = await request.get_gg_js()
         # Because it is executed only once for the first time, it is safe to block
         with open("./heliotrope/interpreter/polyfill.js") as f:
             polyfill = f.read()
         instance = cls(polyfill)
-        instance.update_common_js_code(common_js_code)
+        instance.update_js_code(common_js_code, gg_js_code)
         return instance
 
     def get_using_functions(self, code: str) -> str:
@@ -82,9 +83,11 @@ class CommonJS:
 
         return "".join(functions)
 
-    def update_common_js_code(self, common_js_code: str) -> None:
-        self.code = common_js_code
+    def update_js_code(self, common_js_code: str, gg_js_code: str) -> None:
+        self.common_js_code = common_js_code
+        self.gg_js_code = gg_js_code
         self.interpreter.execute(self.get_using_functions(common_js_code))
+        self.interpreter.execute(self.gg_js_code)
 
     async def rewrite_tn_paths(self, html: str) -> str:
         return cast(str, await to_thread(self.interpreter.rewrite_tn_paths, html))
