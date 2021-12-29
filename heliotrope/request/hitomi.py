@@ -71,6 +71,11 @@ class HitomiRequest:
         response = await self.request.get(request_url, "text")
         return str(response.body)
 
+    async def get_gg_js(self) -> str:
+        request_url = self.ltn_url.with_path("gg.js").human_repr()
+        response = await self.request.get(request_url, "text")
+        return str(response.body)
+
     async def get_redirect_url(self, id: int) -> Optional[tuple[str, str]]:
         request_url = self.url.with_path(f"galleries/{id}.html").human_repr()
         response = await self.request.get(request_url, "text")
