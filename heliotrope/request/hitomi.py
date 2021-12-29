@@ -70,7 +70,7 @@ class HitomiRequest:
         request_url = self.ltn_url.with_path("common.js").human_repr()
         response = await self.request.get(request_url, "text")
         return str(response.body)
-    
+
     async def get_gg_js(self) -> str:
         request_url = self.ltn_url.with_path("gg.js").human_repr()
         response = await self.request.get(request_url, "text")
