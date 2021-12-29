@@ -41,18 +41,24 @@ class RefreshCommonJS(AbstractTask):
 
     async def start(self, delay: float) -> NoReturn:
         while True:
-            if not self.common_js.code:
+            if not self.common_js.common_js_code:
                 logger.warning("Common js code is empty")
-                logger.info("Update common js code")
-                self.common_js.update_common_js_code(await self.request.get_common_js())
+                logger.info("Update common js code with gg js")
+                self.common_js.update_js_code(
+                    await self.request.get_common_js(), await self.request.get_gg_js()
+                )
                 await sleep(delay)
 
-            code = await self.request.get_common_js()
+            common_js_code = await self.request.get_common_js()
+            gg_js_code = await self.request.get_gg_js()
 
-            if self.common_js.code != code:
+            if (
+                self.common_js.common_js_code != common_js_code
+                or self.common_js.gg_js_code != gg_js_code
+            ):
                 logger.warning("local common js code is different from remote")
                 logger.info("Update common js code")
-                self.common_js.update_common_js_code(code)
+                self.common_js.update_js_code(common_js_code, gg_js_code)
             await sleep(delay)
 
     @classmethod
