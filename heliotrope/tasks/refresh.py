@@ -43,7 +43,7 @@ class RefreshCommonJS(AbstractTask):
         while True:
             if not self.common_js.common_js_code:
                 logger.warning("Common js code is empty")
-                logger.info("Update common js code with gg js")
+                logger.info("Update common js code and gg js")
                 self.common_js.update_js_code(
                     await self.request.get_common_js(), await self.request.get_gg_js()
                 )
