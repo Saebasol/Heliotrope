@@ -37,7 +37,6 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
 
 
 @fixture
-@mark.asyncio
 def app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)

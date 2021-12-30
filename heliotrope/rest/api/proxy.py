@@ -36,7 +36,7 @@ heliotrope_image_proxy = Blueprint("proxy", url_prefix="/proxy")
 
 
 class HeliotropeImageProxyView(HTTPMethodView):
-    @openapi.tag("hitomi")  # type: ignore
+    @openapi.tag("proxy")  # type: ignore
     @openapi.summary("Proxy image")  # type: ignore
     @openapi.parameter(name="image_url", location="path", schema=str)  # type: ignore
     async def get(self, request: HeliotropeRequest, image_url: str) -> HTTPResponse:

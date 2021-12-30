@@ -47,6 +47,20 @@ def parse_args(argv: list[str]) -> Namespace:
         help="The number of worker processes to spawn (default: 1)",
     )
 
+    parser.add_argument(
+        "--access-log",
+        action="store_false",
+        default=True,
+        help="Disable the access log (default: False)",
+    )
+
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        default=False,
+        help="The debug mode to use (default: False)",
+    )
+
     config = parser.add_argument_group("config")
 
     config.add_argument(
@@ -103,13 +117,6 @@ def parse_args(argv: list[str]) -> Namespace:
         type=str,
         default="",
         help="The secret to use for forwarded headers (default: '')",
-    )
-
-    config.add_argument(
-        "--debug",
-        action="store_true",
-        default=False,
-        help="The debug mode to use (default: False)",
     )
 
     config.add_argument(
