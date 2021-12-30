@@ -58,29 +58,29 @@ class MirroringTask(AbstractTask):
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
-            logger.info(f"id: {index}")
+            logger.debug(f"id: {index}")
             # Check galleryinfo first
             if galleryinfo := await self.request.get_galleryinfo(index):
-                logger.info(f"{index} can get galleryinfo from hitomi.la.")
+                logger.debug(f"{index} can get galleryinfo from hitomi.la.")
                 if not await self.galleryinfo_database.get_galleryinfo(index):
-                    logger.info(f"{index} couldn't find that galleryinfo locally.")
+                    logger.debug(f"{index} couldn't find that galleryinfo locally.")
                     await self.galleryinfo_database.add_galleryinfo(galleryinfo)
-                    logger.info(f"Added galleryinfo {index}.")
+                    logger.debug(f"Added galleryinfo {index}.")
                 else:
-                    logger.info(f"{index} already has galleryinfo locally.")
+                    logger.debug(f"{index} already has galleryinfo locally.")
             else:
                 logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
                 continue
 
             # Then check info
             if info := await self.request.get_info(index):
-                logger.info(f"{index} can get info from hitomi.la.")
+                logger.debug(f"{index} can get info from hitomi.la.")
                 if not await self.info_database.get_info(index):
-                    logger.info(f"{index} couldn't find that info locally.")
+                    logger.debug(f"{index} couldn't find that info locally.")
                     await self.info_database.add_infos([info])
-                    logger.info(f"Added info {index}.")
+                    logger.debug(f"Added info {index}.")
                 else:
-                    logger.info(f"{index} already has info locally.")
+                    logger.debug(f"{index} already has info locally.")
             else:
                 logger.warning(f"{index} can't get info from hitomi.la.")
 
