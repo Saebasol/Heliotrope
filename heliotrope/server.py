@@ -25,7 +25,6 @@ from asyncio.events import AbstractEventLoop
 from asyncio.tasks import all_tasks, current_task
 
 from sanic.log import logger
-from sanic_ext import Extend  # type: ignore
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
@@ -78,7 +77,6 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:
     heliotrope = Heliotrope("heliotrope")
-    Extend(heliotrope)
     heliotrope.config.update(config)
 
     heliotrope.blueprint(rest)

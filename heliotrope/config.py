@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from argparse import Namespace
 from json import loads
-from typing import Optional, Union
+from typing import Any, Callable, Optional, Sequence, Union
 
 from sanic.config import SANIC_PREFIX, Config
 
@@ -33,16 +33,17 @@ from heliotrope import __version__
 class HeliotropeConfig(Config):
     def __init__(
         self,
-        defaults: dict[str, Union[str, bool, int, float, None]] = None,  # type: ignore
-        load_env: Optional[Union[bool, str]] = True,
+        defaults: dict[str, Union[str, bool, int, float, None]] = {},
         env_prefix: Optional[str] = SANIC_PREFIX,
         keep_alive: Optional[bool] = None,
+        *,
+        converters: Optional[Sequence[Callable[[str], Any]]] = None
     ):
         super().__init__(
             defaults=defaults,
-            load_env=load_env,
             env_prefix=env_prefix,
             keep_alive=keep_alive,
+            converters=converters,
         )
         # Defualt
         self.update(
@@ -60,7 +61,7 @@ class HeliotropeConfig(Config):
                 "FALLBACK_ERROR_FORMAT": "json",
                 # Sanic ext config
                 "OAS_UI_DEFAULT": "swagger",
-                "OAS_URI_TO_REDOC": False,
+                "OAS_URI_REDOC": False,
                 # Open API config
                 "API_TITLE": "Heliotrope",
                 "API_VERSION": __version__,
