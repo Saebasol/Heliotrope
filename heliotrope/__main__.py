@@ -38,11 +38,10 @@ def main() -> None:  # pragma: no cover
     heliotrope_config.update_with_args(args)
 
     create_app(heliotrope_config).run(
-        args.host,
-        args.port,
-        workers=args.workers,
-        debug=args.debug,
-        access_log=args.access_log,
+        heliotrope_config.HOST,
+        heliotrope_config.PORT,
+        debug=heliotrope_config.DEBUG,
+        workers=heliotrope_config.WORKERS,
     )
 
 

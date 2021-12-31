@@ -39,16 +39,13 @@ class HeliotropeConfig(Config):
         *,
         converters: Optional[Sequence[Callable[[str], Any]]] = None
     ):
-        super().__init__(
-            defaults=defaults,
-            env_prefix=env_prefix,
-            keep_alive=keep_alive,
-            converters=converters,
-        )
         # Defualt
         self.update(
             {
+                # heliotrope
+                "CONFIG": "",
                 "TESTING": False,
+                "USE_ENV": False,
                 "SENTRY_DSN": "",
                 "GALLERYINFO_DB_URL": "",
                 "INFO_DB_URL": "",
@@ -57,6 +54,11 @@ class HeliotropeConfig(Config):
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_COMMON_JS_DELAY": 86400,
                 # Sanic config
+                "HOST": "127.0.0.1",
+                "PORT": 8000,
+                "WORKERS": 1,
+                "DEBUG": False,
+                "ACCESS_LOG": False,
                 "FORWARDED_SECRET": "",
                 "FALLBACK_ERROR_FORMAT": "json",
                 # Sanic ext config
@@ -71,6 +73,16 @@ class HeliotropeConfig(Config):
             }
         )
 
+        super().__init__(
+            defaults=defaults,
+            env_prefix=env_prefix,
+            keep_alive=keep_alive,
+            converters=converters,
+        )
+
+    # Heliotrope
+    USE_ENV: bool
+    CONFIG: str
     TESTING: bool
     SENTRY_DSN: str
     GALLERYINFO_DB_URL: str
@@ -79,23 +91,21 @@ class HeliotropeConfig(Config):
     MIRRORING_DELAY: float
     REFRESH_COMMON_JS_DELAY: float
     INDEX_FILE: str
+    # Sanic config
+    DEBUG: bool
+    HOST: str
+    PORT: int
+    WORKERS: int
+
+    def load_config_with_config_json(self, path: str) -> None:
+        with open(path, "r") as f:
+            config = loads(f.read())
+            self.update_config(config)
+        return None
 
     def update_with_args(self, args: Namespace) -> None:
-        if args.config:
-            with open(args.config, "r") as f:
-                config = loads(f.read())
-                self.update_config(config)
-        else:
-            self.update_config(
-                {
-                    "TESTING": args.test,
-                    "FORWARDED_SECRET": args.forwarded_secret,
-                    "SENTRY_DSN": args.sentry_dsn,
-                    "GALLERYINFO_DB_URL": args.galleryinfo_db_url,
-                    "INFO_DB_URL": args.info_db_url,
-                    "INDEX_FILE": args.index_file,
-                    "MIRRORING_DELAY": args.mirroring_delay,
-                    "REFRESH_COMMON_JS_DELAY": args.refresh_delay,
-                }
-            )
+        if not self.USE_ENV:
+            self.update_config({k.upper(): v for k, v in vars(args).items()})
+        if self.CONFIG:
+            self.load_config_with_config_json(self.CONFIG)
         return None
