@@ -12,7 +12,6 @@ def test_parse_args():
             "8000",
             "--workers",
             "1",
-            "--test",
             "--sentry-dsn",
             "",
             "--galleryinfo-db-url",
