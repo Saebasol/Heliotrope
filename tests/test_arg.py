@@ -12,34 +12,12 @@ def test_parse_args():
             "8000",
             "--workers",
             "1",
-            "--sentry-dsn",
-            "",
-            "--galleryinfo-db-url",
-            "",
-            "--info-db-url",
-            "",
-            "--index-file",
-            "index-korean.nozomi",
-            "--mirroring-delay",
-            "0",
-            "--refresh-delay",
-            "0",
-            "--forwarded-secret",
-            "",
         ]
     )
     config.update_with_args(args)
     assert args.host == "127.0.0.1"
     assert args.port == 8000
     assert args.workers == 1
-    assert args.test == config.TESTING
-    assert args.sentry_dsn == config.SENTRY_DSN
-    assert args.galleryinfo_db_url == config.GALLERYINFO_DB_URL
-    assert args.info_db_url == config.INFO_DB_URL
-    assert args.index_file == config.INDEX_FILE
-    assert args.mirroring_delay == config.MIRRORING_DELAY
-    assert args.refresh_delay == config.REFRESH_COMMON_JS_DELAY
-    assert args.forwarded_secret == config.FORWARDED_SECRET
 
 
 def test_parse_args_with_config():
