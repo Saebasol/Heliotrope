@@ -42,7 +42,9 @@ from heliotrope.tasks.refresh import RefreshCommonJS
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # DB and http setup
-    heliotrope.ctx.meilisearch = await MeiliSearch.setup(heliotrope.config.INFO_DB_URL)
+    heliotrope.ctx.meilisearch = await MeiliSearch.setup(
+        heliotrope.config.INFO_DB_URL, heliotrope.config.INFO_DB_API_KEY
+    )
     heliotrope.ctx.orm = await ORM.setup(heliotrope.config.GALLERYINFO_DB_URL)
     heliotrope.ctx.request = await BaseRequest.setup()
     heliotrope.ctx.hitomi_request = await HitomiRequest.setup(
