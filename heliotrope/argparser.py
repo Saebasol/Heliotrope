@@ -64,10 +64,10 @@ def parse_args(argv: list[str]) -> Namespace:
     config = parser.add_argument_group("config")
 
     config.add_argument(
-        "--test",
+        "--production",
         action="store_true",
         default=False,
-        help="Run the server in test mode (default: False)",
+        help="Run the server in production mode (default: False)",
     )
 
     config.add_argument(

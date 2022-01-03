@@ -22,9 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from asyncio.events import AbstractEventLoop
-from asyncio.tasks import all_tasks, current_task
 
-from sanic.log import logger
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
@@ -52,7 +50,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     )
     heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
     # Sentry
-    if not heliotrope.config.TESTING:
+    if heliotrope.config.PRODUCTION:
         init(heliotrope.config.SENTRY_DSN, integrations=[SanicIntegration()])
         # Task setup
         heliotrope.add_task(

@@ -44,7 +44,7 @@ class HeliotropeConfig(Config):
             {
                 # heliotrope
                 "CONFIG": "",
-                "TESTING": False,
+                "PRODUCTION": False,
                 "USE_ENV": False,
                 "SENTRY_DSN": "",
                 "GALLERYINFO_DB_URL": "",
@@ -83,7 +83,7 @@ class HeliotropeConfig(Config):
     # Heliotrope
     USE_ENV: bool
     CONFIG: str
-    TESTING: bool
+    PRODUCTION: bool
     SENTRY_DSN: str
     GALLERYINFO_DB_URL: str
     INFO_DB_URL: str
