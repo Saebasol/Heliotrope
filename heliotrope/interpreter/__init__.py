@@ -47,6 +47,7 @@ class CommonJS:
         with open("./heliotrope/interpreter/polyfill.js") as f:
             polyfill = f.read()
         instance = cls(polyfill)
+        instance.interpreter.execute("var document = {}")
         instance.update_js_code(common_js_code, gg_js_code)
         return instance
 
@@ -91,6 +92,12 @@ class CommonJS:
 
     async def rewrite_tn_paths(self, html: str) -> str:
         return cast(str, await to_thread(self.interpreter.rewrite_tn_paths, html))
+
+    async def use_document_title(
+        self, galleryid: int, image: HitomiFileJSON, no_webp: bool, title: str
+    ):
+        self.interpreter.execute(f"document.title = '{title}'")
+        return await self.image_url_from_image(galleryid, image, no_webp)
 
     async def image_url_from_image(
         self, galleryid: int, image: HitomiFileJSON, no_webp: bool
