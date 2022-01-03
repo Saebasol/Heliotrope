@@ -29,7 +29,7 @@ from heliotrope.types import HitomiTagJSON
 
 @dataclass
 class Tag:
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.male = cast(Literal["", "1"], str(self.male))
         self.female = cast(Literal["", "1"], str(self.female))
 
