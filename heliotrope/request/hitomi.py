@@ -33,6 +33,7 @@ from yarl import URL
 
 from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.info import Info
+from heliotrope.parser import Parser
 from heliotrope.request.base import BaseRequest
 
 
@@ -100,7 +101,7 @@ class HitomiRequest:
 
         return Galleryinfo.from_dict(js_to_json)
 
-    async def get_info(self, id: int) -> Optional[Info]:
+    async def get_info_parser(self, id: int) -> Optional[Parser]:
         response = await self.get_redirect_url(id)
         if not response:
             return None
@@ -112,7 +113,14 @@ class HitomiRequest:
         if "Redirect" in html.body:
             return None
 
-        return Info.from_html(id, html.body, hitomi_type)
+        return Parser(html.body, hitomi_type)
+
+    async def get_info(self, id: int) -> Optional[Info]:
+        parser = await self.get_info_parser(id)
+        if not parser:
+            return None
+
+        return Info.from_parser(id, parser)
 
     async def fetch_index(
         self,
