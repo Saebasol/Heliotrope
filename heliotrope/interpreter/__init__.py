@@ -95,7 +95,7 @@ class CommonJS:
 
     async def use_document_title(
         self, galleryid: int, image: HitomiFileJSON, no_webp: bool, title: str
-    ):
+    ) -> str:
         self.interpreter.execute(f"document.title = '{title}'")
         return await self.image_url_from_image(galleryid, image, no_webp)
 
