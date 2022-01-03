@@ -44,14 +44,21 @@ class HitomiImageView(HTTPMethodView):
         if not galleryinfo:
             raise NotFound
 
+        parser = await request.app.ctx.hitomi_request.get_info_parser(id)
+        if not parser:
+            raise NotFound
+
+        title = parser.base_parser.soup.find("title")
+        assert title
+
         return json(
             {
                 "status": 200,
                 "files": [
                     {
                         "name": file.name,
-                        "url": await request.app.ctx.common_js.image_url_from_image(
-                            id, file.to_dict(), True
+                        "url": await request.app.ctx.common_js.use_document_title(
+                            id, file.to_dict(), True, title.text
                         ),
                     }
                     for file in galleryinfo.files
