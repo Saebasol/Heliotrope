@@ -71,8 +71,7 @@ class Info:
     date: str
 
     @classmethod
-    def from_html(cls, id: int, html: str, hitomi_type: str) -> "Info":
-        parser = Parser(html, hitomi_type)
+    def from_parser(cls, id: int, parser: Parser) -> "Info":
         return cls(
             id=id,
             title=parser.title_element.text,
