@@ -22,13 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal, Optional, cast
 
 from heliotrope.types import HitomiTagJSON
 
 
 @dataclass
 class Tag:
+    def __post_init__(self):
+        self.male = cast(Literal["", "1"], str(self.male))
+        self.female = cast(Literal["", "1"], str(self.female))
+
     index_id: int
     male: Optional[Literal["", "1"]]
     female: Optional[Literal["", "1"]]
