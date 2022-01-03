@@ -1,4 +1,4 @@
-from asyncio import sleep
+from asyncio import sleep, create_task
 
 from pytest import mark
 
@@ -8,7 +8,7 @@ from heliotrope.tasks.mirroring import MirroringTask
 
 @mark.asyncio
 async def test_mirroring_task(fake_app: Heliotrope):
-    await MirroringTask.setup(fake_app, 5)
+    create_task(MirroringTask.setup(fake_app, 5))
     await sleep(10)
     stats = await fake_app.ctx.meilisearch.index.get_stats()
     info_total = stats["numberOfDocuments"]
