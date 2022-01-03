@@ -60,7 +60,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         supervisor.add_task(
             RefreshCommonJS.setup, heliotrope.config.REFRESH_COMMON_JS_DELAY
         )
-        heliotrope.add_task(supervisor.start(30))
+        heliotrope.add_task(supervisor.start(heliotrope.config.SUPERVISOR_DELAY))
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
