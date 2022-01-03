@@ -113,6 +113,13 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
+        "--supervisor-delay",
+        type=int,
+        default=30,
+        help="The delay between supervisor task (default: 30)",
+    )
+
+    config.add_argument(
         "--forwarded-secret",
         type=str,
         default="",

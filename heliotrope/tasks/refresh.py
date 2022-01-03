@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from asyncio.tasks import Task, create_task, sleep
+from asyncio.tasks import sleep
 from typing import NoReturn
 
 from sanic.log import logger
@@ -30,11 +30,10 @@ from heliotrope.abc.task import AbstractTask
 from heliotrope.interpreter import CommonJS
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
+from heliotrope.types import SetupTask
 
 
 class RefreshCommonJS(AbstractTask):
-    config_name = "REFRESH_COMMON_JS_DELAY"
-
     def __init__(self, request: HitomiRequest, common_js: CommonJS) -> None:
         self.request = request
         self.common_js = common_js
@@ -62,7 +61,7 @@ class RefreshCommonJS(AbstractTask):
             await sleep(delay)
 
     @classmethod
-    async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
+    def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         logger.debug(f"Setting up {cls.__name__}")
         instance = cls(app.ctx.hitomi_request, app.ctx.common_js)
-        return create_task(instance.start(delay))
+        return instance.start(delay)
