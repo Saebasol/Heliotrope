@@ -1,5 +1,6 @@
-from asyncio import wait_for, TimeoutError, create_task
-
+from asyncio import TimeoutError, get_running_loop, wait_for
+from asyncio import events
+from asyncio.events import AbstractEventLoop
 from pytest import mark
 
 from heliotrope.sanic import Heliotrope
@@ -9,12 +10,16 @@ from heliotrope.tasks.mirroring import MirroringTask
 @mark.asyncio
 @mark.timeout(120)
 @mark.flaky(reruns=3, reruns_delay=5)
-async def test_mirroring_task(fake_app: Heliotrope):
+def test_mirroring_task(fake_app: Heliotrope, event_loop: AbstractEventLoop):
     try:
-        await wait_for(create_task(MirroringTask.setup(fake_app, 5)), 10)
+        event_loop.run_until_complete(wait_for(MirroringTask.setup(fake_app, 5), 10))
     except TimeoutError:
-        stats = await fake_app.ctx.meilisearch.index.get_stats()
+        stats = event_loop.run_until_complete(
+            fake_app.ctx.meilisearch.index.get_stats()
+        )
         info_total = stats["numberOfDocuments"]
-        galleryinfo_total = await fake_app.ctx.orm.get_all_index()
+        galleryinfo_total = event_loop.run_until_complete(
+            fake_app.ctx.orm.get_all_index()
+        )
         assert len(galleryinfo_total) >= 1
         assert info_total >= 1
