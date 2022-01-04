@@ -30,7 +30,6 @@ def test_parse_args_with_config():
     )
     config.update_with_args(args)
 
-    assert config.PRODUCTION == True
     assert (
         config.GALLERYINFO_DB_URL
         == "postgresql+asyncpg://postgres:test@localhost/test_heliotrope"

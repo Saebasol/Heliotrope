@@ -8,8 +8,9 @@ from heliotrope.tasks.mirroring import MirroringTask
 
 @mark.asyncio
 async def test_mirroring_task(fake_app: Heliotrope):
-    create_task(MirroringTask.setup(fake_app, 5))
+    task = create_task(MirroringTask.setup(fake_app, 5))
     await sleep(10)
+    task.cancel()
     stats = await fake_app.ctx.meilisearch.index.get_stats()
     info_total = stats["numberOfDocuments"]
     galleryinfo_total = await fake_app.ctx.orm.get_all_index()
