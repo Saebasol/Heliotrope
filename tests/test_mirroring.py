@@ -7,6 +7,7 @@ from heliotrope.tasks.mirroring import MirroringTask
 
 
 @mark.asyncio
+@mark.flaky(reruns=3, reruns_delay=5)
 async def test_mirroring_task(fake_app: Heliotrope):
     task = create_task(MirroringTask.setup(fake_app, 5))
     await sleep(10)

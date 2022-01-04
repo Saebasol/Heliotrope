@@ -1,8 +1,10 @@
+from pytest import mark
 from heliotrope.sanic import Heliotrope
 
 url = "/api/proxy/"
 
 
+@mark.flaky(reruns=3, reruns_delay=5)
 def test_proxy_hitomi(app: Heliotrope, image_url: str):
     _, response = app.test_client.get(url + image_url)
     assert response.status == 200
