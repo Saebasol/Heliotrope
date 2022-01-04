@@ -1,5 +1,5 @@
 import json
-from asyncio.events import AbstractEventLoop
+from asyncio.events import AbstractEventLoop, new_event_loop
 from tests.common import galleryinfo
 from pytest import fixture, mark
 from sanic_ext.extensions.http.extension import HTTPExtension
@@ -18,6 +18,18 @@ from heliotrope.server import create_app
 from tests.common import galleryinfo, info
 
 
+class LoopThatIsNeverClosed(AbstractEventLoop):
+    def __init__(self):
+        self._loop = None
+
+    def __getattribute__(self, name: str):
+        if name == "_loop":
+            return super().__getattribute__("_loop")
+        if self._loop is None or self._loop.is_closed():
+            self._loop = new_event_loop()
+        return getattr(self._loop, name)
+
+
 def get_config():
     with open("./tests/config.json", "r") as f:
         config = HeliotropeConfig()
@@ -34,6 +46,13 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     async with heliotrope.ctx.orm.engine.begin() as connection:
         await connection.run_sync(mapper_registry.metadata.drop_all)
     await heliotrope.ctx.meilisearch.index.delete()
+
+
+@fixture
+def event_loop():
+    loop = LoopThatIsNeverClosed()
+    yield loop
+    loop.close()
 
 
 @fixture
