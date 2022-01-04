@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from asyncio.tasks import Task, create_task, sleep
+from asyncio.tasks import sleep
 from typing import NoReturn
 
 from sanic.log import logger
@@ -30,11 +30,10 @@ from heliotrope.abc.database import AbstractGalleryinfoDatabase, AbstractInfoDat
 from heliotrope.abc.task import AbstractTask
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
+from heliotrope.types import SetupTask
 
 
 class MirroringTask(AbstractTask):
-    config_name = "MIRRORING_DELAY"
-
     def __init__(
         self,
         request: HitomiRequest,
@@ -46,10 +45,10 @@ class MirroringTask(AbstractTask):
         self.info_database = info_database
 
     @classmethod
-    async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
+    def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         logger.debug(f"Setting up {cls.__name__}.")
         instance = cls(app.ctx.hitomi_request, app.ctx.orm, app.ctx.meilisearch)
-        return create_task(instance.start(delay))
+        return instance.start(delay)
 
     async def compare_index_list(self) -> list[int]:
         remote_index_list = await self.request.fetch_index(include_range=False)

@@ -4,6 +4,5 @@
     "INFO_DB_API_KEY": "masterKey",
     "REFRESH_COMMON_JS_DELAY": 86400,
     "INFO_DB_URL": "http://127.0.0.1:7700",
-    "GALLERYINFO_DB_URL": "postgresql+asyncpg://postgres:test@localhost/test_heliotrope",
-    "TESTING": true
+    "GALLERYINFO_DB_URL": "postgresql+asyncpg://postgres:test@localhost/test_heliotrope"
 }

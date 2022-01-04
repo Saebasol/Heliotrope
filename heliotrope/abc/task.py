@@ -22,18 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from abc import ABC, abstractmethod
-from asyncio.tasks import Task
 from typing import NoReturn
 
 from heliotrope.sanic import Heliotrope
+from heliotrope.types import SetupTask
 
 
 class AbstractTask(ABC):
-    config_name: str
-
     @classmethod
     @abstractmethod
-    async def setup(cls, app: Heliotrope, delay: float) -> Task[NoReturn]:
+    def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         """
         Setup the task.
         """

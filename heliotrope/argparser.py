@@ -64,10 +64,10 @@ def parse_args(argv: list[str]) -> Namespace:
     config = parser.add_argument_group("config")
 
     config.add_argument(
-        "--test",
+        "--production",
         action="store_true",
         default=False,
-        help="Run the server in test mode (default: False)",
+        help="Run the server in production mode (default: False)",
     )
 
     config.add_argument(
@@ -110,6 +110,13 @@ def parse_args(argv: list[str]) -> Namespace:
         type=int,
         default=86400,
         help="The delay between refresh commonjs (default: 86400)",
+    )
+
+    config.add_argument(
+        "--supervisor-delay",
+        type=int,
+        default=30,
+        help="The delay between supervisor task (default: 30)",
     )
 
     config.add_argument(

@@ -44,7 +44,7 @@ class HeliotropeConfig(Config):
             {
                 # heliotrope
                 "CONFIG": "",
-                "TESTING": False,
+                "PRODUCTION": False,
                 "USE_ENV": False,
                 "SENTRY_DSN": "",
                 "GALLERYINFO_DB_URL": "",
@@ -53,6 +53,7 @@ class HeliotropeConfig(Config):
                 "INDEX_FILE": "index-korean.nozomi",
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_COMMON_JS_DELAY": 86400,
+                "SUPERVISOR_DELAY": 30,
                 # Sanic config
                 "HOST": "127.0.0.1",
                 "PORT": 8000,
@@ -83,13 +84,14 @@ class HeliotropeConfig(Config):
     # Heliotrope
     USE_ENV: bool
     CONFIG: str
-    TESTING: bool
+    PRODUCTION: bool
     SENTRY_DSN: str
     GALLERYINFO_DB_URL: str
     INFO_DB_URL: str
     INFO_DB_API_KEY: str
     MIRRORING_DELAY: float
     REFRESH_COMMON_JS_DELAY: float
+    SUPERVISOR_DELAY: float
     INDEX_FILE: str
     # Sanic config
     DEBUG: bool

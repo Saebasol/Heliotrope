@@ -22,9 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from asyncio.events import AbstractEventLoop
-from asyncio.tasks import all_tasks, current_task
 
-from sanic.log import logger
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
@@ -36,6 +34,7 @@ from heliotrope.request.base import BaseRequest
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.rest import rest
 from heliotrope.sanic import Heliotrope
+from heliotrope.tasks.manager import SuperVisor
 from heliotrope.tasks.mirroring import MirroringTask
 from heliotrope.tasks.refresh import RefreshCommonJS
 
@@ -52,15 +51,16 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     )
     heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
     # Sentry
-    if not heliotrope.config.TESTING:
+    if heliotrope.config.PRODUCTION:
         init(heliotrope.config.SENTRY_DSN, integrations=[SanicIntegration()])
+
         # Task setup
-        heliotrope.add_task(
-            MirroringTask.setup(heliotrope, heliotrope.config.MIRRORING_DELAY)
+        supervisor = SuperVisor(heliotrope)
+        supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
+        supervisor.add_task(
+            RefreshCommonJS.setup, heliotrope.config.REFRESH_COMMON_JS_DELAY
         )
-        heliotrope.add_task(
-            RefreshCommonJS.setup(heliotrope, heliotrope.config.REFRESH_COMMON_JS_DELAY)
-        )
+        heliotrope.add_task(supervisor.start(heliotrope.config.SUPERVISOR_DELAY))
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -70,11 +70,7 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     await heliotrope.ctx.hitomi_request.request.close()
 
     # Close task
-    current = current_task()
-    for task in all_tasks():
-        if task is not current:
-            logger.debug(f"Cancel task {task.get_name()}")
-            task.cancel()
+    heliotrope.shutdown_tasks()
 
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:
