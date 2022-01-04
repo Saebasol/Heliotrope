@@ -48,6 +48,8 @@ class CommonJS:
             polyfill = f.read()
         instance = cls(polyfill)
         instance.interpreter.execute("var document = {}")
+        instance.interpreter.execute("var window = {}")
+        instance.interpreter.execute("window.innerWidth = true")
         instance.update_js_code(common_js_code, gg_js_code)
         return instance
 
