@@ -30,8 +30,10 @@ from heliotrope.types import HitomiTagJSON
 @dataclass
 class Tag:
     def __post_init__(self) -> None:
-        self.male = cast(Literal["", "1"], str(self.male))
-        self.female = cast(Literal["", "1"], str(self.female))
+        self.male = cast(Literal["", "1"], str(self.male) if self.male else self.male)
+        self.female = cast(
+            Literal["", "1"], str(self.female) if self.female else self.female
+        )
 
     index_id: int
     male: Optional[Literal["", "1"]]
