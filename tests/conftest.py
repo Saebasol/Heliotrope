@@ -1,5 +1,5 @@
 import json
-from asyncio.events import AbstractEventLoop, new_event_loop
+from asyncio.events import AbstractEventLoop, get_running_loop, new_event_loop
 from tests.common import galleryinfo
 from pytest import fixture, mark
 from sanic_ext.extensions.http.extension import HTTPExtension
@@ -77,8 +77,6 @@ def reset_extensions():
 async def image_url():
     hitomi_request = await HitomiRequest.setup()
     common_js = await CommonJS.setup(hitomi_request)
-    parser = await hitomi_request.get_info_parser(galleryinfo["id"])
-    title = parser.base_parser.soup.find("title")
     yield await common_js.use_document_title(
         galleryinfo["id"],
         galleryinfo["files"][0],
