@@ -27,8 +27,9 @@ class SuperVisor:
         delay: float,
         name: Optional[str] = None,
     ) -> None:
+        name = name or setup_func.__qualname__
         task: Optional[Task[Any]] = self.app.add_task(
-            setup_func(self.app, delay), name=name or setup_func.__qualname__
+            setup_func(self.app, delay), name=name
         )
         assert task
         self.tasks[task] = RegisteredTask(setup_func, delay, name)
