@@ -9,13 +9,11 @@
 
 ## Feature
 
-- Fully type annotated.
-- Asynchronous.
-- ORM based.
-- Galleryinfo, Info auto mirroring.
-- Pixiv.net, Hitomi.la image proxying.
-- Search by title.
-- Production ready
+* 🚀Very fast response and processing with [Sanic framework](https://sanicframework.org/en/)
+* ⚡Blazingly fast search with [Meilisearch](https://www.meilisearch.com/)
+* 🔄Galleryinfo, Info auto mirroring.
+* 🖼️Pixiv.net, Hitomi.la image proxying.
+* 🏡[Production ready](https://github.com/Saebasol/heliotrope-deploy)
 
 ## Wiki
 
