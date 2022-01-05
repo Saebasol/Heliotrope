@@ -44,12 +44,12 @@ class Galleryinfo:
     def to_dict(self) -> HitomiGalleryinfoJSON:
         return HitomiGalleryinfoJSON(
             title=self.title,
+            id=self.id,
             date=self.date,
             type=self.type,
             japanese_title=self.japanese_title,
             language=self.language,
             files=[file.to_dict() for file in self.files],
-            id=str(self.id),
             language_localname=self.language_localname,
             tags=[tag.to_dict() for tag in self.tags],
         )

@@ -106,7 +106,7 @@ class Info:
 
     def to_dict(self) -> HitomiInfoJSON:
         return HitomiInfoJSON(
-            id=str(self.id),
+            id=self.id,
             title=self.title,
             thumbnail=self.thumbnail,
             artist=self.artist,
