@@ -38,6 +38,7 @@ from heliotrope.types import SetupTask
 # 때로 이미지 주소를 가져오는 방법이 바뀔수도 있습니다.
 # 이를 동적으로 해결합니다.
 
+
 class RefreshCommonJS(AbstractTask):
     def __init__(self, request: HitomiRequest, common_js: CommonJS) -> None:
         self.request = request
