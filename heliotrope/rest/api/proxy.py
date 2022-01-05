@@ -41,15 +41,18 @@ class HeliotropeImageProxyView(HTTPMethodView):
     @openapi.parameter(name="image_url", location="path", schema=str)  # type: ignore
     async def get(self, request: HeliotropeRequest, image_url: str) -> HTTPResponse:
         # Unquote url first
+        # url 디코딩
         unquote_image_url = unquote(image_url)
 
         # Check url is pixiv and hitomi
+        # url이 히토미 또는 픽시브인지 확인
         if not match(r"https:\/\/.+?(\.hitomi\.la|\.pximg\.net)", unquote_image_url):
             raise InvalidUsage
 
         headers = request.app.ctx.hitomi_request.headers
 
         # Pixiv request header
+        # 픽시브일경우 리퍼러 헤더 변경
         if "pximg" in unquote_image_url:
             headers.update({"referer": "https://pixiv.net"})
 
@@ -65,7 +68,9 @@ class HeliotropeImageProxyView(HTTPMethodView):
             )
 
             # Use chunk
+            # 청크를 사용
             # If read is used, oof may occur if many images are requested.
+            # 만약 .read를 사용할경우 메모리를 많이 먹기때문에 많은 요청 들어오면 out of memory로 터질수도있음
             async for data, _ in request_response.content.iter_chunks():
                 await response.send(data)
             await response.eof()  # type: ignore

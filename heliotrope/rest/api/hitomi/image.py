@@ -37,6 +37,7 @@ class HitomiImageView(HTTPMethodView):
     @openapi.summary("Get hitomi image url list")  # type: ignore
     @openapi.parameter(name="id", location="path", schema=int)  # type: ignore
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
+        # BUG: Very slow response
         galleryinfo = await request.app.ctx.orm.get_galleryinfo(id)
         if not galleryinfo:
             galleryinfo = await request.app.ctx.hitomi_request.get_galleryinfo(id)

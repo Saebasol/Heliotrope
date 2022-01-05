@@ -59,6 +59,7 @@ class MirroringTask(AbstractTask):
         for index in index_list:
             logger.debug(f"id: {index}")
             # Check galleryinfo first
+            # galleryinfo 먼저 확인
             if galleryinfo := await self.request.get_galleryinfo(index):
                 logger.debug(f"{index} can get galleryinfo from hitomi.la.")
                 if not await self.galleryinfo_database.get_galleryinfo(index):
@@ -71,7 +72,8 @@ class MirroringTask(AbstractTask):
                 logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
                 continue
 
-            # Then check info
+            # If there is galleryinfo, run it because there is also info
+            # galleryinfo가 있다면 info도 있기 때문에 실행
             if info := await self.request.get_info(index):
                 logger.debug(f"{index} can get info from hitomi.la.")
                 if not await self.info_database.get_info(index):
