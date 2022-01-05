@@ -122,6 +122,8 @@ class HitomiRequest:
 
         return Info.from_parser(id, parser)
 
+    # NOTE: See https://ltn.hitomi.la/galleryblock.js
+    # 참고: https://ltn.hitomi.la/galleryblock.js
     async def fetch_index(
         self,
         page: int = 1,

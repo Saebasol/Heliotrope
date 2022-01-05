@@ -16,6 +16,10 @@ class RegisteredTask:
     name: Optional[str] = None
 
 
+# If the task registered in the class is not completed normally, the task is restarted.
+# 해당 클래스에 등록된 태스크가 정상적으로 완료되지 않았다면 해당 태스크를 다시 시작합니다.
+
+
 class SuperVisor:
     def __init__(self, app: Heliotrope) -> None:
         self.app = app
@@ -35,6 +39,7 @@ class SuperVisor:
         self.tasks[task] = RegisteredTask(setup_func, delay, name)
 
     async def start(self, delay: float) -> NoReturn:
+        # TODO: Need to tweak the code a bit
         logger.info(f"Supervisor started")
         while True:
             for task in self.app.tasks:

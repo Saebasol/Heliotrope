@@ -69,6 +69,10 @@ class MeiliSearch(AbstractInfoDatabase):
                 return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
+        # Tags are received in the following format: female:big_breasts
+        # If it is not in the following format, it is regarded as a title.
+        # 태그는 다음과 같은 형식으로 받아요: female:big_breasts
+        # 만약 다음과 같은 형식이 아니라면 제목으로 간주해요.
         parsed_query: list[str] = []
         title = ""
         for query in querys:

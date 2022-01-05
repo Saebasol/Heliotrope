@@ -31,6 +31,9 @@ from sanic.log import logger
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
 
+# To get Hitomi.la image address, you can use common.js and gg.js.
+# 히토미의 이미지 주소를 가져올려면 common.js와 gg.js를 사용해야 합니다.
+
 
 class CommonJS:
     def __init__(self, polyfill: str) -> None:
@@ -44,7 +47,10 @@ class CommonJS:
         common_js_code = await request.get_common_js()
         gg_js_code = await request.get_gg_js()
         # Because it is executed only once for the first time, it is safe to block
+        # 한번만 실행되기때문에 블로킹 걸려도 괜찮아요.
         with open("./heliotrope/interpreter/polyfill.js") as f:
+            # Polyfill is used because there are functions that js2py does not have.
+            # 폴리필을 사용하는 이유는 js2py에 없는 함수가 몇몇개 있기 때문이에요.
             polyfill = f.read()
         instance = cls(polyfill)
         instance.interpreter.execute("var document = {}")
@@ -54,6 +60,8 @@ class CommonJS:
         return instance
 
     def get_using_functions(self, code: str) -> str:
+        # Extract only the functions you want to use.
+        # 사용할 함수만 추출
         export_functions_name = [
             "subdomain_from_galleryid",
             "subdomain_from_url",

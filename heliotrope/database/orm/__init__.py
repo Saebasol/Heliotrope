@@ -78,6 +78,8 @@ class ORM(AbstractGalleryinfoDatabase):
     @classmethod
     async def setup(cls, db_url: str) -> "ORM":
         logger.debug(f"Setting up {cls.__name__}")
+        # Because it is mapped manually, an error occurs if it is already mapped.
+        # 수동으로 매핑하기때문에 이미 매핑돼있을경우 오류가 발생합니다.
         try:
             class_mapper(Galleryinfo)
         except UnmappedClassError:
