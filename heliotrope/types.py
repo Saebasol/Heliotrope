@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Any, Coroutine, Literal, NoReturn, Optional, TypedDict
+from typing import Any, Coroutine, Literal, NoReturn, Optional, TypedDict, Union
 
 SetupTask = Coroutine[Any, Any, NoReturn]
 
@@ -56,13 +56,13 @@ class HitomiGalleryinfoJSON(TypedDict):
     japanese_title: Optional[str]
     language: Optional[str]
     files: list[HitomiFileJSON]
-    id: str
+    id: Union[str, int]
     language_localname: str
     tags: list[HitomiTagJSON]
 
 
 class HitomiInfoJSON(TypedDict):
-    id: str
+    id: Union[str, int]
     title: str
     thumbnail: str
     artist: list[str]
