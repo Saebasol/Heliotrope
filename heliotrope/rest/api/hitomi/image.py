@@ -48,7 +48,9 @@ class HitomiImageView(HTTPMethodView):
         if not galleryinfo:
             raise NotFound
 
-        async def resolve(coro: Coroutine[Any, Any, str], filename: str):
+        async def resolve(
+            coro: Coroutine[Any, Any, str], filename: str
+        ) -> dict[str, str]:
             return {"name": filename, "url": await coro}
 
         files = await gather(
