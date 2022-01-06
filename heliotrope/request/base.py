@@ -44,7 +44,7 @@ class BaseRequest:
 
     @property
     def user_agent(self) -> str:
-        return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
+        return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
 
     @classmethod
     async def setup(cls) -> "BaseRequest":
