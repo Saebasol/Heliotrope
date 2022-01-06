@@ -21,13 +21,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from typing import Any, Coroutine
 from sanic.blueprints import Blueprint
 from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
-
+from asyncio.tasks import gather
 from heliotrope.sanic import HeliotropeRequest
+
 
 hitomi_image = Blueprint("hitomi_image", url_prefix="/image")
 
@@ -45,25 +47,25 @@ class HitomiImageView(HTTPMethodView):
         if not galleryinfo:
             raise NotFound
 
-        parser = await request.app.ctx.hitomi_request.get_info_parser(id)
-        if not parser:
-            raise NotFound
+        async def resolve(coro: Coroutine[Any, Any, str], filename: str):
+            return {"name": filename, "url": await coro}
 
-        title = parser.base_parser.soup.find("title")
-        assert title
+        files = await gather(
+            *[
+                resolve(
+                    request.app.ctx.common_js.image_url_from_image(
+                        id, file.to_dict(), True
+                    ),
+                    file.name,
+                )
+                for file in galleryinfo.files
+            ]
+        )
 
         return json(
             {
                 "status": 200,
-                "files": [
-                    {
-                        "name": file.name,
-                        "url": await request.app.ctx.common_js.use_document_title(
-                            id, file.to_dict(), True, title.text
-                        ),
-                    }
-                    for file in galleryinfo.files
-                ],
+                "files": list(files),
             }
         )
 

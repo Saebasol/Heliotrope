@@ -53,9 +53,6 @@ class CommonJS:
             # 폴리필을 사용하는 이유는 js2py에 없는 함수가 몇몇개 있기 때문이에요.
             polyfill = f.read()
         instance = cls(polyfill)
-        instance.interpreter.execute("var document = {}")
-        instance.interpreter.execute("var window = {}")
-        instance.interpreter.execute("window.innerWidth = true")
         instance.update_js_code(common_js_code, gg_js_code)
         return instance
 
@@ -94,20 +91,18 @@ class CommonJS:
 
         return "".join(functions)
 
+    def parse_gg_js(self, code: str) -> str:
+        lines = StringIO(code).readlines()
+        return "".join([line for line in lines if "return 4" not in line])
+
     def update_js_code(self, common_js_code: str, gg_js_code: str) -> None:
         self.common_js_code = common_js_code
-        self.gg_js_code = gg_js_code
+        self.gg_js_code = self.parse_gg_js(gg_js_code)
         self.interpreter.execute(self.get_using_functions(common_js_code))
         self.interpreter.execute(self.gg_js_code)
 
     async def rewrite_tn_paths(self, html: str) -> str:
         return cast(str, await to_thread(self.interpreter.rewrite_tn_paths, html))
-
-    async def use_document_title(
-        self, galleryid: int, image: HitomiFileJSON, no_webp: bool, title: str
-    ) -> str:
-        self.interpreter.execute(f"document.title = '{title}'")
-        return await self.image_url_from_image(galleryid, image, no_webp)
 
     async def image_url_from_image(
         self, galleryid: int, image: HitomiFileJSON, no_webp: bool
