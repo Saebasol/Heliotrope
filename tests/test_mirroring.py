@@ -9,7 +9,7 @@ from heliotrope.tasks.mirroring import MirroringTask
 
 @mark.asyncio
 @mark.timeout(120)
-@mark.flaky(reruns=3, reruns_delay=5)
+@mark.flaky(reruns=5, reruns_delay=5)
 def test_mirroring_task(fake_app: Heliotrope, event_loop: AbstractEventLoop):
     try:
         event_loop.run_until_complete(wait_for(MirroringTask.setup(fake_app, 5), 15))
