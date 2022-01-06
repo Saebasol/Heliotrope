@@ -12,7 +12,7 @@ from heliotrope.tasks.mirroring import MirroringTask
 @mark.flaky(reruns=3, reruns_delay=5)
 def test_mirroring_task(fake_app: Heliotrope, event_loop: AbstractEventLoop):
     try:
-        event_loop.run_until_complete(wait_for(MirroringTask.setup(fake_app, 5), 10))
+        event_loop.run_until_complete(wait_for(MirroringTask.setup(fake_app, 5), 15))
     except TimeoutError:
         stats = event_loop.run_until_complete(
             fake_app.ctx.meilisearch.index.get_stats()
