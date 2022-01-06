@@ -21,15 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio.tasks import gather
 from typing import Any, Coroutine
+
 from sanic.blueprints import Blueprint
 from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
-from asyncio.tasks import gather
-from heliotrope.sanic import HeliotropeRequest
 
+from heliotrope.sanic import HeliotropeRequest
 
 hitomi_image = Blueprint("hitomi_image", url_prefix="/image")
 
