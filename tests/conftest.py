@@ -77,11 +77,10 @@ def reset_extensions():
 async def image_url():
     hitomi_request = await HitomiRequest.setup()
     common_js = await CommonJS.setup(hitomi_request)
-    yield await common_js.use_document_title(
+    yield await common_js.image_url_from_image(
         galleryinfo["id"],
         galleryinfo["files"][0],
         True,
-        "Sekigahara-san wa Dasaretai | 세키가하라는 발산하고싶어 | Hitomi.la",
     )
 
 
