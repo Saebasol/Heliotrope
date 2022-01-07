@@ -48,22 +48,15 @@ class HitomiImageView(HTTPMethodView):
         if not galleryinfo:
             raise NotFound
 
-        async def resolve(
-            coro: Coroutine[Any, Any, str], filename: str
-        ) -> dict[str, str]:
-            return {"name": filename, "url": await coro}
-
-        files = await gather(
-            *[
-                resolve(
-                    request.app.ctx.common_js.image_url_from_image(
-                        id, file.to_dict(), True
-                    ),
-                    file.name,
-                )
-                for file in galleryinfo.files
-            ]
-        )
+        files = [
+            {
+                "name": file.name,
+                "url": await request.app.ctx.common_js.image_url_from_image(
+                    id, file.to_dict(), True
+                ),
+            }
+            for file in galleryinfo.files
+        ]
 
         return json(
             {
