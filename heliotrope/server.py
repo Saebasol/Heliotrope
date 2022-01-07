@@ -79,7 +79,7 @@ def create_app(config: HeliotropeConfig) -> Heliotrope:
 
     heliotrope.blueprint(rest)
 
-    heliotrope.main_process_start(startup)
-    heliotrope.main_process_stop(closeup)
+    heliotrope.before_server_start(startup)
+    heliotrope.before_server_stop(closeup)
 
     return heliotrope
