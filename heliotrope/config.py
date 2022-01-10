@@ -66,6 +66,10 @@ class HeliotropeConfig(Config):
                 "OAS_UI_DEFAULT": "swagger",
                 "OAS_URI_REDOC": False,
                 # Open API config
+                "SWAGGER_UI_CONFIGURATION": {
+                    "apisSorter": "alpha",
+                    "operationsSorter": "alpha",
+                },
                 "API_TITLE": "Heliotrope",
                 "API_VERSION": __version__,
                 "API_DESCRIPTION": "Hitomi.la mirror api",
