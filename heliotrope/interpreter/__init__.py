@@ -65,7 +65,7 @@ class CommonJS:
                     if (image.hash && image.haswebp && !no_webp){
                         webp = 'webp'
                     }
-                    return { 'name': image.name, 'url': url_from_url_from_hash(galleryid, image, no_webp) }
+                    return { 'name': image.name, 'url': url_from_url_from_hash(galleryid, image, webp) }
                 })
             }
             """
