@@ -76,7 +76,7 @@ class HeliotropeImageProxyView(HTTPMethodView):
             # 만약 .read를 사용할경우 메모리를 많이 먹기때문에 많은 요청 들어오면 out of memory로 터질수도있음
             async for data, _ in request_response.content.iter_chunks():
                 await response.send(data)
-            await response.eof()  # type: ignore
+            return await response.eof()  # type: ignore
 
 
 heliotrope_image_proxy.add_route(
