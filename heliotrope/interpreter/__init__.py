@@ -137,7 +137,7 @@ class CommonJS:
 
     async def image_urls(
         self, galleryid: int, images: list[HitomiFileJSON], no_webp: bool
-    ):
+    ) -> str:
         return cast(
             dict[str, str],
             await to_thread(self.interpreter.image_urls, galleryid, images, no_webp),
