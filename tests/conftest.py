@@ -60,8 +60,8 @@ def app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
     TestManager(heliotrope)
-    heliotrope.main_process_start(startup_test)
-    heliotrope.main_process_stop(closeup_test)
+    heliotrope.before_server_start(startup_test)
+    heliotrope.before_server_stop(closeup_test)
     yield heliotrope
 
 
@@ -89,12 +89,12 @@ async def image_url():
 async def fake_app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
-    heliotrope.main_process_stop(closeup_test)
+    heliotrope.before_server_stop(closeup_test)
     # do not run app
-    for listener in heliotrope.listeners["main_process_start"]:
+    for listener in heliotrope.listeners["before_server_start"]:
         # None is loop argument but not needed
         await listener(heliotrope, None)
     # return app
     yield heliotrope
-    for listener in heliotrope.listeners["main_process_stop"]:
+    for listener in heliotrope.listeners["before_server_stop"]:
         await listener(heliotrope, None)
