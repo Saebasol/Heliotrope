@@ -1,6 +1,6 @@
 import json
 from asyncio.events import AbstractEventLoop, get_running_loop, new_event_loop
-from tests.common import galleryinfo
+
 from pytest import fixture, mark
 from sanic_ext.extensions.http.extension import HTTPExtension
 from sanic_ext.extensions.injection.extension import InjectionExtension
@@ -90,11 +90,20 @@ async def fake_app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
     heliotrope.before_server_stop(closeup_test)
+
+    before_server_start = []
+    before_server_stop = []
+    # Apply listeners
+    for future_listener in heliotrope._future_listeners:
+        if future_listener.event == "before_server_start":
+            before_server_start.append(future_listener.listener)
+        else:
+            before_server_stop.append(future_listener.listener)
     # do not run app
-    for listener in heliotrope.listeners["before_server_start"]:
+    for listener in before_server_start:
         # None is loop argument but not needed
         await listener(heliotrope, None)
     # return app
     yield heliotrope
-    for listener in heliotrope.listeners["before_server_stop"]:
+    for listener in before_server_stop:
         await listener(heliotrope, None)
