@@ -32,7 +32,7 @@ class SuperVisor:
         name: Optional[str] = None,
     ) -> None:
         name = name or setup_func.__qualname__
-        task: Optional[Task[Any]] = self.app.add_task(
+        task: Optional[SetupTask] = self.app.add_task(
             setup_func(self.app, delay), name=name
         )
         assert task
@@ -40,26 +40,26 @@ class SuperVisor:
 
     async def start(self, delay: float) -> NoReturn:
         # TODO: Need to tweak the code a bit
-        logger.info(f"Supervisor started")
+        logger.debug(f"Supervisor started")
         while True:
             for task in self.app.tasks:
                 if task in self.tasks:
                     if task.done():
                         if task.cancelled():
-                            logger.warning(f"{task.get_name()} cancled")
+                            logger.warning(f"{task.get_name()} cancled.")
                         elif task.exception():
                             try:
                                 task.result()
                             except:
                                 logger.exception(
-                                    f"{task.get_name()} is raise exception"
+                                    f"{task.get_name()} is raise exception."
                                 )
 
                         logger.warning("Purge task")
                         self.app.purge_tasks()  # type: ignore
                         registered_task = self.tasks[task]
                         del self.tasks[task]
-                        logger.warning(f"Try restart {registered_task.name}")
+                        logger.warning(f"Try restart {registered_task.name}.")
                         self.add_task(
                             registered_task.setup_func,
                             registered_task.delay,

@@ -21,9 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Any, Coroutine, Literal, NoReturn, Optional, TypedDict, Union
+from asyncio import Task
+from typing import Literal, NoReturn, Optional, TypedDict, Union
 
-SetupTask = Coroutine[Any, Any, NoReturn]
+SetupTask = Task[NoReturn]
 
 
 class _HitomiFileJSONOptional(TypedDict, total=False):
