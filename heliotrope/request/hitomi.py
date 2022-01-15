@@ -58,7 +58,7 @@ class HitomiRequest:
             "User-Agent": self.request.user_agent,
         }
 
-    async def close(self):
+    async def close(self) -> None:
         logger.debug(f"Close {self.__class__.__name__} session")
         await self.request.session.close()
 
