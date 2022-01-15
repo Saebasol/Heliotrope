@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio import create_task
 from asyncio.tasks import sleep
 from typing import NoReturn
 
@@ -70,4 +71,4 @@ class RefreshCommonJS(AbstractTask):
     def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         logger.debug(f"Setting up {cls.__name__}")
         instance = cls(app.ctx.hitomi_request, app.ctx.common_js)
-        return instance.start(delay)
+        return create_task(instance.start(delay))

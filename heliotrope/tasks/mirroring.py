@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio import create_task
 from asyncio.tasks import sleep
 from typing import NoReturn
 
@@ -48,7 +49,7 @@ class MirroringTask(AbstractTask):
     def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         logger.debug(f"Setting up {cls.__name__}.")
         instance = cls(app.ctx.hitomi_request, app.ctx.orm, app.ctx.meilisearch)
-        return instance.start(delay)
+        return create_task(instance.start(delay))
 
     async def compare_index_list(self) -> list[int]:
         remote_index_list = await self.request.fetch_index(include_range=False)

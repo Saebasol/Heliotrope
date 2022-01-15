@@ -52,9 +52,8 @@ class BaseRequest:
         return cls(ClientSession())
 
     async def close(self) -> None:
-        logger.debug(f"close {self.__class__.__name__}")
-        if self.session:
-            await self.session.close()
+        logger.debug(f"Close {self.__class__.__name__} session")
+        await self.session.close()
 
     async def request(
         self,

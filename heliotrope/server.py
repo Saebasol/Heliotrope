@@ -21,13 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from asyncio import sleep
 from asyncio.events import AbstractEventLoop
+from multiprocessing import current_process
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
+from heliotrope import __version__
 from heliotrope.config import HeliotropeConfig
-from heliotrope.database.meilisearch.client import MeiliSearch
+from heliotrope.database.meilisearch import MeiliSearch
 from heliotrope.database.orm import ORM
 from heliotrope.interpreter import CommonJS
 from heliotrope.request.base import BaseRequest
@@ -52,11 +55,16 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
     # Sentry
     if heliotrope.config.PRODUCTION:
-        init(heliotrope.config.SENTRY_DSN, integrations=[SanicIntegration()])
+        init(
+            heliotrope.config.SENTRY_DSN,
+            integrations=[SanicIntegration()],
+            release=__version__,
+        )
 
         # Task setup
         supervisor = SuperVisor(heliotrope)
-        supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
+        if current_process().name in ["ForkProcess-1", "MainProcess"]:
+            supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
         supervisor.add_task(
             RefreshCommonJS.setup, heliotrope.config.REFRESH_COMMON_JS_DELAY
         )
@@ -67,7 +75,7 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # Close session
     await heliotrope.ctx.meilisearch.close()
     await heliotrope.ctx.request.close()
-    await heliotrope.ctx.hitomi_request.request.close()
+    await heliotrope.ctx.hitomi_request.close()
 
     # Close task
     heliotrope.shutdown_tasks()
@@ -79,7 +87,7 @@ def create_app(config: HeliotropeConfig) -> Heliotrope:
 
     heliotrope.blueprint(rest)
 
-    heliotrope.main_process_start(startup)
-    heliotrope.main_process_stop(closeup)
+    heliotrope.before_server_start(startup)
+    heliotrope.before_server_stop(closeup)
 
     return heliotrope

@@ -28,7 +28,7 @@ from sanic.app import Sanic
 from sanic.request import Request
 
 from heliotrope.config import HeliotropeConfig
-from heliotrope.database.meilisearch.client import MeiliSearch
+from heliotrope.database.meilisearch import MeiliSearch
 from heliotrope.database.orm import ORM
 from heliotrope.interpreter import CommonJS
 from heliotrope.request.base import BaseRequest
