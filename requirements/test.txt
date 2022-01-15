@@ -1,6 +1,6 @@
 pytest==6.2.5
 pytest-cov==3.0.0
-pytest-asyncio==0.16.0
+pytest-asyncio==0.17.0
 sanic-testing==0.8.2
 pytest-rerunfailures==10.2
 pytest-timeout==2.0.2
