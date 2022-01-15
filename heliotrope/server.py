@@ -29,7 +29,6 @@ from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
 from heliotrope import __version__
-
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.meilisearch import MeiliSearch
 from heliotrope.database.orm import ORM
