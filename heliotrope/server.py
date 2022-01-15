@@ -26,6 +26,7 @@ from asyncio.events import AbstractEventLoop
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
 
+from heliotrope import __version__
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.meilisearch.client import MeiliSearch
 from heliotrope.database.orm import ORM
@@ -52,7 +53,11 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
     # Sentry
     if heliotrope.config.PRODUCTION:
-        init(heliotrope.config.SENTRY_DSN, integrations=[SanicIntegration()])
+        init(
+            heliotrope.config.SENTRY_DSN,
+            integrations=[SanicIntegration()],
+            release=__version__,
+        )
 
         # Task setup
         supervisor = SuperVisor(heliotrope)
