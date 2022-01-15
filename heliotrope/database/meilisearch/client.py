@@ -40,7 +40,7 @@ class MeiliSearch(AbstractInfoDatabase):
         self.index = index
 
     async def close(self) -> None:
-        logger.debug(f"close {self.__class__.__name__}")
+        logger.debug(f"Close {self.__class__.__name__} session")
         await self.client.close()
         await self.index.close()
 

@@ -67,7 +67,7 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # Close session
     await heliotrope.ctx.meilisearch.close()
     await heliotrope.ctx.request.close()
-    await heliotrope.ctx.hitomi_request.request.close()
+    await heliotrope.ctx.hitomi_request.close()
 
     # Close task
     heliotrope.shutdown_tasks()
