@@ -72,17 +72,17 @@ class HitomiRequest:
         return hitomi_request
 
     async def get_common_js(self) -> str:
-        request_url = self.ltn_url.with_path("common.js").human_repr()
+        request_url = self.ltn_url.with_path("common.js")
         response = await self.request.get(request_url, "text")
         return str(response.body)
 
     async def get_gg_js(self) -> str:
-        request_url = self.ltn_url.with_path("gg.js").human_repr()
+        request_url = self.ltn_url.with_path("gg.js")
         response = await self.request.get(request_url, "text")
         return str(response.body)
 
     async def get_redirect_url(self, id: int) -> Optional[tuple[str, str]]:
-        request_url = self.url.with_path(f"galleries/{id}.html").human_repr()
+        request_url = self.url.with_path(f"galleries/{id}.html")
         response = await self.request.get(request_url, "text")
         if response.status != 200:
             return None
@@ -95,7 +95,7 @@ class HitomiRequest:
         return url, hitomi_type
 
     async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
-        request_url = self.ltn_url.with_path(f"galleries/{id}.js").human_repr()
+        request_url = self.ltn_url.with_path(f"galleries/{id}.js")
         response = await self.request.get(request_url, "text")
 
         if response.status != 200:

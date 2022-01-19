@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Any, Literal, Union
 
 from aiohttp.client import ClientSession
 from multidict import CIMultiDictProxy
@@ -58,7 +58,7 @@ class BaseRequest:
     async def request(
         self,
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH"],
-        url: str,
+        url: Union[str, URL],
         return_method: Literal["json", "text", "read"] = "json",
         **kwargs: Any,
     ) -> Response:
@@ -73,7 +73,7 @@ class BaseRequest:
 
     async def get(
         self,
-        url: str,
+        url: Union[str, URL],
         return_method: Literal["json", "text", "read"] = "json",
         **kwargs: Any,
     ) -> Response:
@@ -81,7 +81,7 @@ class BaseRequest:
 
     async def post(
         self,
-        url: str,
+        url: Union[str, URL],
         return_method: Literal["json", "text", "read"] = "json",
         **kwargs: Any,
     ) -> Response:
