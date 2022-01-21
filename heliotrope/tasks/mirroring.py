@@ -97,6 +97,5 @@ class MirroringTask(AbstractTask):
                 logger.warning(f"{len(index_list)} new index found.")
                 logger.info(f"Start mirroring.")
                 await self.mirroring(index_list)
-                self.info_database.total = len(await self.info_database.get_all_index())
                 logger.info(f"Mirroring finished.")
             await sleep(delay)

@@ -39,7 +39,6 @@ class MeiliSearch(AbstractInfoDatabase):
     def __init__(self, client: Client, index: Index) -> None:
         self.client = client
         self.index = index
-        self.total = 0
 
     async def close(self) -> None:
         logger.debug(f"close {self.__class__.__name__}")
@@ -70,8 +69,6 @@ class MeiliSearch(AbstractInfoDatabase):
                     await index.update_sortable_attributes(["id"])
                     await index.update_searchable_attributes(["title"])
                 instance = cls(client, index)
-                stats = await index.get_stats()
-                instance.total = stats["numberOfDocuments"]
                 return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
@@ -96,8 +93,13 @@ class MeiliSearch(AbstractInfoDatabase):
 
         return title, parsed_query
 
+    async def get_total(self) -> int:
+        stats = await self.index.get_stats()
+        return int(stats["numberOfDocuments"])
+
     async def get_all_index(self) -> list[int]:
-        results = await self.index.get_documents({"limit": self.total})
+        total = await self.get_total()
+        results = await self.index.get_documents({"limit": total})
         return list(map(lambda d: int(d["index"]), results))
 
     async def add_infos(self, infos: list[Info]) -> None:
@@ -117,8 +119,9 @@ class MeiliSearch(AbstractInfoDatabase):
         return list(map(Info.from_dict, response["hits"]))
 
     async def get_random_info(self) -> Info:
+        total = await self.get_total()
         response = await self.index.get_documents(
-            {"offset": randrange(self.total), "limit": 1}
+            {"offset": randrange(total), "limit": 1}
         )
         d = cast(HitomiInfoJSON, response[0])
         return Info.from_dict(d)
