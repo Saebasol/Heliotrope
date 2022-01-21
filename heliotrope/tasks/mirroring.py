@@ -53,38 +53,43 @@ class MirroringTask(AbstractTask):
 
     async def compare_index_list(self) -> list[int]:
         remote_index_list = await self.request.fetch_index(include_range=False)
-        local_index_list = await self.galleryinfo_database.get_all_index()
-        return list(set(remote_index_list) - set(local_index_list))
+        local_galleryinfo_index_list = await self.galleryinfo_database.get_all_index()
+        local_info_index_list = await self.info_database.get_all_index()
+        return list(
+            set(remote_index_list)
+            - set(local_galleryinfo_index_list)
+            - set(local_info_index_list)
+        )
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
             logger.debug(f"id: {index}")
             # Check galleryinfo first
             # galleryinfo 먼저 확인
-            if galleryinfo := await self.request.get_galleryinfo(index):
-                logger.debug(f"{index} can get galleryinfo from hitomi.la.")
-                if not await self.galleryinfo_database.get_galleryinfo(index):
-                    logger.debug(f"{index} couldn't find that galleryinfo locally.")
+            if not await self.galleryinfo_database.get_galleryinfo(index):
+                logger.debug(f"{index} couldn't find that galleryinfo locally.")
+                if galleryinfo := await self.request.get_galleryinfo(index):
+                    logger.debug(f"{index} can get galleryinfo from hitomi.la.")
                     await self.galleryinfo_database.add_galleryinfo(galleryinfo)
                     logger.debug(f"Added galleryinfo {index}.")
                 else:
-                    logger.debug(f"{index} already has galleryinfo locally.")
+                    logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
             else:
-                logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
-                continue
+                logger.debug(f"{index} already has galleryinfo locally.")
 
             # If there is galleryinfo, run it because there is also info
             # galleryinfo가 있다면 info도 있기 때문에 실행
-            if info := await self.request.get_info(index):
-                logger.debug(f"{index} can get info from hitomi.la.")
-                if not await self.info_database.get_info(index):
-                    logger.debug(f"{index} couldn't find that info locally.")
+
+            if not await self.info_database.get_info(index):
+                logger.debug(f"{index} couldn't find that info locally.")
+                if info := await self.request.get_info(index):
+                    logger.debug(f"{index} can get info from hitomi.la.")
                     await self.info_database.add_infos([info])
                     logger.debug(f"Added info {index}.")
                 else:
-                    logger.debug(f"{index} already has info locally.")
+                    logger.warning(f"{index} can't get info from hitomi.la.")
             else:
-                logger.warning(f"{index} can't get info from hitomi.la.")
+                logger.debug(f"{index} already has info locally.")
 
     async def start(self, delay: float) -> NoReturn:
         while True:
@@ -92,6 +97,6 @@ class MirroringTask(AbstractTask):
                 logger.warning(f"{len(index_list)} new index found.")
                 logger.info(f"Start mirroring.")
                 await self.mirroring(index_list)
-                self.total = len(await self.galleryinfo_database.get_all_index())
+                self.info_database.total = len(await self.info_database.get_all_index())
                 logger.info(f"Mirroring finished.")
             await sleep(delay)

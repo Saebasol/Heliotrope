@@ -21,9 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from asyncio import sleep
 from asyncio.events import AbstractEventLoop
-from multiprocessing import current_process
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
@@ -40,6 +38,7 @@ from heliotrope.sanic import Heliotrope
 from heliotrope.tasks.manager import SuperVisor
 from heliotrope.tasks.mirroring import MirroringTask
 from heliotrope.tasks.refresh import RefreshCommonJS
+from heliotrope.utils import is_the_first_process
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -63,7 +62,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
         # Task setup
         supervisor = SuperVisor(heliotrope)
-        if current_process().name in ["ForkProcess-1", "MainProcess"]:
+        if is_the_first_process:
             supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
         supervisor.add_task(
             RefreshCommonJS.setup, heliotrope.config.REFRESH_COMMON_JS_DELAY
