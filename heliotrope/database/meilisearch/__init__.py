@@ -100,7 +100,7 @@ class MeiliSearch(AbstractInfoDatabase):
     async def get_all_index(self) -> list[int]:
         total = await self.get_total()
         results = await self.index.get_documents({"limit": total})
-        return list(map(lambda d: int(d["index"]), results))
+        return list(map(lambda d: int(d["id"]), results))
 
     async def add_infos(self, infos: list[Info]) -> None:
         await self.index.add_documents([dict(info.to_dict()) for info in infos])
