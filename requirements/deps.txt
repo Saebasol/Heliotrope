@@ -3,7 +3,7 @@ sanic[ext]==21.12.1
 sentry-sdk==1.5.3
 beautifulsoup4==4.10.0
 types-beautifulsoup4==4.10.10
-SQLAlchemy[mypy,asyncio]==1.4.29
+SQLAlchemy[mypy,asyncio]==1.4.31
 ameilisearch==0.3.4
 lxml==4.7.1
 asyncpg==0.25.0
