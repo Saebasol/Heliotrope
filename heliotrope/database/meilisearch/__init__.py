@@ -32,12 +32,14 @@ from sanic.log import logger
 from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info
 from heliotrope.types import HitomiInfoJSON
+from heliotrope.utils import is_the_first_process
 
 
 class MeiliSearch(AbstractInfoDatabase):
     def __init__(self, client: Client, index: Index) -> None:
         self.client = client
         self.index = index
+        self.total = 0
 
     async def close(self) -> None:
         logger.debug(f"close {self.__class__.__name__}")
@@ -53,20 +55,23 @@ class MeiliSearch(AbstractInfoDatabase):
             task = await client.create_index(uid)
             await client.wait_for_task(task["uid"])
             async with await client.get_index(uid) as index:
-                await index.update_filterable_attributes(
-                    [
-                        "tags",
-                        "artist",
-                        "group",
-                        "type",
-                        "language",
-                        "series",
-                        "character",
-                    ]
-                )
-                await index.update_sortable_attributes(["id"])
-                await index.update_searchable_attributes(["title"])
+                if is_the_first_process:
+                    await index.update_filterable_attributes(
+                        [
+                            "tags",
+                            "artist",
+                            "group",
+                            "type",
+                            "language",
+                            "series",
+                            "character",
+                        ]
+                    )
+                    await index.update_sortable_attributes(["id"])
+                    await index.update_searchable_attributes(["title"])
                 instance = cls(client, index)
+                stats = await index.get_stats()
+                instance.total = stats["numberOfDocuments"]
                 return instance
 
     def parse_query(self, querys: list[str]) -> tuple[str, list[str]]:
@@ -91,6 +96,10 @@ class MeiliSearch(AbstractInfoDatabase):
 
         return title, parsed_query
 
+    async def get_all_index(self) -> list[int]:
+        results = await self.index.get_documents({"limit": self.total})
+        return list(map(lambda d: d["index"], results))
+
     async def add_infos(self, infos: list[Info]) -> None:
         await self.index.add_documents([dict(info.to_dict()) for info in infos])
 
@@ -108,10 +117,8 @@ class MeiliSearch(AbstractInfoDatabase):
         return list(map(Info.from_dict, response["hits"]))
 
     async def get_random_info(self) -> Info:
-        stats = await self.index.get_stats()
-        total = stats["numberOfDocuments"]
         response = await self.index.get_documents(
-            {"offset": randrange(total), "limit": 1}
+            {"offset": randrange(self.total), "limit": 1}
         )
         d = cast(HitomiInfoJSON, response[0])
         return Info.from_dict(d)

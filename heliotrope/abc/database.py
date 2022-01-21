@@ -29,8 +29,15 @@ from heliotrope.domain.info import Info
 
 
 class AbstractInfoDatabase(ABC):
+    total: int = 0
     info_tags = ["artist", "group", "type", "language", "series", "character"]
     gender_common_tags = ["female", "tags", "male"]
+
+    @abstractmethod
+    async def get_all_index(self) -> list[int]:
+        """
+        Get all index.
+        """
 
     @abstractmethod
     async def add_infos(self, infos: list[Info]) -> None:
