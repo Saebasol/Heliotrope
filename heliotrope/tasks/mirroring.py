@@ -55,11 +55,9 @@ class MirroringTask(AbstractTask):
         remote_index_list = await self.request.fetch_index(include_range=False)
         local_galleryinfo_index_list = await self.galleryinfo_database.get_all_index()
         local_info_index_list = await self.info_database.get_all_index()
-        return list(
-            set(remote_index_list)
-            - set(local_galleryinfo_index_list)
-            - set(local_info_index_list)
-        )
+        galleryinfo_index = set(remote_index_list) - set(local_galleryinfo_index_list)
+        info_index = set(remote_index_list) - set(local_info_index_list)
+        return list(galleryinfo_index | info_index)
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
