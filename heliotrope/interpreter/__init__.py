@@ -98,7 +98,7 @@ class CommonJS:
 
     def parse_gg_js(self, code: str) -> str:
         lines = StringIO(code).readlines()
-        return "".join([line for line in lines if "return 4" not in line])
+        return "".join([line for line in lines if "$(" not in line])
 
     def update_js_code(self, common_js_code: str, gg_js_code: str) -> None:
         self.common_js_code = common_js_code
