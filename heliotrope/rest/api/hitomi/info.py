@@ -37,7 +37,7 @@ class HitomiInfoView(HTTPMethodView):
     @openapi.summary("Get hitomi info")  # type: ignore
     @openapi.parameter(name="id", location="path", schema=int)  # type: ignore
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
-        if info := await request.app.ctx.meilisearch.get_info(id):
+        if info := await request.app.ctx.odm.get_info(id):
             return json({"status": 200, **info.to_dict()})
 
         if requested_info := await request.app.ctx.hitomi_request.get_info(id):

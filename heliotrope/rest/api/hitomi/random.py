@@ -35,7 +35,7 @@ class HitomiRandomView(HTTPMethodView):
     @openapi.summary("Get random result in hitomi")  # type: ignore
     @openapi.tag("hitomi")  # type: ignore
     async def get(self, request: HeliotropeRequest) -> HTTPResponse:
-        info = await request.app.ctx.meilisearch.get_random_info()
+        info = await request.app.ctx.odm.get_random_info()
         return json({"status": 200, **info.to_dict()})
 
 

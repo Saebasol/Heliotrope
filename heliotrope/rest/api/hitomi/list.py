@@ -44,7 +44,7 @@ class HitomiListView(HTTPMethodView):
         if start_at_zero < 0 or total < start_at_zero:
             raise InvalidUsage
 
-        info_list = await request.app.ctx.meilisearch.get_info_list(start_at_zero)
+        info_list = await request.app.ctx.odm.get_info_list(start_at_zero)
 
         return json(
             {
