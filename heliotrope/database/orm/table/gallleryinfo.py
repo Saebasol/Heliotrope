@@ -30,10 +30,16 @@ galleryinfo_table = Table(
     "galleryinfo",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, nullable=False),
+    Column("type", String, nullable=False),
+    # title
     Column("title", String, nullable=False),
     Column("japanese_title", String),
-    Column("language", String, nullable=False),
+    # video
+    Column("video", String),
+    Column("videofilename", String),
+    # language
+    Column("language_url", String),
     Column("language_localname", String, nullable=False),
-    Column("type", String, nullable=False),
+    Column("language", String, nullable=False),
     Column("date", String, nullable=False),
 )
