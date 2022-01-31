@@ -30,7 +30,7 @@ tag_table = Table(
     "tag",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("index_id", Integer, ForeignKey("galleryinfo.id")),
+    Column("galleyinfo_id", Integer, ForeignKey("galleryinfo.id")),
     Column("male", String(1)),
     Column("female", String(1)),
     Column("tag", String, nullable=False),
