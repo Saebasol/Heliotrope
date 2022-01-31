@@ -22,43 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
-from typing import Literal, Optional, cast
+from typing import Optional
 
-from heliotrope.types import HitomiTagJSON
+from heliotrope.types import HitomiLanguagesJSON
 
 
 @dataclass
-class Tag:
-    def __post_init__(self) -> None:
-        self.male = cast(Literal["", "1"], str(self.male) if self.male else self.male)
-        self.female = cast(
-            Literal["", "1"], str(self.female) if self.female else self.female
-        )
-
+class Language:
     galleryinfo_id: int
-    male: Optional[Literal["", "1", 1]]
-    female: Optional[Literal["", "1", 1]]
-    tag: str
     url: str
+    name: str
+    galleryid: str
+    language_localname: str
     id: Optional[int] = None
 
-    def to_dict(self) -> HitomiTagJSON:
-        hitomi_tag_json = HitomiTagJSON(url=self.url, tag=self.tag)
-
-        if self.male is not None:
-            hitomi_tag_json["male"] = self.male
-
-        if self.female is not None:
-            hitomi_tag_json["female"] = self.female
-
-        return hitomi_tag_json
+    def to_dict(self) -> HitomiLanguagesJSON:
+        return HitomiLanguagesJSON(
+            url=self.url,
+            name=self.name,
+            galleryid=self.galleryid,
+            language_localname=self.language_localname,
+        )
 
     @classmethod
-    def from_dict(cls, galleryinfo_id: int, d: HitomiTagJSON) -> "Tag":
+    def from_dict(cls, galleryinfo_id: int, d: HitomiLanguagesJSON) -> "Language":
         return cls(
             galleryinfo_id=galleryinfo_id,
-            male=d.get("male"),
-            female=d.get("female"),
-            tag=d["tag"],
             url=d["url"],
+            name=d["name"],
+            galleryid=d["galleryid"],
+            language_localname=d["language_localname"],
         )

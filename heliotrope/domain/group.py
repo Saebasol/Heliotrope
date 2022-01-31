@@ -22,43 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
-from typing import Literal, Optional, cast
+from typing import Optional
 
-from heliotrope.types import HitomiTagJSON
+from heliotrope.types import HitomiGroupsJSON
 
 
 @dataclass
-class Tag:
-    def __post_init__(self) -> None:
-        self.male = cast(Literal["", "1"], str(self.male) if self.male else self.male)
-        self.female = cast(
-            Literal["", "1"], str(self.female) if self.female else self.female
-        )
-
+class Group:
     galleryinfo_id: int
-    male: Optional[Literal["", "1", 1]]
-    female: Optional[Literal["", "1", 1]]
-    tag: str
+    group: str
     url: str
     id: Optional[int] = None
 
-    def to_dict(self) -> HitomiTagJSON:
-        hitomi_tag_json = HitomiTagJSON(url=self.url, tag=self.tag)
-
-        if self.male is not None:
-            hitomi_tag_json["male"] = self.male
-
-        if self.female is not None:
-            hitomi_tag_json["female"] = self.female
-
-        return hitomi_tag_json
+    def to_dict(self) -> HitomiGroupsJSON:
+        return HitomiGroupsJSON(
+            group=self.group,
+            url=self.url,
+        )
 
     @classmethod
-    def from_dict(cls, galleryinfo_id: int, d: HitomiTagJSON) -> "Tag":
+    def from_dict(cls, galleryinfo_id: int, d: HitomiGroupsJSON) -> "Group":
         return cls(
             galleryinfo_id=galleryinfo_id,
-            male=d.get("male"),
-            female=d.get("female"),
-            tag=d["tag"],
+            group=d["group"],
             url=d["url"],
         )

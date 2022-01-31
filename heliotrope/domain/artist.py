@@ -21,44 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from dataclasses import dataclass
-from typing import Literal, Optional, cast
+from dataclasses import dataclass, field
 
-from heliotrope.types import HitomiTagJSON
+from heliotrope.types import HitomiArtistsJSON
 
 
 @dataclass
-class Tag:
-    def __post_init__(self) -> None:
-        self.male = cast(Literal["", "1"], str(self.male) if self.male else self.male)
-        self.female = cast(
-            Literal["", "1"], str(self.female) if self.female else self.female
+class Artist:
+    galleryinfo_id: int
+    artist: str
+    url: str
+    id: int = field(init=False)
+
+    def to_dict(self) -> HitomiArtistsJSON:
+        return HitomiArtistsJSON(
+            artist=self.artist,
+            url=self.url,
         )
 
-    galleryinfo_id: int
-    male: Optional[Literal["", "1", 1]]
-    female: Optional[Literal["", "1", 1]]
-    tag: str
-    url: str
-    id: Optional[int] = None
-
-    def to_dict(self) -> HitomiTagJSON:
-        hitomi_tag_json = HitomiTagJSON(url=self.url, tag=self.tag)
-
-        if self.male is not None:
-            hitomi_tag_json["male"] = self.male
-
-        if self.female is not None:
-            hitomi_tag_json["female"] = self.female
-
-        return hitomi_tag_json
-
     @classmethod
-    def from_dict(cls, galleryinfo_id: int, d: HitomiTagJSON) -> "Tag":
+    def from_dict(cls, galleryinfo_id: int, d: HitomiArtistsJSON) -> "Artist":
         return cls(
             galleryinfo_id=galleryinfo_id,
-            male=d.get("male"),
-            female=d.get("female"),
-            tag=d["tag"],
+            artist=d["artist"],
             url=d["url"],
         )

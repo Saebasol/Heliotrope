@@ -29,14 +29,14 @@ from heliotrope.types import HitomiFileJSON
 
 @dataclass
 class File:
-    index_id: int
+    galleryinfo_id: int
     name: str
     width: int
     height: int
     hash: str
     haswebp: Literal[0, 1]
+    hasavif: Literal[0, 1]
     hasavifsmalltn: Optional[Literal[1]] = None
-    hasavif: Optional[Literal[1]] = None
     id: Optional[int] = None
 
     def to_dict(self) -> HitomiFileJSON:
@@ -45,25 +45,23 @@ class File:
             hash=self.hash,
             haswebp=self.haswebp,
             name=self.name,
+            hasavif=self.hasavif,
             height=self.height,
         )
-        if self.hasavif is not None:
-            hitomi_file_json["hasavif"] = self.hasavif
-
         if self.hasavifsmalltn is not None:
             hitomi_file_json["hasavifsmalltn"] = self.hasavifsmalltn
 
         return hitomi_file_json
 
     @classmethod
-    def from_dict(cls, index_id: int, d: HitomiFileJSON) -> "File":
+    def from_dict(cls, galleryinfo_id: int, d: HitomiFileJSON) -> "File":
         return cls(
-            index_id=index_id,
+            galleryinfo_id=galleryinfo_id,
             name=d["name"],
             width=d["width"],
             height=d["height"],
             hash=d["hash"],
             haswebp=d["haswebp"],
+            hasavif=d["hasavif"],
             hasavifsmalltn=d.get("hasavifsmalltn"),
-            hasavif=d.get("hasavif"),
         )
