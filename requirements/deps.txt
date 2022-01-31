@@ -4,7 +4,8 @@ sentry-sdk==1.5.3
 beautifulsoup4==4.10.0
 types-beautifulsoup4==4.10.10
 SQLAlchemy[mypy,asyncio]==1.4.31
-ameilisearch==0.3.4
+motor==0.3.4
+dnspython==2.2.0
 lxml==4.7.1
 asyncpg==0.25.0
 Js2Py==0.71
