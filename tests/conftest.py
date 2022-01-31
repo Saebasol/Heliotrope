@@ -39,13 +39,13 @@ def get_config():
 
 async def startup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     await heliotrope.ctx.orm.add_galleryinfo(Galleryinfo.from_dict(galleryinfo))
-    await heliotrope.ctx.meilisearch.add_infos([Info.from_dict(info)])
+    await heliotrope.ctx.odm.add_info(Info.from_dict(info))
 
 
 async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     async with heliotrope.ctx.orm.engine.begin() as connection:
         await connection.run_sync(mapper_registry.metadata.drop_all)
-    await heliotrope.ctx.meilisearch.index.delete()
+    await heliotrope.ctx.odm.collection.delete_many({})
 
 
 @fixture

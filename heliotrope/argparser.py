@@ -125,6 +125,12 @@ def parse_args(argv: list[str]) -> Namespace:
         default="",
         help="The secret to use for forwarded headers (default: '')",
     )
+    config.add_argument(
+        "--use-atlas-search",
+        action="store_true",
+        default=False,
+        help="Use mongodb Atlas search (default: False)",
+    )
 
     config.add_argument(
         "--config",

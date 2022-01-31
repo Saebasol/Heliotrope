@@ -49,11 +49,11 @@ class HeliotropeConfig(Config):
                 "SENTRY_DSN": "",
                 "GALLERYINFO_DB_URL": "",
                 "INFO_DB_URL": "",
-                "INFO_DB_API_KEY": "",
                 "INDEX_FILE": "index-korean.nozomi",
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_COMMON_JS_DELAY": 86400,
                 "SUPERVISOR_DELAY": 30,
+                "USE_ATLAS_SEARCH": False,
                 # Sanic config
                 "HOST": "127.0.0.1",
                 "PORT": 8000,
@@ -92,11 +92,11 @@ class HeliotropeConfig(Config):
     SENTRY_DSN: str
     GALLERYINFO_DB_URL: str
     INFO_DB_URL: str
-    INFO_DB_API_KEY: str
     MIRRORING_DELAY: float
     REFRESH_COMMON_JS_DELAY: float
     SUPERVISOR_DELAY: float
     INDEX_FILE: str
+    USE_ATLAS_SEARCH: bool
     # Sanic config
     DEBUG: bool
     HOST: str

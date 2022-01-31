@@ -39,9 +39,9 @@ class AbstractInfoDatabase(ABC):
         """
 
     @abstractmethod
-    async def add_infos(self, infos: list[Info]) -> None:
+    async def add_info(self, info: Info) -> None:
         """
-        Add infos to the database.
+        Add info to the database.
         """
 
     @abstractmethod
@@ -65,7 +65,7 @@ class AbstractInfoDatabase(ABC):
     @abstractmethod
     async def search(
         self,
-        tags: list[str],
+        querys: list[str],
         offset: int = 0,
         limit: int = 15,
     ) -> tuple[list[Info], int]:
