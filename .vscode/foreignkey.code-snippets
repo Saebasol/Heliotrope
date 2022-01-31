@@ -1,0 +1,10 @@
+{
+	"Foreignkey column": {
+		"scope": "python",
+		"prefix": "foreignkey column",
+		"body": [
+			" Column(\"galleryinfo_id\", Integer, ForeignKey(\"galleryinfo.id\")),",
+		],
+		"description": "Make new endpoint"
+	}
+}
