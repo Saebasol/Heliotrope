@@ -21,34 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from types import SimpleNamespace
-from typing import Any
+from sqlalchemy.sql.schema import Column, ForeignKey, Table
+from sqlalchemy.sql.sqltypes import Integer, String
 
-from sanic.app import Sanic
-from sanic.request import Request
+from heliotrope.database.orm.base import mapper_registry
 
-from heliotrope.config import HeliotropeConfig
-from heliotrope.database.odm import ODM
-from heliotrope.database.orm import ORM
-from heliotrope.interpreter import CommonJS
-from heliotrope.request.base import BaseRequest
-from heliotrope.request.hitomi import HitomiRequest
-
-
-class HeliotropeContext(SimpleNamespace):
-    orm: ORM
-    odm: ODM
-    request: BaseRequest
-    hitomi_request: HitomiRequest
-    common_js: CommonJS
-
-
-class Heliotrope(Sanic):
-    ctx: HeliotropeContext
-    config: HeliotropeConfig
-
-
-class HeliotropeRequest(Request):
-    app: Heliotrope
-    args: property
-    json: Any
+character_table = Table(
+    "character",
+    mapper_registry.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("galleryinfo_id", Integer, ForeignKey("galleryinfo.id")),
+    Column("character", String, nullable=False),
+    Column("url", String, nullable=False),
+)

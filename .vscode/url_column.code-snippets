@@ -1,0 +1,10 @@
+{
+	"Url column": {
+		"scope": "python",
+		"prefix": "url column",
+		"body": [
+			" Column(\"url\", String, nullable=False),",
+		],
+		"description": "Make new endpoint"
+	}
+}

@@ -21,34 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from types import SimpleNamespace
-from typing import Any
+from dataclasses import dataclass, field
 
-from sanic.app import Sanic
-from sanic.request import Request
-
-from heliotrope.config import HeliotropeConfig
-from heliotrope.database.odm import ODM
-from heliotrope.database.orm import ORM
-from heliotrope.interpreter import CommonJS
-from heliotrope.request.base import BaseRequest
-from heliotrope.request.hitomi import HitomiRequest
+from heliotrope.types import HitomiParodysJSON
 
 
-class HeliotropeContext(SimpleNamespace):
-    orm: ORM
-    odm: ODM
-    request: BaseRequest
-    hitomi_request: HitomiRequest
-    common_js: CommonJS
+@dataclass
+class Parody:
+    galleryinfo_id: int
+    parody: str
+    url: str
+    id: int = field(init=False)
 
+    def to_dict(self) -> HitomiParodysJSON:
+        return HitomiParodysJSON(
+            parody=self.parody,
+            url=self.url,
+        )
 
-class Heliotrope(Sanic):
-    ctx: HeliotropeContext
-    config: HeliotropeConfig
-
-
-class HeliotropeRequest(Request):
-    app: Heliotrope
-    args: property
-    json: Any
+    @classmethod
+    def from_dict(cls, galleryinfo_id: int, d: HitomiParodysJSON) -> "Parody":
+        return cls(
+            galleryinfo_id=galleryinfo_id,
+            parody=d["parody"],
+            url=d["url"],
+        )

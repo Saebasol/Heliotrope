@@ -21,12 +21,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from typing import Any
+
 from sanic.blueprints import Blueprint
 from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
 
+from heliotrope.domain import Info
 from heliotrope.sanic import HeliotropeRequest
 
 hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
@@ -37,13 +40,24 @@ class HitomiInfoView(HTTPMethodView):
     @openapi.summary("Get hitomi info")  # type: ignore
     @openapi.parameter(name="id", location="path", schema=int)  # type: ignore
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
-        if info := await request.app.ctx.meilisearch.get_info(id):
-            return json({"status": 200, **info.to_dict()})
+        info = await request.app.ctx.odm.get_info(id)
 
-        if requested_info := await request.app.ctx.hitomi_request.get_info(id):
-            return json({"status": 200, **requested_info.to_dict()})
+        if not info:
+            if galleryinfo := await request.app.ctx.hitomi_request.get_galleryinfo(id):
+                info = Info.from_galleryinfo(galleryinfo)
+            else:
+                raise NotFound
 
-        raise NotFound
+        info_dict = info.to_dict()
+        thumbnail = await request.app.ctx.common_js.get_thumbnail(
+            id, info_dict["thumbnail"]
+        )
+        res: dict[str, Any] = {
+            "status": 200,
+            **info_dict,
+        }
+        res["thumbnail"] = thumbnail
+        return json(res)
 
 
 hitomi_info.add_route(HitomiInfoView.as_view(), "/<id:int>")

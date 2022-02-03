@@ -98,7 +98,7 @@ class CommonJS:
 
     def parse_gg_js(self, code: str) -> str:
         lines = StringIO(code).readlines()
-        return "".join([line for line in lines if "return 4" not in line])
+        return "".join([line for line in lines if "if (!" not in line])
 
     def update_js_code(self, common_js_code: str, gg_js_code: str) -> None:
         self.common_js_code = common_js_code
@@ -123,10 +123,16 @@ class CommonJS:
             ),
         )
 
+    async def get_thumbnail(self, galleryid: int, image: HitomiFileJSON) -> str:
+        return cast(
+            str,
+            await to_thread(self.interpreter.getThumbnail, galleryid, image),
+        )
+
     async def image_urls(
         self, galleryid: int, images: list[HitomiFileJSON], no_webp: bool
     ) -> dict[str, str]:
         return cast(
             dict[str, str],
-            await to_thread(self.interpreter.image_urls, galleryid, images, no_webp),
+            await to_thread(self.interpreter.imageUrls, galleryid, images, no_webp),
         )

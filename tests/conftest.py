@@ -2,6 +2,7 @@ import json
 from asyncio.events import AbstractEventLoop, get_running_loop, new_event_loop
 
 from pytest import fixture, mark
+from js2py.pyjs import undefined
 from sanic_ext.extensions.http.extension import HTTPExtension
 from sanic_ext.extensions.injection.extension import InjectionExtension
 from sanic_ext.extensions.openapi.extension import OpenAPIExtension
@@ -39,13 +40,13 @@ def get_config():
 
 async def startup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     await heliotrope.ctx.orm.add_galleryinfo(Galleryinfo.from_dict(galleryinfo))
-    await heliotrope.ctx.meilisearch.add_infos([Info.from_dict(info)])
+    await heliotrope.ctx.odm.add_info(Info.from_dict(info))
 
 
 async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     async with heliotrope.ctx.orm.engine.begin() as connection:
         await connection.run_sync(mapper_registry.metadata.drop_all)
-    await heliotrope.ctx.meilisearch.index.delete()
+    await heliotrope.ctx.odm.collection.delete_many({})
 
 
 @fixture
@@ -77,10 +78,8 @@ def reset_extensions():
 async def image_url():
     hitomi_request = await HitomiRequest.setup()
     common_js = await CommonJS.setup(hitomi_request)
-    yield await common_js.image_url_from_image(
-        galleryinfo["id"],
-        galleryinfo["files"][0],
-        True,
+    yield common_js.interpreter.url_from_url_from_hash(
+        galleryinfo["id"], galleryinfo["files"][0], "webp", undefined, "a"
     )
 
 

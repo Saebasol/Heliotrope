@@ -21,3 +21,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+from heliotrope.domain.artist import Artist
+from heliotrope.domain.character import Character
+from heliotrope.domain.file import File
+from heliotrope.domain.galleryinfo import Galleryinfo
+from heliotrope.domain.group import Group
+from heliotrope.domain.info import Info
+from heliotrope.domain.language import Language
+from heliotrope.domain.parody import Parody
+from heliotrope.domain.related import Related
+from heliotrope.domain.scene_index import SceneIndex
+from heliotrope.domain.tag import Tag
+
+__all__ = [
+    "Artist",
+    "Character",
+    "File",
+    "Galleryinfo",
+    "Group",
+    "Info",
+    "Language",
+    "Parody",
+    "Tag",
+    "SceneIndex",
+    "Related",
+]

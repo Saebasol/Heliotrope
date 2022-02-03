@@ -27,7 +27,7 @@ from typing import Any, Optional
 from sanic.log import logger
 from sqlalchemy.ext.asyncio.engine import AsyncEngine, create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.orm import mapper, relationship, selectinload
+from sqlalchemy.orm import relationship, selectinload
 from sqlalchemy.orm.exc import UnmappedClassError
 from sqlalchemy.orm.mapper import class_mapper
 from sqlalchemy.orm.session import sessionmaker
@@ -35,12 +35,8 @@ from sqlalchemy.sql.expression import select
 
 from heliotrope.abc.database import AbstractGalleryinfoDatabase
 from heliotrope.database.orm.base import mapper_registry
-from heliotrope.database.orm.table.file import file_table
-from heliotrope.database.orm.table.gallleryinfo import galleryinfo_table
-from heliotrope.database.orm.table.tag import tag_table
-from heliotrope.domain.file import File
-from heliotrope.domain.galleryinfo import Galleryinfo
-from heliotrope.domain.tag import Tag
+from heliotrope.database.orm.table import *
+from heliotrope.domain import *
 from heliotrope.utils import is_the_first_process
 
 _base_model_session_ctx: ContextVar[AsyncSession] = ContextVar("session")
@@ -67,13 +63,30 @@ class ORM(AbstractGalleryinfoDatabase):
 
     @staticmethod
     def mapping() -> None:
-        mapper(
+        mapper_registry.map_imperatively(
             Galleryinfo,
             galleryinfo_table,
-            properties={"files": relationship(File), "tags": relationship(Tag)},
+            properties={
+                "files": relationship(File),
+                "tags": relationship(Tag),
+                "artists": relationship(Artist),
+                "characters": relationship(Character),
+                "groups": relationship(Group),
+                "parodys": relationship(Parody),
+                "scene_indexes": relationship(SceneIndex),
+                "languages": relationship(Language),
+                "related": relationship(Related),
+            },
         )
-        mapper(Tag, tag_table)
-        mapper(File, file_table)
+        mapper_registry.map_imperatively(Tag, tag_table)
+        mapper_registry.map_imperatively(File, file_table)
+        mapper_registry.map_imperatively(Artist, artist_table)
+        mapper_registry.map_imperatively(Character, character_table)
+        mapper_registry.map_imperatively(Group, group_table)
+        mapper_registry.map_imperatively(Parody, parody_table)
+        mapper_registry.map_imperatively(SceneIndex, scene_index_table)
+        mapper_registry.map_imperatively(Related, related_table)
+        mapper_registry.map_imperatively(Language, language_table)
         return None
 
     @classmethod
@@ -106,7 +119,17 @@ class ORM(AbstractGalleryinfoDatabase):
                 r = await manager.session.get(
                     Galleryinfo,
                     id,
-                    [selectinload(Galleryinfo.files), selectinload(Galleryinfo.tags)],
+                    [
+                        selectinload(Galleryinfo.files),
+                        selectinload(Galleryinfo.tags),
+                        selectinload(Galleryinfo.artists),
+                        selectinload(Galleryinfo.characters),
+                        selectinload(Galleryinfo.groups),
+                        selectinload(Galleryinfo.parodys),
+                        selectinload(Galleryinfo.scene_indexes),
+                        selectinload(Galleryinfo.languages),
+                        selectinload(Galleryinfo.related),
+                    ],
                 )
                 if r:
                     return r

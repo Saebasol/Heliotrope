@@ -29,6 +29,7 @@ from sanic.log import logger
 
 from heliotrope.abc.database import AbstractGalleryinfoDatabase, AbstractInfoDatabase
 from heliotrope.abc.task import AbstractTask
+from heliotrope.domain.info import Info
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
 from heliotrope.types import SetupTask
@@ -48,7 +49,7 @@ class MirroringTask(AbstractTask):
     @classmethod
     def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         logger.debug(f"Setting up {cls.__name__}.")
-        instance = cls(app.ctx.hitomi_request, app.ctx.orm, app.ctx.meilisearch)
+        instance = cls(app.ctx.hitomi_request, app.ctx.orm, app.ctx.odm)
         return create_task(instance.start(delay))
 
     async def compare_index_list(self) -> list[int]:
@@ -69,25 +70,21 @@ class MirroringTask(AbstractTask):
                 if galleryinfo := await self.request.get_galleryinfo(index):
                     logger.debug(f"{index} can get galleryinfo from hitomi.la.")
                     await self.galleryinfo_database.add_galleryinfo(galleryinfo)
+                    if not await self.info_database.get_info(index):
+                        logger.debug(f"{index} couldn't find that info locally.")
+                        await self.info_database.add_info(
+                            Info.from_galleryinfo(galleryinfo)
+                        )
+                        logger.debug(f"Added info {index}.")
+                    else:
+                        logger.debug(f"{index} already has info locally.")
+
                     logger.debug(f"Added galleryinfo {index}.")
                 else:
                     logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
+                    continue
             else:
                 logger.debug(f"{index} already has galleryinfo locally.")
-
-            # If there is galleryinfo, run it because there is also info
-            # galleryinfo가 있다면 info도 있기 때문에 실행
-
-            if not await self.info_database.get_info(index):
-                logger.debug(f"{index} couldn't find that info locally.")
-                if info := await self.request.get_info(index):
-                    logger.debug(f"{index} can get info from hitomi.la.")
-                    await self.info_database.add_infos([info])
-                    logger.debug(f"Added info {index}.")
-                else:
-                    logger.warning(f"{index} can't get info from hitomi.la.")
-            else:
-                logger.debug(f"{index} already has info locally.")
 
     async def start(self, delay: float) -> NoReturn:
         while True:

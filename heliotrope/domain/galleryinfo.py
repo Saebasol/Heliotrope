@@ -24,7 +24,14 @@ SOFTWARE.
 from dataclasses import dataclass, field
 from typing import Optional
 
+from heliotrope.domain.artist import Artist
+from heliotrope.domain.character import Character
 from heliotrope.domain.file import File
+from heliotrope.domain.group import Group
+from heliotrope.domain.language import Language
+from heliotrope.domain.parody import Parody
+from heliotrope.domain.related import Related
+from heliotrope.domain.scene_index import SceneIndex
 from heliotrope.domain.tag import Tag
 from heliotrope.types import HitomiGalleryinfoJSON
 
@@ -32,26 +39,58 @@ from heliotrope.types import HitomiGalleryinfoJSON
 @dataclass
 class Galleryinfo:
     id: int
-    title: str
-    japanese_title: Optional[str]
-    language: Optional[str]
-    language_localname: str
     type: str
     date: str
+    # title
+    title: str
+    japanese_title: Optional[str] = None
+    # video
+    video: Optional[str] = None
+    videofilename: Optional[str] = None
+    # language
+    language_url: Optional[str] = None
+    language_localname: Optional[str] = None
+    language: Optional[str] = None
+    languages: list[Language] = field(default_factory=list)
+    # tags
     files: list[File] = field(default_factory=list)
-    tags: list[Tag] = field(default_factory=list)
+    tags: Optional[list[Tag]] = None
+    artists: Optional[list[Artist]] = None
+    characters: Optional[list[Character]] = None
+    groups: Optional[list[Group]] = None
+    parodys: Optional[list[Parody]] = None
+    scene_indexes: list[SceneIndex] = field(default_factory=list)
+    related: list[Related] = field(default_factory=list)
 
     def to_dict(self) -> HitomiGalleryinfoJSON:
         return HitomiGalleryinfoJSON(
-            title=self.title,
             id=self.id,
-            date=self.date,
             type=self.type,
+            date=self.date,
+            title=self.title,
             japanese_title=self.japanese_title,
-            language=self.language,
-            files=[file.to_dict() for file in self.files],
+            video=self.video,
+            videofilename=self.videofilename,
+            language_url=self.language_url,
             language_localname=self.language_localname,
-            tags=[tag.to_dict() for tag in self.tags],
+            language=self.language,
+            languages=[language.to_dict() for language in self.languages],
+            files=[file.to_dict() for file in self.files],
+            related=[related.to_id() for related in self.related],
+            scene_indexes=[
+                scene_index.to_index() for scene_index in self.scene_indexes
+            ],
+            tags=[tag.to_dict() for tag in self.tags] if self.tags else None,
+            artists=[artist.to_dict() for artist in self.artists]
+            if self.artists
+            else None,
+            characters=[character.to_dict() for character in self.characters]
+            if self.characters
+            else None,
+            groups=[group.to_dict() for group in self.groups] if self.groups else None,
+            parodys=[parody.to_dict() for parody in self.parodys]
+            if self.parodys
+            else None,
         )
 
     @classmethod
@@ -65,6 +104,28 @@ class Galleryinfo:
             language_localname=d["language_localname"],
             type=d["type"],
             date=d["date"],
+            languages=[
+                Language.from_dict(int_id, language) for language in d["languages"]
+            ],
+            related=[Related.from_dict(int_id, related) for related in d["related"]],
             files=[File.from_dict(int_id, file) for file in d["files"]],
-            tags=[Tag.from_dict(int_id, tag) for tag in d["tags"]],
+            scene_indexes=[
+                SceneIndex.from_dict(int_id, scene_index)
+                for scene_index in d["scene_indexes"]
+            ],
+            tags=[Tag.from_dict(int_id, tag) for tag in d["tags"]] if d["tags"] else [],
+            artists=[Artist.from_dict(int_id, artist) for artist in d["artists"]]
+            if d["artists"]
+            else [],
+            characters=[
+                Character.from_dict(int_id, character) for character in d["characters"]
+            ]
+            if d["characters"]
+            else [],
+            groups=[Group.from_dict(int_id, group) for group in d["groups"]]
+            if d["groups"]
+            else [],
+            parodys=[Parody.from_dict(int_id, parody) for parody in d["parodys"]]
+            if d["parodys"]
+            else [],
         )

@@ -28,7 +28,7 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 
 from heliotrope import __version__
 from heliotrope.config import HeliotropeConfig
-from heliotrope.database.meilisearch import MeiliSearch
+from heliotrope.database.odm import ODM
 from heliotrope.database.orm import ORM
 from heliotrope.interpreter import CommonJS
 from heliotrope.request.base import BaseRequest
@@ -43,8 +43,8 @@ from heliotrope.utils import is_the_first_process
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # DB and http setup
-    heliotrope.ctx.meilisearch = await MeiliSearch.setup(
-        heliotrope.config.INFO_DB_URL, heliotrope.config.INFO_DB_API_KEY
+    heliotrope.ctx.odm = ODM.setup(
+        heliotrope.config.INFO_DB_URL,
     )
     heliotrope.ctx.orm = await ORM.setup(heliotrope.config.GALLERYINFO_DB_URL)
     heliotrope.ctx.request = await BaseRequest.setup()
@@ -72,9 +72,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # Close session
-    await heliotrope.ctx.meilisearch.close()
     await heliotrope.ctx.request.close()
     await heliotrope.ctx.hitomi_request.close()
+    heliotrope.ctx.odm.close()
 
     # Close task
     heliotrope.shutdown_tasks()
