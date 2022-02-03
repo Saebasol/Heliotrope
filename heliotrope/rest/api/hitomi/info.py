@@ -26,7 +26,7 @@ from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
-
+from heliotrope.domain import Info
 from heliotrope.sanic import HeliotropeRequest
 
 hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
@@ -37,13 +37,22 @@ class HitomiInfoView(HTTPMethodView):
     @openapi.summary("Get hitomi info")  # type: ignore
     @openapi.parameter(name="id", location="path", schema=int)  # type: ignore
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
-        if info := await request.app.ctx.odm.get_info(id):
-            return json({"status": 200, **info.to_dict()})
+        info = await request.app.ctx.odm.get_info(id)
 
-        if requested_info := await request.app.ctx.hitomi_request.get_info(id):
-            return json({"status": 200, **requested_info.to_dict()})
+        if not info:
+            if galleryinfo := await request.app.ctx.hitomi_request.get_galleryinfo(id):
+                info = Info.from_galleryinfo(galleryinfo)
+            else:
+                raise NotFound
 
-        raise NotFound
+        info = info.to_dict()
+        thumbnail = await request.app.ctx.common_js.get_thumbnail(id, info["thumbnail"])
+        res = {
+            "status": 200,
+            **info,
+        }
+        res["thumbnail"] = thumbnail
+        return json(res)
 
 
 hitomi_info.add_route(HitomiInfoView.as_view(), "/<id:int>")
