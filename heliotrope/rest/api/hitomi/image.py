@@ -21,9 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from asyncio.tasks import gather
-from typing import Any, Coroutine
-
 from sanic.blueprints import Blueprint
 from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
@@ -49,7 +46,7 @@ class HitomiImageView(HTTPMethodView):
             raise NotFound
 
         files = await request.app.ctx.common_js.image_urls(
-            id, list(map(lambda f: f.to_dict(), galleryinfo.files)), True
+            id, list(map(lambda f: f.to_dict(), galleryinfo.files)), False
         )
 
         return json(
