@@ -109,7 +109,7 @@ class HitomiGalleryinfoJSON(TypedDict):
 class HitomiInfoJSON(TypedDict):
     id: Union[str, int]
     title: str
-    thumbnail: str
+    thumbnail: HitomiFileJSON
     artist: list[str]
     group: list[str]
     type: str
