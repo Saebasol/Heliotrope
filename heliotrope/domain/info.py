@@ -34,7 +34,7 @@ def parse_tags_dict_list(tags_dict_list: list[Mapping[str, object]]) -> list[str
     return [str(v) for tags in tags_dict_list for k, v in tags.items() if k != "url"]
 
 
-def parse_male_female_tag(tag: Tag):
+def parse_male_female_tag(tag: Tag) -> str:
     tag_name = tag.tag.replace(" ", "_")
     if tag.male:
         return f"male:{tag_name}"
@@ -89,6 +89,22 @@ class Info:
             if galleryinfo.tags
             else [],
             date=galleryinfo.date,
+        )
+
+    @classmethod
+    def from_dict(cls, d: HitomiInfoJSON) -> "Info":
+        return cls(
+            id=int(d["id"]),
+            title=d["title"],
+            thumbnail=File.from_dict(int(d["id"]), d["thumbnail"]),
+            artist=d["artist"],
+            group=d["group"],
+            type=d["type"],
+            language=d["language"],
+            series=d["series"],
+            character=d["character"],
+            tags=d["tags"],
+            date=d["date"],
         )
 
     def to_dict(self) -> HitomiInfoJSON:
