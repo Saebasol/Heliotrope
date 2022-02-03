@@ -270,7 +270,14 @@ galleryinfo = {
 info = {
     "id": 1613730,
     "title": "Sekigahara-san wa Dasaretai | 세키가하라는 발산하고싶어",
-    "thumbnail": "https://btn.hitomi.la/webpbigtn/2/1d/e8792b2ba4597a63d2ec69247f3bf5193ab33a8572699f47095c91695cbcb1d2.webp",
+    "thumbnail": {
+        "width": 1359,
+        "hash": "e8792b2ba4597a63d2ec69247f3bf5193ab33a8572699f47095c91695cbcb1d2",
+        "haswebp": 1,
+        "name": "809000.png",
+        "hasavif": 1,
+        "height": 1920,
+    },
     "artist": ["tsukako"],
     "group": [],
     "type": "manga",
