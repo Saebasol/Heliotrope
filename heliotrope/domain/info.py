@@ -22,45 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from dataclasses import dataclass
-from typing import Optional
+from typing import Mapping, Optional
 
-from bs4.element import Tag
-
-from heliotrope.parser import Parser
+from heliotrope.domain.galleryinfo import Galleryinfo
+from heliotrope.domain.file import File
+from heliotrope.domain.tag import Tag
 from heliotrope.types import HitomiInfoJSON
 
 
-def from_element(element: Tag) -> str:
-    return element.text.strip().replace(" ", "_")
+def parse_tags_dict_list(tags_dict_list: list[Mapping[str, object]]) -> list[str]:
+    return [str(v) for tags in tags_dict_list for k, v in tags.items() if k != "url"]
 
 
-def from_elements(elements: list[Tag]) -> list[str]:
-    return [from_element(element) for element in elements]
-
-
-def tags_replacer(values: list[str]) -> list[str]:
-    replaced: list[str] = []
-
-    for value in values:
-        if "♀" in value:
-            removed_icon = value.replace("_♀", "")
-            value = f"female:{removed_icon}"
-        elif "♂" in value:
-            removed_icon = value.replace("_♂", "")
-            value = f"male:{removed_icon}"
-        else:
-            value = f"tag:{value}"
-
-        replaced.append(value)
-
-    return replaced
+def parse_male_female_tag(tag: Tag):
+    tag_name = tag.tag.replace(" ", "_")
+    if tag.male:
+        return f"male:{tag_name}"
+    if tag.female:
+        return f"female:{tag_name}"
+    return f"tag:{tag_name}"
 
 
 @dataclass
 class Info:
     id: int
     title: str
-    thumbnail: str
+    thumbnail: File
     artist: list[str]
     group: list[str]
     type: str
@@ -71,44 +58,44 @@ class Info:
     date: str
 
     @classmethod
-    def from_parser(cls, id: int, parser: Parser) -> "Info":
+    def from_galleryinfo(cls, galleryinfo: Galleryinfo) -> "Info":
         return cls(
-            id=id,
-            title=parser.title_element.text,
-            thumbnail=parser.thumbnail_element.attrs["src"],
-            artist=from_elements(parser.artist_elements),
-            group=from_elements(parser.group_elements),
-            type=from_element(parser.type_element),
-            language=from_element(parser.language_element)
-            if parser.language_element
-            else None,
-            series=from_elements(parser.series_elements),
-            character=from_elements(parser.character_elements),
-            tags=tags_replacer(from_elements(parser.tags_elements)),
-            date=parser.date_element.text,
-        )
-
-    @classmethod
-    def from_dict(cls, d: HitomiInfoJSON) -> "Info":
-        return cls(
-            id=int(d["id"]),
-            title=d["title"],
-            thumbnail=d["thumbnail"],
-            artist=d["artist"],
-            group=d["group"],
-            type=d["type"],
-            language=d["language"],
-            series=d["series"],
-            character=d["character"],
-            tags=d["tags"],
-            date=d["date"],
+            id=galleryinfo.id,
+            title=galleryinfo.title,
+            thumbnail=galleryinfo.files[0],
+            artist=parse_tags_dict_list(
+                [artist.to_dict() for artist in galleryinfo.artists]
+            )
+            if galleryinfo.artists
+            else [],
+            group=parse_tags_dict_list(
+                [group.to_dict() for group in galleryinfo.groups]
+            )
+            if galleryinfo.groups
+            else [],
+            type=galleryinfo.type,
+            language=galleryinfo.language,
+            series=parse_tags_dict_list(
+                [parody.to_dict() for parody in galleryinfo.parodys]
+            )
+            if galleryinfo.parodys
+            else [],
+            character=parse_tags_dict_list(
+                [character.to_dict() for character in galleryinfo.characters]
+            )
+            if galleryinfo.characters
+            else [],
+            tags=[parse_male_female_tag(tag) for tag in galleryinfo.tags]
+            if galleryinfo.tags
+            else [],
+            date=galleryinfo.date,
         )
 
     def to_dict(self) -> HitomiInfoJSON:
         return HitomiInfoJSON(
             id=self.id,
             title=self.title,
-            thumbnail=self.thumbnail,
+            thumbnail=self.thumbnail.to_dict(),
             artist=self.artist,
             group=self.group,
             type=self.type,
