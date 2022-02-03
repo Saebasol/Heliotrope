@@ -31,8 +31,8 @@ from heliotrope.domain.group import Group
 from heliotrope.domain.language import Language
 from heliotrope.domain.parody import Parody
 from heliotrope.domain.related import Related
-from heliotrope.domain.tag import Tag
 from heliotrope.domain.scene_index import SceneIndex
+from heliotrope.domain.tag import Tag
 from heliotrope.types import HitomiGalleryinfoJSON
 
 

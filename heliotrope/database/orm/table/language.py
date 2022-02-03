@@ -36,4 +36,3 @@ language_table = Table(
     Column("galleryid", String, nullable=False),
     Column("language_localname", String, nullable=False),
 )
-

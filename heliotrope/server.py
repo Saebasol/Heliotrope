@@ -43,7 +43,9 @@ from heliotrope.utils import is_the_first_process
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # DB and http setup
-    heliotrope.ctx.odm = ODM.setup(heliotrope.config.INFO_DB_URL, )
+    heliotrope.ctx.odm = ODM.setup(
+        heliotrope.config.INFO_DB_URL,
+    )
     heliotrope.ctx.orm = await ORM.setup(heliotrope.config.GALLERYINFO_DB_URL)
     heliotrope.ctx.request = await BaseRequest.setup()
     heliotrope.ctx.hitomi_request = await HitomiRequest.setup(

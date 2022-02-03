@@ -33,6 +33,7 @@ class Parody:
     parody: str
     url: str
     id: Optional[int] = None
+
     def to_dict(self) -> HitomiParodysJSON:
         return HitomiParodysJSON(
             parody=self.parody,

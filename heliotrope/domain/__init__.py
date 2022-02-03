@@ -29,9 +29,9 @@ from heliotrope.domain.group import Group
 from heliotrope.domain.info import Info
 from heliotrope.domain.language import Language
 from heliotrope.domain.parody import Parody
-from heliotrope.domain.tag import Tag
-from heliotrope.domain.scene_index import SceneIndex
 from heliotrope.domain.related import Related
+from heliotrope.domain.scene_index import SceneIndex
+from heliotrope.domain.tag import Tag
 
 __all__ = [
     "Artist",

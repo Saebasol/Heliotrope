@@ -32,7 +32,6 @@ from heliotrope.database.orm.table.related import related_table
 from heliotrope.database.orm.table.scene_index import scene_index_table
 from heliotrope.database.orm.table.tag import tag_table
 
-
 __all__ = [
     "artist_table",
     "character_table",

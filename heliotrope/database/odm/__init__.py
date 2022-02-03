@@ -4,8 +4,9 @@
 # The Motor library ignores many type-related issues because type annotations are not applied.
 
 from typing import Any, Optional, cast
+
+from motor.core import AgnosticClient, AgnosticCollection  # type: ignore
 from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
-from motor.core import AgnosticCollection, AgnosticClient  # type: ignore
 
 from heliotrope.abc.database import AbstractInfoDatabase
 from heliotrope.domain.info import Info

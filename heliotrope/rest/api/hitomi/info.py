@@ -26,6 +26,7 @@ from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
+
 from heliotrope.domain import Info
 from heliotrope.sanic import HeliotropeRequest
 

@@ -24,8 +24,8 @@ SOFTWARE.
 from dataclasses import dataclass
 from typing import Mapping, Optional
 
-from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.file import File
+from heliotrope.domain.galleryinfo import Galleryinfo
 from heliotrope.domain.tag import Tag
 from heliotrope.types import HitomiInfoJSON
 
