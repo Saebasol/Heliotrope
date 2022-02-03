@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from json import loads
 from struct import unpack
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from aiohttp.client import ClientSession
 from bs4 import BeautifulSoup
@@ -31,10 +31,9 @@ from bs4.element import Tag
 from sanic.log import logger
 from yarl import URL
 
-from heliotrope.domain.galleryinfo import Galleryinfo
-from heliotrope.domain.info import Info
-from heliotrope.parser import Parser
+from heliotrope.domain import Galleryinfo, Info
 from heliotrope.request.base import BaseRequest
+from heliotrope.types import HitomiFileJSON
 
 
 class HitomiRequest:
@@ -104,27 +103,6 @@ class HitomiRequest:
         js_to_json = loads(str(response.body).replace("var galleryinfo = ", ""))
 
         return Galleryinfo.from_dict(js_to_json)
-
-    async def get_info_parser(self, id: int) -> Optional[Parser]:
-        response = await self.get_redirect_url(id)
-        if not response:
-            return None
-
-        url, hitomi_type = response
-
-        html = await self.request.get(url, "text")
-
-        if "Redirect" in html.body:
-            return None
-
-        return Parser(html.body, hitomi_type)
-
-    async def get_info(self, id: int) -> Optional[Info]:
-        parser = await self.get_info_parser(id)
-        if not parser:
-            return None
-
-        return Info.from_parser(id, parser)
 
     # NOTE: See https://ltn.hitomi.la/galleryblock.js
     # 참고: https://ltn.hitomi.la/galleryblock.js
