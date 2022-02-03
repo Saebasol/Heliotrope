@@ -79,7 +79,7 @@ async def image_url():
     hitomi_request = await HitomiRequest.setup()
     common_js = await CommonJS.setup(hitomi_request)
     yield common_js.interpreter.url_from_url_from_hash(
-        galleryinfo["id"], galleryinfo["files"][0], False, undefined, "a"
+        galleryinfo["id"], galleryinfo["files"][0], "webp", undefined, "a"
     )
 
 
