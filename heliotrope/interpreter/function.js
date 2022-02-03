@@ -8,7 +8,7 @@ function imageUrls(galleryid, images, no_webp) {
         if (image.hash && image.haswebp && !no_webp) {
             webp = 'webp'
         }
-        return { 'name': image.name, 'url': url_from_url_from_hash(galleryid, image, webp) }
+        return { 'name': image.name, 'url': url_from_url_from_hash(galleryid, image, webp, undefined, "a") }
     })
 }
 // See https://ltn.hitomi.la/gallery.js
