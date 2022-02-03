@@ -2,6 +2,7 @@ import json
 from asyncio.events import AbstractEventLoop, get_running_loop, new_event_loop
 
 from pytest import fixture, mark
+from js2py.pyjs import undefined
 from sanic_ext.extensions.http.extension import HTTPExtension
 from sanic_ext.extensions.injection.extension import InjectionExtension
 from sanic_ext.extensions.openapi.extension import OpenAPIExtension
@@ -78,7 +79,7 @@ async def image_url():
     hitomi_request = await HitomiRequest.setup()
     common_js = await CommonJS.setup(hitomi_request)
     yield common_js.interpreter.url_from_url_from_hash(
-        galleryinfo["id"], galleryinfo["files"], False, None, "a"
+        galleryinfo["id"], galleryinfo["files"][0], False, undefined, "a"
     )
 
 
