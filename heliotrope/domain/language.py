@@ -21,8 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
 
 from heliotrope.types import HitomiLanguagesJSON
 
@@ -34,7 +33,7 @@ class Language:
     name: str
     galleryid: str
     language_localname: str
-    id: Optional[int] = None
+    id: int = field(init=False)
 
     def to_dict(self) -> HitomiLanguagesJSON:
         return HitomiLanguagesJSON(

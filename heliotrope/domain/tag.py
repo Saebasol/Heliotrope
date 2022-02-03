@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, Optional, cast
 
 from heliotrope.types import HitomiTagJSON
@@ -40,7 +40,7 @@ class Tag:
     female: Optional[Literal["", "1", 1]]
     tag: str
     url: str
-    id: Optional[int] = None
+    id: int = field(init=False)
 
     def to_dict(self) -> HitomiTagJSON:
         hitomi_tag_json = HitomiTagJSON(url=self.url, tag=self.tag)

@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, Optional
 
 from heliotrope.types import HitomiFileJSON
@@ -37,7 +37,7 @@ class File:
     haswebp: Literal[0, 1]
     hasavif: Literal[0, 1]
     hasavifsmalltn: Optional[Literal[1]] = None
-    id: Optional[int] = None
+    id: int = field(init=False)
 
     def to_dict(self) -> HitomiFileJSON:
         hitomi_file_json = HitomiFileJSON(
