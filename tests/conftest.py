@@ -80,7 +80,7 @@ async def image_url():
     yield await common_js.image_url_from_image(
         galleryinfo["id"],
         galleryinfo["files"][0],
-        True,
+        False,
     )
 
 
