@@ -32,6 +32,8 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info = VersionInfo(major=6, minor=0, micro=0, releaselevel="candidate", serial=0)
+version_info = VersionInfo(
+    major=6, minor=0, micro=0, releaselevel="candidate", serial=0
+)
 
 __version__ = f"{version_info.major}.{version_info.minor}.{version_info.micro}-{version_info.releaselevel}.{version_info.serial}"
