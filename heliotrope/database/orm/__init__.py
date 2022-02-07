@@ -37,7 +37,6 @@ from heliotrope.abc.database import AbstractGalleryinfoDatabase
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.database.orm.table import *
 from heliotrope.domain import *
-from heliotrope.utils import is_the_first_process
 
 _base_model_session_ctx: ContextVar[AsyncSession] = ContextVar("session")
 
@@ -100,10 +99,9 @@ class ORM(AbstractGalleryinfoDatabase):
             cls.mapping()
         engine = create_async_engine(db_url)
         async with engine.begin() as connection:
-            if is_the_first_process:
-                await connection.run_sync(
-                    mapper_registry.metadata.create_all, checkfirst=True
-                )
+            await connection.run_sync(
+                mapper_registry.metadata.create_all, checkfirst=True
+            )
         return cls(engine)
 
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
