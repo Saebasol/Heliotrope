@@ -32,9 +32,9 @@ class ODM(AbstractInfoDatabase):
 
     async def get_all_index(self) -> list[int]:
         ids: list[int] = []
-        id: int
+        id: dict[str, int]
         async for id in self.collection.find({}, {"id": 1}):
-            ids.append(id)
+            ids.append(id["id"])
         return ids
 
     async def add_info(self, info: Info) -> None:
