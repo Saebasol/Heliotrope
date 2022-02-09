@@ -28,6 +28,7 @@ from typing import cast
 from js2py.evaljs import EvalJs  # type: ignore
 from sanic.log import logger
 
+from heliotrope.domain.info import Info
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.types import HitomiFileJSON
 
@@ -122,6 +123,12 @@ class CommonJS:
                 self.interpreter.url_from_url_from_hash, galleryid, image, webp
             ),
         )
+
+    async def convert_thumbnail(self, info: Info) -> dict[str, str]:
+        thumnbnail_url = await self.get_thumbnail(info.id, info.thumbnail.to_dict())
+        info_dict = cast(dict[str, str], info.to_dict())
+        info_dict["thumbnail"] = thumnbnail_url
+        return info_dict
 
     async def get_thumbnail(self, galleryid: int, image: HitomiFileJSON) -> str:
         return cast(

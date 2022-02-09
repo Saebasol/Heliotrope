@@ -36,7 +36,10 @@ class HitomiRandomView(HTTPMethodView):
     @openapi.tag("hitomi")  # type: ignore
     async def get(self, request: HeliotropeRequest) -> HTTPResponse:
         info = await request.app.ctx.odm.get_random_info()
-        return json({"status": 200, **info.to_dict()})
+
+        return json(
+            {"status": 200, **await request.app.ctx.common_js.convert_thumbnail(info)}
+        )
 
 
 hitomi_random.add_route(HitomiRandomView.as_view(), "/")
