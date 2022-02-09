@@ -48,16 +48,12 @@ class HitomiInfoView(HTTPMethodView):
             else:
                 raise NotFound
 
-        info_dict = info.to_dict()
-        thumbnail = await request.app.ctx.common_js.get_thumbnail(
-            id, info_dict["thumbnail"]
+        return json(
+            {
+                "status": 200,
+                **await request.app.ctx.common_js.convert_thumbnail(info),
+            }
         )
-        res: dict[str, Any] = {
-            "status": 200,
-            **info_dict,
-        }
-        res["thumbnail"] = thumbnail
-        return json(res)
 
 
 hitomi_info.add_route(HitomiInfoView.as_view(), "/<id:int>")

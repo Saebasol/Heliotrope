@@ -49,7 +49,10 @@ class HitomiListView(HTTPMethodView):
         return json(
             {
                 "status": 200,
-                "list": [info.to_dict() for info in info_list],
+                "list": [
+                    await request.app.ctx.common_js.convert_thumbnail(info)
+                    for info in info_list
+                ],
                 "total": total,
             }
         )
