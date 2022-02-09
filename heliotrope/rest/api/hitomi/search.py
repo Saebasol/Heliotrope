@@ -57,7 +57,10 @@ class HitomiSearchView(HTTPMethodView):
             return json(
                 {
                     "status": 200,
-                    "result": [result.to_dict() for result in results],
+                    "result": [
+                        await request.app.ctx.common_js.convert_thumbnail(result)
+                        for result in results
+                    ],
                     "count": count,
                 }
             )
