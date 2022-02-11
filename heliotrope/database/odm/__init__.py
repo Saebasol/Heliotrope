@@ -102,16 +102,16 @@ class ODM(AbstractInfoDatabase):
     ) -> list[dict[str, Any]]:
         pipeline: list[dict[str, Any]] = [
             {"$match": query},
+            {"$sort": {"id": -1}},
+            {"$project": {"_id": 0}},
+            {"$group": {"_id": 0, "count": {"$sum": 1}, "list": {"$push": "$$ROOT"}}},
             {
-                "$group": {
+                "$project": {
                     "_id": 0,
-                    "count": {"$sum": 1},
-                    "list": {"$push": "$$ROOT"},
+                    "count": 1,
+                    "list": {"$slice": ["$list", offset, limit]},
                 }
             },
-            {"$skip": offset},
-            {"$limit": limit},
-            {"$project": {"_id": 0, "list": {"_id": 0}}},
         ]
         if title:
             if self.is_atlas and self.use_atlas_search:
