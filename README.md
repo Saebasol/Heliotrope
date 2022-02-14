@@ -10,7 +10,7 @@
 ## Feature
 
 * 🚀Very fast response and processing with [Sanic framework](https://sanicframework.org/en/)
-* ⚡Blazingly fast search with [Meilisearch](https://www.meilisearch.com/)
+* ⚡Blazingly fast search with [MongoDB](https://www.mongodb.com/)
 * 🔄Galleryinfo, Info auto mirroring.
 * 🖼️Pixiv.net, Hitomi.la image proxying.
 * 🏡[Production ready](https://github.com/Saebasol/heliotrope-deploy)
