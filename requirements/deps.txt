@@ -2,7 +2,7 @@ aiohttp==3.8.1
 sanic[ext]==21.12.1
 sentry-sdk==1.5.6
 beautifulsoup4==4.10.0
-types-beautifulsoup4==4.10.10
+types-beautifulsoup4==4.10.14
 SQLAlchemy[mypy,asyncio]==1.4.31
 motor==2.5.1
 dnspython==2.2.0
