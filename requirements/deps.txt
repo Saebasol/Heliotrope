@@ -5,7 +5,7 @@ beautifulsoup4==4.10.0
 types-beautifulsoup4==4.10.14
 SQLAlchemy[mypy,asyncio]==1.4.31
 motor==2.5.1
-dnspython==2.2.0
+dnspython==2.2.1
 lxml==4.8.0
 asyncpg==0.25.0
 Js2Py==0.71
