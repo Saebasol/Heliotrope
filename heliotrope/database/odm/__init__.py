@@ -56,9 +56,9 @@ class ODM(AbstractInfoDatabase):
         info_jsons = cast(
             list[HitomiInfoJSON],
             await self.collection.find({}, {"_id": 0})
-            .sort("id", -1)
             .skip(offset)
             .limit(limit)
+            .sort("id", -1)
             .to_list(15),
         )
         return [Info.from_dict(json_info) for json_info in info_jsons]
