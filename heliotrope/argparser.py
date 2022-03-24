@@ -88,7 +88,7 @@ def parse_args(argv: list[str]) -> Namespace:
         "--info-db-url",
         type=str,
         default="",
-        help="The url of the Meilisearch (default: '')",
+        help="The url of the mongodb (default: '')",
     )
 
     config.add_argument(
