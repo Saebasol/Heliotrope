@@ -22,18 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from json import loads
+from re import match
 from struct import unpack
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 from aiohttp.client import ClientSession
-from bs4 import BeautifulSoup
-from bs4.element import Tag
 from sanic.log import logger
 from yarl import URL
 
-from heliotrope.domain import Galleryinfo, Info
+from heliotrope.domain import Galleryinfo
 from heliotrope.request.base import BaseRequest
-from heliotrope.types import HitomiFileJSON
 
 
 class HitomiRequest:
@@ -86,10 +84,9 @@ class HitomiRequest:
         if response.status != 200:
             return None
 
-        soup = BeautifulSoup(response.body, "lxml")
-        a_href_element = soup.find("a", href=True)
-        assert isinstance(a_href_element, Tag)
-        url = a_href_element.attrs["href"]
+        matched = match(r"window\.location\.href = \"(.+?)\"", response.body)
+        assert matched
+        url = matched.group(1)
         hitomi_type = URL(url).path.split("/")[1]
         return url, hitomi_type
 
