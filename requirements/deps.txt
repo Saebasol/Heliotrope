@@ -3,7 +3,7 @@ sanic[ext]==22.3.1
 sentry-sdk==1.5.10
 beautifulsoup4==4.11.1
 SQLAlchemy[mypy,asyncio]==1.4.36
-motor==2.5.1
+motor==3.0.0
 dnspython==2.2.1
 lxml==4.8.0
 asyncpg==0.25.0
