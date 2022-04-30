@@ -19,18 +19,6 @@ from heliotrope.server import create_app
 from tests.common import galleryinfo, info
 
 
-class LoopThatIsNeverClosed(AbstractEventLoop):
-    def __init__(self):
-        self._loop = None
-
-    def __getattribute__(self, name: str):
-        if name == "_loop":
-            return super().__getattribute__("_loop")
-        if self._loop is None or self._loop.is_closed():
-            self._loop = new_event_loop()
-        return getattr(self._loop, name)
-
-
 def get_config():
     with open("./tests/config.json", "r") as f:
         config = HeliotropeConfig()
@@ -47,13 +35,6 @@ async def closeup_test(heliotrope: Heliotrope, loop: AbstractEventLoop):
     async with heliotrope.ctx.orm.engine.begin() as connection:
         await connection.run_sync(mapper_registry.metadata.drop_all)
     await heliotrope.ctx.odm.collection.delete_many({})
-
-
-@fixture
-def event_loop():
-    loop = LoopThatIsNeverClosed()
-    yield loop
-    loop.close()
 
 
 @fixture
@@ -88,16 +69,17 @@ async def image_url():
 async def fake_app():
     heliotrope_config = get_config()
     heliotrope = create_app(heliotrope_config)
-    heliotrope.before_server_stop(closeup_test)
 
     before_server_start = []
     before_server_stop = []
     # Apply listeners
+    before_server_stop.append(closeup_test)
     for future_listener in heliotrope._future_listeners:
         if future_listener.event == "before_server_start":
             before_server_start.append(future_listener.listener)
         else:
             before_server_stop.append(future_listener.listener)
+
     # do not run app
     for listener in before_server_start:
         # None is loop argument but not needed
