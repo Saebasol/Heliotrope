@@ -90,7 +90,7 @@ class CommonJS:
                 if found:
                     functions.append(line)
                     if line.startswith("}"):
-                        finded = False
+                        found = False
                         continue
                 if line.startswith(f"function {func_name}"):
                     functions.append(line)
