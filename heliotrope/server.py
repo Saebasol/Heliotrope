@@ -54,7 +54,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
     # Sentry
     if heliotrope.config.PRODUCTION:
-        init(  # type: ignore
+        init(
             heliotrope.config.SENTRY_DSN,
             integrations=[SanicIntegration()],
             release=__version__,
