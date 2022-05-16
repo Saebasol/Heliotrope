@@ -1,5 +1,5 @@
 aiohttp==3.8.1
-sanic[ext]==22.3.1
+sanic[ext]==22.3.2
 sentry-sdk==1.5.12
 beautifulsoup4==4.11.1
 SQLAlchemy[mypy,asyncio]==1.4.36
