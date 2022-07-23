@@ -87,7 +87,7 @@ jobs:
           mongo -u root -p test --eval "db.getSiblingDB('hitomi').getCollection('info').createIndex({'title':'text'}, {'language_override': 'korean'})"              
       - name: Run tests
         run: |
-          pytest --cov=heliotrope --cov-report=xml
+          pytest --cov=heliotrope --cov-report=xml --asyncio-mode=auto
       - name: Codecov
         uses: codecov/codecov-action@v1
 
