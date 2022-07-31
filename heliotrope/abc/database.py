@@ -51,7 +51,9 @@ class AbstractInfoDatabase(ABC):
         """
 
     @abstractmethod
-    async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
+    async def get_info_list(
+        self, language: Optional[str], offset: int = 0, limit: int = 15
+    ) -> list[Info]:
         """
         Get info list.
         """

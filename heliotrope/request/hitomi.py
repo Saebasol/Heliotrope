@@ -35,7 +35,7 @@ from heliotrope.request.base import BaseRequest
 
 
 class HitomiRequest:
-    def __init__(self, request: BaseRequest, index_file: str):
+    def __init__(self, request: BaseRequest, index_file: list[str]):
         self.request = request
         self.index_file = index_file
         request.session.headers.update(self.headers)
@@ -61,7 +61,7 @@ class HitomiRequest:
 
     @classmethod
     async def setup(
-        cls, *, index_file: str = "index-korean.nozomi", **session_options: Any
+        cls, *, index_file: list[str] = ["index-english.nozomi"], **session_options: Any
     ) -> "HitomiRequest":
         logger.debug(f"Setting up {cls.__name__}")
         request = BaseRequest(ClientSession(**session_options))
@@ -108,7 +108,8 @@ class HitomiRequest:
         page: int = 1,
         item: int = 25,
         include_range: bool = True,
-    ) -> tuple[int, ...]:
+    ) -> list[int]:
+
         byte_start = (page - 1) * item * 4
         byte_end = byte_start + item * 4 - 1
 
@@ -118,8 +119,10 @@ class HitomiRequest:
         if include_range:
             headers.update({"Range": f"bytes={byte_start}-{byte_end}"})
 
-        request_url = self.ltn_url.with_path(self.index_file).human_repr()
-        response = await self.request.get(request_url, "read", headers=headers)
-
-        total_items = len(response.body) // 4
-        return unpack(f">{total_items}i", bytes(response.body))
+        index: list[int] = []
+        for index_file in self.index_file:
+            request_url = self.ltn_url.with_path(index_file)
+            response = await self.request.get(request_url, "read", headers=headers)
+            total_items = len(response.body) // 4
+            index.extend(unpack(f">{total_items}i", bytes(response.body)))
+        return index

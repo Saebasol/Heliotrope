@@ -93,9 +93,9 @@ def parse_args(argv: list[str]) -> Namespace:
 
     config.add_argument(
         "--index-file",
-        type=str,
-        default="index-korean.nozomi",
-        help="The index to use (default: index-korean.nozomi)",
+        nargs="+",
+        default=["index-english.nozomi"],
+        help="The index to use (default: ['index-english.nozomi'])",
     )
 
     config.add_argument(
