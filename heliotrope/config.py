@@ -116,7 +116,6 @@ class HeliotropeConfig(Config):
         return None
 
     def update_with_args(self, args: Namespace) -> None:
-        print(args)
         if not self.USE_ENV:
             self.update_config({k.upper(): v for k, v in vars(args).items()})
         if self.CONFIG:
