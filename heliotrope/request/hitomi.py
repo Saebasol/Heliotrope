@@ -61,7 +61,7 @@ class HitomiRequest:
 
     @classmethod
     async def setup(
-        cls, *, index_file: list[str], **session_options: Any
+        cls, *, index_file: list[str] = ["index-english.nozomi"], **session_options: Any
     ) -> "HitomiRequest":
         logger.debug(f"Setting up {cls.__name__}")
         request = BaseRequest(ClientSession(**session_options))
