@@ -50,12 +50,18 @@ class ODM(AbstractInfoDatabase):
 
         return None
 
-    async def get_info_list(self, offset: int = 0, limit: int = 15) -> list[Info]:
+    async def get_info_list(
+        self, language: Optional[str], offset: int = 0, limit: int = 15
+    ) -> list[Info]:
         offset = offset * limit
+        q: dict[str, Any] = {}
+
+        if language:
+            q["language"] = language
 
         info_jsons = cast(
             list[HitomiInfoJSON],
-            await self.collection.find({}, {"_id": 0})
+            await self.collection.find(q, {"_id": 0})
             .skip(offset)
             .limit(limit)
             .sort("id", -1)

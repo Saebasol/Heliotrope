@@ -36,15 +36,17 @@ class HitomiListView(HTTPMethodView):
     @openapi.tag("hitomi")  # type: ignore
     @openapi.summary("Get latest hitomi info list")  # type: ignore
     @openapi.parameter(name="index", location="path", schema=int)  # type: ignore
+    @openapi.parameter(name="language", location="query", schema=str)  # type:ignore
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
         total = len(await request.app.ctx.orm.get_all_index())
+        language = request.args.get("language")
 
         start_at_zero = index - 1
 
         if start_at_zero < 0 or total < start_at_zero:
             raise InvalidUsage
 
-        info_list = await request.app.ctx.odm.get_info_list(start_at_zero)
+        info_list = await request.app.ctx.odm.get_info_list(language, start_at_zero)
 
         return json(
             {

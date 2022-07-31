@@ -23,11 +23,17 @@ SOFTWARE.
 """
 from argparse import Namespace
 from json import loads
-from typing import Any, Callable, Optional, Sequence, Union
+from typing import Any, Callable, Optional, Sequence, Union, cast
 
 from sanic.config import SANIC_PREFIX, Config
 
 from heliotrope import __version__
+
+
+def list_converter(value: str) -> list[Any]:
+    if value.startswith("["):
+        return cast(list[Any], loads(value))
+    raise ValueError
 
 
 class HeliotropeConfig(Config):
@@ -37,7 +43,7 @@ class HeliotropeConfig(Config):
         env_prefix: Optional[str] = SANIC_PREFIX,
         keep_alive: Optional[bool] = None,
         *,
-        converters: Optional[Sequence[Callable[[str], Any]]] = None
+        converters: Optional[Sequence[Callable[[str], Any]]] = [list_converter]
     ):
         # Defualt
         self.update(
@@ -49,7 +55,7 @@ class HeliotropeConfig(Config):
                 "SENTRY_DSN": "",
                 "GALLERYINFO_DB_URL": "",
                 "INFO_DB_URL": "",
-                "INDEX_FILE": "index-korean.nozomi",
+                "INDEX_FILE": ["index-english.nozomi"],
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_COMMON_JS_DELAY": 86400,
                 "SUPERVISOR_DELAY": 30,
@@ -95,7 +101,7 @@ class HeliotropeConfig(Config):
     MIRRORING_DELAY: float
     REFRESH_COMMON_JS_DELAY: float
     SUPERVISOR_DELAY: float
-    INDEX_FILE: str
+    INDEX_FILE: list[str]
     USE_ATLAS_SEARCH: bool
     # Sanic config
     DEBUG: bool
@@ -110,6 +116,7 @@ class HeliotropeConfig(Config):
         return None
 
     def update_with_args(self, args: Namespace) -> None:
+        print(args)
         if not self.USE_ENV:
             self.update_config({k.upper(): v for k, v in vars(args).items()})
         if self.CONFIG:
