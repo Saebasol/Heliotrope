@@ -112,6 +112,8 @@ class ORM(AbstractGalleryinfoDatabase):
         return None
 
     async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
+        if -2147483648 < id > 2147483647:
+            return None
         async with _SessionManager(self.engine) as manager:
             async with manager.session.begin():
                 r = await manager.session.get(
