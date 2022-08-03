@@ -54,20 +54,24 @@ class ODM(AbstractInfoDatabase):
         self, language: Optional[str], offset: int = 0, limit: int = 15
     ) -> list[Info]:
         offset = offset * limit
+        infos: list[Info] = []
         q: dict[str, Any] = {}
 
         if language:
             q["language"] = language
 
-        info_jsons = cast(
-            list[HitomiInfoJSON],
-            await self.collection.find(q, {"_id": 0})
-            .skip(offset)
-            .limit(limit)
-            .sort("id", -1)
-            .to_list(15),
-        )
-        return [Info.from_dict(json_info) for json_info in info_jsons]
+        async for json_info in self.collection.aggregate(
+            [
+                {"$project": {"_id": 0}},
+                {"$match": q},
+                {"$sort": {"id": -1}},
+                {"$limit": limit},
+                {"$skip": offset},
+            ]
+        ):
+            json_info: HitomiInfoJSON
+            infos.append(Info.from_dict(json_info))
+        return infos
 
     async def get_random_info(self) -> Info:
         info_json = cast(
