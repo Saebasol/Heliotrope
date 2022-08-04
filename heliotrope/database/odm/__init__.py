@@ -60,6 +60,7 @@ class ODM(AbstractInfoDatabase):
         if language:
             q["language"] = language
 
+        json_info: HitomiInfoJSON
         async for json_info in self.collection.aggregate(
             [
                 {"$project": {"_id": 0}},
@@ -69,7 +70,7 @@ class ODM(AbstractInfoDatabase):
                 {"$skip": offset},
             ]
         ):
-            json_info: HitomiInfoJSON
+
             infos.append(Info.from_dict(json_info))
         return infos
 
