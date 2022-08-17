@@ -3,6 +3,7 @@
 # Motor 라이브러리는 유형 주석이 적용 되어있지 않기때문에 여러 타입 관련 문제를 무시합니다.
 # The Motor library ignores many type-related issues because type annotations are not applied.
 
+from copy import deepcopy
 from typing import Any, Optional, cast
 
 from motor.core import AgnosticClient, AgnosticCollection  # type: ignore
@@ -108,21 +109,13 @@ class ODM(AbstractInfoDatabase):
 
         return title, query_dict
 
-    def make_pipeline(
+    def make_search_pipeline(
         self, title: str, query: dict[str, Any], offset: int = 0, limit: int = 15
-    ) -> list[dict[str, Any]]:
+    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+        offset = offset * limit
         pipeline: list[dict[str, Any]] = [
             {"$match": query},
-            {"$sort": {"id": -1}},
             {"$project": {"_id": 0}},
-            {"$group": {"_id": 0, "count": {"$sum": 1}, "list": {"$push": "$$ROOT"}}},
-            {
-                "$project": {
-                    "_id": 0,
-                    "count": 1,
-                    "list": {"$slice": ["$list", offset, limit]},
-                }
-            },
         ]
         if title:
             if self.is_atlas and self.use_atlas_search:
@@ -139,7 +132,18 @@ class ODM(AbstractInfoDatabase):
             else:
                 pipeline[0]["$match"].update({"$text": {"$search": title}})
 
-        return pipeline
+        count_pipeline = deepcopy(pipeline)
+        count_pipeline.append({"$count": "count"})
+
+        pipeline.extend(
+            [
+                {"$sort": {"id": -1}},
+                {"$limit": limit},
+                {"$skip": offset},
+            ]
+        )
+
+        return count_pipeline, pipeline
 
     async def search(
         self, querys: list[str], offset: int = 0, limit: int = 15
@@ -147,13 +151,15 @@ class ODM(AbstractInfoDatabase):
 
         offset = offset * limit
         title, query = self.parse_query(querys)
-        pipeline = self.make_pipeline(title, query, offset, limit)
+        count_pipeline, pipeline = self.make_search_pipeline(title, query)
 
         try:
-            results: dict[str, Any] = await self.collection.aggregate(pipeline).next()
+            count = await self.collection.aggregate(count_pipeline).next()
         except StopAsyncIteration:
-            results = {"list": [], "count": 0}
+            results: list[HitomiInfoJSON] = []
+            count = 0
+        else:
+            results = await self.collection.aggregate(pipeline).to_list(15)
+            count = count["count"]
 
-        return [
-            Info.from_dict(cast(HitomiInfoJSON, result)) for result in results["list"]
-        ], results["count"]
+        return [Info.from_dict(result) for result in results], count
