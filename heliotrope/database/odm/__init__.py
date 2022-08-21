@@ -110,7 +110,7 @@ class ODM(AbstractInfoDatabase):
         return title, query_dict
 
     def make_search_pipeline(
-        self, title: str, query: dict[str, Any], offset: int = 0, limit: int = 15
+        self, title: str, query: dict[str, Any], offset: int, limit: int
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         pipeline: list[dict[str, Any]] = [
             {"$match": query},
@@ -150,7 +150,9 @@ class ODM(AbstractInfoDatabase):
 
         offset = offset * limit
         title, query = self.parse_query(querys)
-        count_pipeline, pipeline = self.make_search_pipeline(title, query)
+        count_pipeline, pipeline = self.make_search_pipeline(
+            title, query, offset, limit
+        )
 
         try:
             count = await self.collection.aggregate(count_pipeline).next()
