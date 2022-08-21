@@ -150,7 +150,9 @@ class ODM(AbstractInfoDatabase):
 
         offset = offset * limit
         title, query = self.parse_query(querys)
-        count_pipeline, pipeline = self.make_search_pipeline(title, query, offset, limit)
+        count_pipeline, pipeline = self.make_search_pipeline(
+            title, query, offset, limit
+        )
 
         try:
             count = await self.collection.aggregate(count_pipeline).next()
