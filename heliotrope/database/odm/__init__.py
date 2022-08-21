@@ -110,7 +110,7 @@ class ODM(AbstractInfoDatabase):
         return title, query_dict
 
     def make_search_pipeline(
-        self, title: str, query: dict[str, Any], offset: int = 0, limit: int = 15
+        self, title: str, query: dict[str, Any], offset: int, limit: int
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         pipeline: list[dict[str, Any]] = [
             {"$match": query},
