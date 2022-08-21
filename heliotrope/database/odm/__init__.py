@@ -158,7 +158,7 @@ class ODM(AbstractInfoDatabase):
             results: list[HitomiInfoJSON] = []
             count = 0
         else:
-            results = await self.collection.aggregate(pipeline).to_list(limit)
+            results = await self.collection.aggregate(pipeline).to_list(15)
             count = count["count"]
 
         return [Info.from_dict(result) for result in results], count
