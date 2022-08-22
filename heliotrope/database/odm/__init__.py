@@ -64,11 +64,11 @@ class ODM(AbstractInfoDatabase):
         json_info: HitomiInfoJSON
         async for json_info in self.collection.aggregate(
             [
-                {"$project": {"_id": 0}},
                 {"$match": q},
+                {"$project": {"_id": 0}},
                 {"$sort": {"id": -1}},
-                {"$limit": limit},
                 {"$skip": offset},
+                {"$limit": limit},
             ]
         ):
 
@@ -137,8 +137,8 @@ class ODM(AbstractInfoDatabase):
         pipeline.extend(
             [
                 {"$sort": {"id": -1}},
-                {"$limit": limit},
                 {"$skip": offset},
+                {"$limit": limit},
             ]
         )
 
