@@ -155,7 +155,9 @@ class ODM(AbstractInfoDatabase):
         )
 
         try:
-            count = await self.collection.aggregate(count_pipeline).next()
+            count = await self.collection.aggregate(
+                count_pipeline, allowDiskUse=True
+            ).next()
         except StopAsyncIteration:
             results: list[HitomiInfoJSON] = []
             count = 0
