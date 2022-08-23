@@ -69,7 +69,8 @@ class ODM(AbstractInfoDatabase):
                 {"$sort": {"id": -1}},
                 {"$skip": offset},
                 {"$limit": limit},
-            ]
+            ],
+            allowDiskUse=True,
         ):
 
             infos.append(Info.from_dict(json_info))
