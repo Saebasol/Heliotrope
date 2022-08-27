@@ -25,6 +25,7 @@ from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi  # type: ignore
+from sanic_ext.extensions.openapi.types import Schema  # type: ignore
 
 from heliotrope.sanic import HeliotropeRequest
 
@@ -34,8 +35,18 @@ hitomi_random = Blueprint("hitomi_random", url_prefix="/random")
 class HitomiRandomView(HTTPMethodView):
     @openapi.summary("Get random result in hitomi")  # type: ignore
     @openapi.tag("hitomi")  # type: ignore
-    async def get(self, request: HeliotropeRequest) -> HTTPResponse:
-        info = await request.app.ctx.odm.get_random_info()
+    @openapi.body(  # type: ignore
+        {
+            "application/json": openapi.Object(
+                {
+                    "query": Schema.make(value=["language:korean"]),
+                }
+            )
+        }
+    )
+    async def post(self, request: HeliotropeRequest) -> HTTPResponse:
+        query: list[str] = request.json.get("query") if request.json else []
+        info = await request.app.ctx.odm.get_random_info(query)
 
         return json(
             {"status": 200, **await request.app.ctx.common_js.convert_thumbnail(info)}
