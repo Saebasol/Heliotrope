@@ -52,7 +52,7 @@ class ODM(AbstractInfoDatabase):
         return None
 
     async def get_info_list(
-        self, language: Optional[str], offset: int = 0, limit: int = 15
+        self, language: Optional[str], offset: int, limit: int
     ) -> list[Info]:
         offset = offset * limit
         infos: list[Info] = []
@@ -88,24 +88,24 @@ class ODM(AbstractInfoDatabase):
 
         return Info.from_dict(info_json)
 
-    def parse_query(self, querys: list[str]) -> tuple[str, dict[str, Any]]:
+    def parse_query(self, query: list[str]) -> tuple[str, dict[str, Any]]:
         # Tags are received in the following format: female:big_breasts
         # If it is not in the following format, it is regarded as a title.
         # 태그는 다음과 같은 형식으로 받습니다.: female:big_breasts
         # 만약 다음과 같은 형식이 아니라면 제목으로 간주합니다.
         query_dict: dict[str, Any] = {}
         title = ""
-        for query in querys:
-            if any(info_tag in query for info_tag in self.info_tags):
-                splited = query.split(":")
+        for data in query:
+            if any(info_tag in data for info_tag in self.info_tags):
+                splited = data.split(":")
                 query_dict.update({splited[0]: splited[1]})
             elif any(
-                gender_common_tag in query
+                gender_common_tag in data
                 for gender_common_tag in self.gender_common_tags
             ):
-                query_dict.update({"tags": query})
+                query_dict.update({"tags": data})
             else:
-                title = query
+                title = data
 
         return title, query_dict
 
@@ -145,13 +145,12 @@ class ODM(AbstractInfoDatabase):
         return count_pipeline, pipeline
 
     async def search(
-        self, querys: list[str], offset: int = 0, limit: int = 15
+        self, query: list[str], offset: int, limit: int
     ) -> tuple[list[Info], int]:
 
         offset = offset * limit
-        title, query = self.parse_query(querys)
-        count_pipeline, pipeline = self.make_search_pipeline(
-            title, query, offset, limit
+        pipeline, count_pipeline = self.make_search_pipeline(
+            *self.parse_query(query), offset, limit
         )
 
         try:
