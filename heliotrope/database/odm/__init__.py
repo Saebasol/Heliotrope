@@ -75,11 +75,14 @@ class ODM(AbstractInfoDatabase):
             infos.append(Info.from_dict(json_info))
         return infos
 
-    async def get_random_info(self) -> Info:
+    async def get_random_info(self, query: list[str]) -> Info:
+        pipeline, _ = self.make_search_pipeline(*self.parse_query(query))
+
         info_json = cast(
             HitomiInfoJSON,
             await self.collection.aggregate(
                 [
+                    *pipeline,
                     {"$sample": {"size": 1}},
                     {"$project": {"_id": 0}},
                 ]
@@ -110,10 +113,15 @@ class ODM(AbstractInfoDatabase):
         return title, query_dict
 
     def make_search_pipeline(
-        self, title: str, query: dict[str, Any], offset: int, limit: int
+        self,
+        title: str,
+        query_dict: dict[str, Any],
+        offset: Optional[int] = None,
+        limit: Optional[int] = None,
+        sort: bool = True,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         pipeline: list[dict[str, Any]] = [
-            {"$match": query},
+            {"$match": query_dict},
             {"$project": {"_id": 0}},
         ]
         if title:
@@ -134,15 +142,18 @@ class ODM(AbstractInfoDatabase):
         count_pipeline = deepcopy(pipeline)
         count_pipeline.append({"$count": "count"})
 
-        pipeline.extend(
-            [
-                {"$sort": {"id": -1}},
-                {"$skip": offset},
-                {"$limit": limit},
-            ]
-        )
+        if sort:
+            pipeline.append({"$sort": {"id": -1}})
 
-        return count_pipeline, pipeline
+        if offset and limit:
+            pipeline.extend(
+                [
+                    {"$skip": offset},
+                    {"$limit": limit},
+                ]
+            )
+
+        return pipeline, count_pipeline
 
     async def search(
         self, query: list[str], offset: int, limit: int
