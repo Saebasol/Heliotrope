@@ -53,7 +53,7 @@ class HitomiSearchView(HTTPMethodView):
             else 0
         )
         if (query := request.json.get("query")) and query:
-            results, count = await request.app.ctx.odm.search(query, offset)
+            results, count = await request.app.ctx.odm.search(query, offset, 15)
             return json(
                 {
                     "status": 200,

@@ -52,14 +52,14 @@ class AbstractInfoDatabase(ABC):
 
     @abstractmethod
     async def get_info_list(
-        self, language: Optional[str], offset: int = 0, limit: int = 15
+        self, language: Optional[str], offset: int, limit: int
     ) -> list[Info]:
         """
         Get info list.
         """
 
     @abstractmethod
-    async def get_random_info(self) -> Info:
+    async def get_random_info(self, query: list[str]) -> Info:
         """
         Get random info.
         """
@@ -67,9 +67,9 @@ class AbstractInfoDatabase(ABC):
     @abstractmethod
     async def search(
         self,
-        querys: list[str],
-        offset: int = 0,
-        limit: int = 15,
+        query: list[str],
+        offset: int,
+        limit: int,
     ) -> tuple[list[Info], int]:
         """
         Search info by tags.
