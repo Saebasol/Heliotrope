@@ -30,7 +30,6 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import relationship, selectinload
 from sqlalchemy.orm.exc import UnmappedClassError
 from sqlalchemy.orm.mapper import class_mapper
-from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.sql.expression import select
 
 from heliotrope.abc.database import AbstractGalleryinfoDatabase
@@ -46,7 +45,7 @@ class _SessionManager:
         self.engine = engine
 
     async def __aenter__(self) -> "_SessionManager":
-        self.session = sessionmaker(self.engine, AsyncSession, expire_on_commit=False)()
+        self.session = AsyncSession(self.engine, expire_on_commit=False)
         self.session_ctx_token = _base_model_session_ctx.set(self.session)
         return self
 
