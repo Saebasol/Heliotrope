@@ -57,7 +57,7 @@ jobs:
         ports:
           - 127.0.0.1:5432:5432
       mongo:
-        image: mongo
+        image: mongo:5.0
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: test
