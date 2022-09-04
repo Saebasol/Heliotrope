@@ -69,7 +69,8 @@ class ODM(AbstractInfoDatabase):
                 {"$sort": {"id": -1}},
                 {"$skip": offset},
                 {"$limit": limit},
-            ]
+            ],
+            allowDiskUse=True,
         ):
 
             infos.append(Info.from_dict(json_info))
@@ -170,7 +171,9 @@ class ODM(AbstractInfoDatabase):
             results: list[HitomiInfoJSON] = []
             count = 0
         else:
-            results = await self.collection.aggregate(pipeline).to_list(15)
+            results = await self.collection.aggregate(
+                pipeline, allowDiskUse=True
+            ).to_list(15)
             count = count["count"]
 
         return [Info.from_dict(result) for result in results], count
