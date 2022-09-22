@@ -30,7 +30,7 @@ file_table = Table(
     "file",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("galleyinfo_id", Integer, ForeignKey("galleryinfo.id")),
+    Column("galleryinfo_id", Integer, ForeignKey("galleryinfo.id")),
     Column("name", String, nullable=False),
     Column("width", Integer, nullable=False),
     Column("height", Integer, nullable=False),

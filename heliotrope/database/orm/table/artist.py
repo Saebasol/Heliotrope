@@ -30,7 +30,7 @@ artist_table = Table(
     "artist",
     mapper_registry.metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("galleyinfo_id", Integer, ForeignKey("galleryinfo.id")),
+    Column("galleryinfo_id", Integer, ForeignKey("galleryinfo.id")),
     Column("artist", String, nullable=False),
     Column("url", String, nullable=False),
 )
