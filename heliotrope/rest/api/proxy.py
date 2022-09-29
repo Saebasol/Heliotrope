@@ -29,7 +29,7 @@ from sanic.blueprints import Blueprint
 from sanic.exceptions import InvalidUsage, NotFound
 from sanic.response import HTTPResponse
 from sanic.views import HTTPMethodView
-from sanic_ext.extensions.openapi import openapi  # type: ignore
+from sanic_ext.extensions.openapi import openapi
 
 from heliotrope.sanic import HeliotropeRequest
 
@@ -39,7 +39,7 @@ heliotrope_image_proxy = Blueprint("proxy", url_prefix="/proxy")
 class HeliotropeImageProxyView(HTTPMethodView):
     @openapi.tag("proxy")  # type: ignore
     @openapi.summary("Proxy image")  # type: ignore
-    @openapi.parameter(name="image_url", location="path", schema=str)  # type: ignore
+    @openapi.parameter(name="image_url", location="path", schema=str)
     async def get(
         self, request: HeliotropeRequest, image_url: str
     ) -> Optional[HTTPResponse]:
