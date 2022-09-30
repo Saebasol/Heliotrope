@@ -24,8 +24,8 @@ SOFTWARE.
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
-from sanic_ext.extensions.openapi import openapi  # type: ignore
-from sanic_ext.extensions.openapi.types import Schema  # type: ignore
+from sanic_ext.extensions.openapi import openapi
+from sanic_ext.extensions.openapi.types import Schema
 
 from heliotrope.sanic import HeliotropeRequest
 
@@ -39,7 +39,7 @@ class HitomiRandomView(HTTPMethodView):
         {
             "application/json": openapi.Object(
                 {
-                    "query": Schema.make(value=["language:korean"]),
+                    "query": Schema.make(value=["language:korean"]),  # type: ignore
                 }
             )
         }
