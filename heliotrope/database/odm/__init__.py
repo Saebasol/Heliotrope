@@ -101,8 +101,8 @@ class ODM(AbstractInfoDatabase):
         title = ""
         for data in query:
             if any(info_tag in data for info_tag in self.info_tags):
-                splited = data.split(":")
-                query_dict.update({splited[0]: splited[1]})
+                splitted = data.split(":")
+                query_dict.update({splitted[0]: splitted[1]})
             elif any(
                 gender_common_tag in data
                 for gender_common_tag in self.gender_common_tags
