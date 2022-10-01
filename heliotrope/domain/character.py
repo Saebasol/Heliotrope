@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from dataclasses import dataclass, field
 
-from heliotrope.types import HitomiCharatersJSON
+from heliotrope.types import HitomiCharactersJSON
 
 
 @dataclass
@@ -33,14 +33,14 @@ class Character:
     url: str
     id: int = field(init=False)
 
-    def to_dict(self) -> HitomiCharatersJSON:
-        return HitomiCharatersJSON(
+    def to_dict(self) -> HitomiCharactersJSON:
+        return HitomiCharactersJSON(
             character=self.character,
             url=self.url,
         )
 
     @classmethod
-    def from_dict(cls, galleryinfo_id: int, d: HitomiCharatersJSON) -> "Character":
+    def from_dict(cls, galleryinfo_id: int, d: HitomiCharactersJSON) -> "Character":
         return cls(
             galleryinfo_id=galleryinfo_id,
             character=d["character"],
