@@ -127,9 +127,9 @@ class CommonJS:
         )
 
     async def convert_thumbnail(self, info: Info) -> dict[str, str]:
-        thumnbnail_url = await self.get_thumbnail(info.id, info.thumbnail.to_dict())
+        thumbnail_url = await self.get_thumbnail(info.id, info.thumbnail.to_dict())
         info_dict = cast(dict[str, str], info.to_dict())
-        info_dict["thumbnail"] = thumnbnail_url
+        info_dict["thumbnail"] = thumbnail_url
         return info_dict
 
     async def get_thumbnail(self, galleryid: int, image: HitomiFileJSON) -> str:
