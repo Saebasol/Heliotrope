@@ -46,7 +46,7 @@ class SuperVisor:
                 if task in self.tasks:
                     if task.done():
                         if task.cancelled():
-                            logger.warning(f"{task.get_name()} cancled.")
+                            logger.warning(f"{task.get_name()} canceled.")
                         elif task.exception():
                             try:
                                 task.result()

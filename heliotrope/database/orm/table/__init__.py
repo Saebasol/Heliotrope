@@ -24,7 +24,7 @@ SOFTWARE.
 from heliotrope.database.orm.table.artist import artist_table
 from heliotrope.database.orm.table.character import character_table
 from heliotrope.database.orm.table.file import file_table
-from heliotrope.database.orm.table.gallleryinfo import galleryinfo_table
+from heliotrope.database.orm.table.galleryinfo import galleryinfo_table
 from heliotrope.database.orm.table.group import group_table
 from heliotrope.database.orm.table.language import language_table
 from heliotrope.database.orm.table.parody import parody_table
