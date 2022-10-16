@@ -62,29 +62,33 @@ class MirroringTask(AbstractTask):
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
+            has_galleryinfo = False
+            has_info = False
             logger.debug(f"id: {index}")
-            # Check galleryinfo first
-            # galleryinfo 먼저 확인
-            if not await self.galleryinfo_database.get_galleryinfo(index):
-                logger.debug(f"{index} couldn't find that galleryinfo locally.")
-                if galleryinfo := await self.request.get_galleryinfo(index):
-                    logger.debug(f"{index} can get galleryinfo from hitomi.la.")
-                    await self.galleryinfo_database.add_galleryinfo(galleryinfo)
-                    if not await self.info_database.get_info(index):
-                        logger.debug(f"{index} couldn't find that info locally.")
-                        await self.info_database.add_info(
-                            Info.from_galleryinfo(galleryinfo)
-                        )
-                        logger.debug(f"Added info {index}.")
-                    else:
-                        logger.debug(f"{index} already has info locally.")
+            if await self.galleryinfo_database.get_galleryinfo(index):
+                has_galleryinfo = True
 
-                    logger.debug(f"Added galleryinfo {index}.")
+            if await self.info_database.get_info(index):
+                has_info = True
+
+            if galleryinfo := await self.request.get_galleryinfo(index):
+                if has_galleryinfo:
+                    logger.debug(f"{index} already has galleryinfo locally.")
                 else:
-                    logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
-                    continue
+                    logger.debug(f"{index} couldn't find that info locally.")
+                    await self.galleryinfo_database.add_galleryinfo(galleryinfo)
+                    logger.debug(f"Added galleryinfo {index}.")
+
+                if has_info:
+                    logger.debug(f"{index} already has info locally.")
+                else:
+                    logger.debug(f"{index} couldn't find that galleryinfo locally.")
+                    await self.info_database.add_info(
+                        Info.from_galleryinfo(galleryinfo)
+                    )
+                    logger.debug(f"Added info {index}.")
             else:
-                logger.debug(f"{index} already has galleryinfo locally.")
+                logger.warning(f"{index} can't get galleryinfo from hitomi.la.")
 
     async def start(self, delay: float) -> NoReturn:
         while True:
