@@ -10,7 +10,7 @@ class GG:
         self.init_o = 0
         self.re_alloc_o = 0
 
-    def parse(self):
+    def parse(self) -> None:
         self.case.clear()
         lines = self.code.split("\n")
         for line in lines:

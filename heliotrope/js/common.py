@@ -11,7 +11,7 @@ class Common:
         self.gg = gg
 
     @classmethod
-    def setup(cls, code: str):
+    def setup(cls, code: str) -> "Common":
         gg = GG(code)
         gg.parse()
         return cls(gg)
