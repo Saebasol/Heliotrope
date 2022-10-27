@@ -21,8 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-from typing import Any
-
 from sanic.blueprints import Blueprint
 from sanic.exceptions import NotFound
 from sanic.response import HTTPResponse, json
@@ -51,7 +49,7 @@ class HitomiInfoView(HTTPMethodView):
         return json(
             {
                 "status": 200,
-                **await request.app.ctx.common_js.convert_thumbnail(info),
+                **request.app.ctx.common.convert_thumbnail(info),
             }
         )
 

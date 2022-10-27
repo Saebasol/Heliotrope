@@ -30,7 +30,7 @@ from heliotrope import __version__
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.odm import ODM
 from heliotrope.database.orm import ORM
-from heliotrope.interpreter import CommonJS
+from heliotrope.js.common import Common
 from heliotrope.request.base import BaseRequest
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.rest import rest
@@ -51,7 +51,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.hitomi_request = await HitomiRequest.setup(
         index_file=heliotrope.config.INDEX_FILE
     )
-    heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
+    heliotrope.ctx.common = Common.setup(
+        await heliotrope.ctx.hitomi_request.get_gg_js()
+    )
     # Sentry
     if heliotrope.config.PRODUCTION:
         init(

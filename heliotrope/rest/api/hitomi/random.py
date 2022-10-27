@@ -48,9 +48,7 @@ class HitomiRandomView(HTTPMethodView):
         query: list[str] = request.json.get("query") if request.json else []
         info = await request.app.ctx.odm.get_random_info(query)
 
-        return json(
-            {"status": 200, **await request.app.ctx.common_js.convert_thumbnail(info)}
-        )
+        return json({"status": 200, **request.app.ctx.common.convert_thumbnail(info)})
 
 
 hitomi_random.add_route(HitomiRandomView.as_view(), "/")

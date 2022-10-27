@@ -26,23 +26,28 @@ SOFTWARE.
 def main() -> None:  # pragma: no cover
     # I've done all of my testing on this.
     from sys import argv
-
+    from functools import partial
+    from sanic.worker.loader import AppLoader
     from heliotrope.argparser import parse_args
+    from sanic import Sanic
     from heliotrope.config import HeliotropeConfig
     from heliotrope.server import create_app
 
     heliotrope_config = HeliotropeConfig()
 
     args = parse_args(argv[1:])
-
     heliotrope_config.update_with_args(args)
 
-    create_app(heliotrope_config).run(
+    loader = AppLoader(factory=partial(create_app, heliotrope_config))
+    app = loader.load()
+
+    app.prepare(
         heliotrope_config.HOST,
         heliotrope_config.PORT,
         debug=heliotrope_config.DEBUG,
         workers=heliotrope_config.WORKERS,
     )
+    Sanic.serve(app, app_loader=loader)
 
 
 if __name__ == "__main__":  # pragma: no cover
