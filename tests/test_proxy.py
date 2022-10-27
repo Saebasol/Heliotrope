@@ -1,4 +1,5 @@
 from pytest import mark
+
 from heliotrope.sanic import Heliotrope
 
 url = "/api/proxy/"

@@ -25,11 +25,13 @@ SOFTWARE.
 
 def main() -> None:  # pragma: no cover
     # I've done all of my testing on this.
-    from sys import argv
     from functools import partial
-    from sanic.worker.loader import AppLoader
-    from heliotrope.argparser import parse_args
+    from sys import argv
+
     from sanic import Sanic
+    from sanic.worker.loader import AppLoader
+
+    from heliotrope.argparser import parse_args
     from heliotrope.config import HeliotropeConfig
     from heliotrope.server import create_app
 

@@ -1,8 +1,9 @@
-from typing import cast
-from heliotrope.js.gg import GG
-from re import compile, sub
 from math import isnan
+from re import compile, sub
+from typing import cast
+
 from heliotrope.domain import File, Info
+from heliotrope.js.gg import GG
 
 
 class Common:
