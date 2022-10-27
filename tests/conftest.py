@@ -10,7 +10,7 @@ from sanic_testing import TestManager  # type:ignore
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.domain.galleryinfo import Galleryinfo
-from heliotrope.domain.info import Info
+from heliotrope.domain import Info, Galleryinfo
 from heliotrope.js.common import Common
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
@@ -59,8 +59,9 @@ async def image_url():
     hitomi_request = await HitomiRequest.setup()
     code = await hitomi_request.get_gg_js()
     common_js = Common.setup(code)
+    gi = Galleryinfo.from_dict(galleryinfo)
     yield common_js.url_from_url_from_hash(
-        galleryinfo["id"], galleryinfo["files"][0], "webp", "", "a"
+        str(gi.id), gi.files.[0], "webp", "", "a"
     )
 
 
