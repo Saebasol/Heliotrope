@@ -52,8 +52,7 @@ class HitomiListView(HTTPMethodView):
             {
                 "status": 200,
                 "list": [
-                    await request.app.ctx.common_js.convert_thumbnail(info)
-                    for info in info_list
+                    request.app.ctx.common.convert_thumbnail(info) for info in info_list
                 ],
                 "total": total,
             }

@@ -30,7 +30,7 @@ from sanic.request import Request
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.odm import ODM
 from heliotrope.database.orm import ORM
-from heliotrope.interpreter import CommonJS
+from heliotrope.js.common import Common
 from heliotrope.request.base import BaseRequest
 from heliotrope.request.hitomi import HitomiRequest
 
@@ -40,7 +40,7 @@ class HeliotropeContext(SimpleNamespace):
     odm: ODM
     request: BaseRequest
     hitomi_request: HitomiRequest
-    common_js: CommonJS
+    common: Common
 
 
 class Heliotrope(Sanic):

@@ -45,9 +45,7 @@ class HitomiImageView(HTTPMethodView):
         if not galleryinfo:
             raise NotFound
 
-        files = await request.app.ctx.common_js.image_urls(
-            id, list(map(lambda f: f.to_dict(), galleryinfo.files)), False
-        )
+        files = request.app.ctx.common.image_urls(str(id), galleryinfo.files, False)
 
         return json(
             {

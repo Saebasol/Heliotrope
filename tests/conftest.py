@@ -2,7 +2,6 @@ import json
 from asyncio.events import AbstractEventLoop, get_running_loop, new_event_loop
 
 from pytest import fixture, mark
-from js2py.pyjs import undefined
 from sanic_ext.extensions.http.extension import HTTPExtension
 from sanic_ext.extensions.injection.extension import InjectionExtension
 from sanic_ext.extensions.openapi.extension import OpenAPIExtension
@@ -11,8 +10,8 @@ from sanic_testing import TestManager  # type:ignore
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.orm.base import mapper_registry
 from heliotrope.domain.galleryinfo import Galleryinfo
-from heliotrope.domain.info import Info
-from heliotrope.interpreter import CommonJS
+from heliotrope.domain import Info, Galleryinfo
+from heliotrope.js.common import Common
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
 from heliotrope.server import create_app
@@ -58,10 +57,10 @@ def reset_extensions():
 @mark.asyncio
 async def image_url():
     hitomi_request = await HitomiRequest.setup()
-    common_js = await CommonJS.setup(hitomi_request)
-    yield common_js.interpreter.url_from_url_from_hash(
-        galleryinfo["id"], galleryinfo["files"][0], "webp", undefined, "a"
-    )
+    code = await hitomi_request.get_gg_js()
+    common_js = Common.setup(code)
+    gi = Galleryinfo.from_dict(galleryinfo)
+    yield common_js.url_from_url_from_hash(str(gi.id), gi.files[0], "webp", "", "a")
 
 
 @fixture

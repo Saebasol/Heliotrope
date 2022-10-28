@@ -30,14 +30,14 @@ from heliotrope import __version__
 from heliotrope.config import HeliotropeConfig
 from heliotrope.database.odm import ODM
 from heliotrope.database.orm import ORM
-from heliotrope.interpreter import CommonJS
+from heliotrope.js.common import Common
 from heliotrope.request.base import BaseRequest
 from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.rest import rest
 from heliotrope.sanic import Heliotrope
 from heliotrope.tasks.manager import SuperVisor
 from heliotrope.tasks.mirroring import MirroringTask
-from heliotrope.tasks.refresh import RefreshCommonJS
+from heliotrope.tasks.refresh import RefreshggJS
 from heliotrope.utils import is_the_first_process
 
 
@@ -51,7 +51,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.hitomi_request = await HitomiRequest.setup(
         index_file=heliotrope.config.INDEX_FILE
     )
-    heliotrope.ctx.common_js = await CommonJS.setup(heliotrope.ctx.hitomi_request)
+    heliotrope.ctx.common = Common.setup(
+        await heliotrope.ctx.hitomi_request.get_gg_js()
+    )
     # Sentry
     if heliotrope.config.PRODUCTION:
         init(
@@ -64,9 +66,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         supervisor = SuperVisor(heliotrope)
         if is_the_first_process:
             supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
-        supervisor.add_task(
-            RefreshCommonJS.setup, heliotrope.config.REFRESH_COMMON_JS_DELAY
-        )
+        supervisor.add_task(RefreshggJS.setup, heliotrope.config.REFRESH_GG_JS_DELAY)
         heliotrope.add_task(supervisor.start(heliotrope.config.SUPERVISOR_DELAY))
 
 

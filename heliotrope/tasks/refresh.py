@@ -28,8 +28,6 @@ from typing import NoReturn
 from sanic.log import logger
 
 from heliotrope.abc.task import AbstractTask
-from heliotrope.interpreter import CommonJS
-from heliotrope.request.hitomi import HitomiRequest
 from heliotrope.sanic import Heliotrope
 from heliotrope.types import SetupTask
 
@@ -40,35 +38,21 @@ from heliotrope.types import SetupTask
 # 이를 동적으로 해결합니다.
 
 
-class RefreshCommonJS(AbstractTask):
-    def __init__(self, request: HitomiRequest, common_js: CommonJS) -> None:
-        self.request = request
-        self.common_js = common_js
+class RefreshggJS(AbstractTask):
+    def __init__(self, app: Heliotrope) -> None:
+        self.app = app
 
     async def start(self, delay: float) -> NoReturn:
         while True:
-            if not self.common_js.common_js_code:
-                logger.warning("Common js code is empty")
-                logger.info("Update common js code and gg js")
-                self.common_js.update_js_code(
-                    await self.request.get_common_js(), await self.request.get_gg_js()
-                )
-                await sleep(delay)
-
-            common_js_code = await self.request.get_common_js()
-            gg_js_code = await self.request.get_gg_js()
-
-            if (
-                self.common_js.common_js_code != common_js_code
-                or self.common_js.gg_js_code != gg_js_code
-            ):
-                logger.warning("local common js code is different from remote")
-                logger.info("Update common js code")
-                self.common_js.update_js_code(common_js_code, gg_js_code)
             await sleep(delay)
+            renew = await self.app.ctx.hitomi_request.get_gg_js()
+            if self.app.ctx.common.gg.code != renew:
+                logger.warning("local gg js code is different from remote")
+                logger.info("Update gg js code")
+                self.app.ctx.common.gg.refresh(renew)
 
     @classmethod
     def setup(cls, app: Heliotrope, delay: float) -> SetupTask:
         logger.debug(f"Setting up {cls.__name__}")
-        instance = cls(app.ctx.hitomi_request, app.ctx.common_js)
+        instance = cls(app)
         return create_task(instance.start(delay))

@@ -57,7 +57,7 @@ class HeliotropeConfig(Config):
                 "INFO_DB_URL": "",
                 "INDEX_FILE": ["index-english.nozomi"],
                 "MIRRORING_DELAY": 3600,
-                "REFRESH_COMMON_JS_DELAY": 86400,
+                "REFRESH_GG_JS_DELAY": 86400,
                 "SUPERVISOR_DELAY": 30,
                 "USE_ATLAS_SEARCH": False,
                 # Sanic config
@@ -99,7 +99,7 @@ class HeliotropeConfig(Config):
     GALLERYINFO_DB_URL: str
     INFO_DB_URL: str
     MIRRORING_DELAY: float
-    REFRESH_COMMON_JS_DELAY: float
+    REFRESH_GG_JS_DELAY: float
     SUPERVISOR_DELAY: float
     INDEX_FILE: list[str]
     USE_ATLAS_SEARCH: bool
