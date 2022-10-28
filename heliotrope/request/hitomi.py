@@ -68,11 +68,6 @@ class HitomiRequest:
         hitomi_request = cls(request, index_file)
         return hitomi_request
 
-    async def get_common_js(self) -> str:
-        request_url = self.ltn_url.with_path("common.js")
-        response = await self.request.get(request_url, "text")
-        return str(response.body)
-
     async def get_gg_js(self) -> str:
         request_url = self.ltn_url.with_path("gg.js")
         response = await self.request.get(request_url, "text")
