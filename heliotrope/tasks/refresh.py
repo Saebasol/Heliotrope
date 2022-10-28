@@ -28,7 +28,6 @@ from typing import NoReturn
 from sanic.log import logger
 
 from heliotrope.abc.task import AbstractTask
-from heliotrope.js.common import Common
 from heliotrope.sanic import Heliotrope
 from heliotrope.types import SetupTask
 

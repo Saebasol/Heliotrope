@@ -22,7 +22,7 @@ class GG:
             if line.startswith("b: "):
                 self.b = line.removeprefix("b: '").removesuffix("'")
 
-    def refresh(self, code: str):
+    def refresh(self, code: str) -> None:
         self.code = code
         self.case.clear()
         self.parse()
