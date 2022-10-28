@@ -3,7 +3,7 @@
         "index-english.nozomi"
     ],
     "MIRRORING_DELAY": 3600,
-    "REFRESH_COMMON_JS_DELAY": 86400,
+    "REFRESH_GG_JS_DELAY": 86400,
     "INFO_DB_URL": "mongodb://root:test@127.0.0.1",
     "GALLERYINFO_DB_URL": "postgresql+asyncpg://postgres:test@localhost/test_heliotrope"
 }

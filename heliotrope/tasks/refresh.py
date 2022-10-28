@@ -38,10 +38,9 @@ from heliotrope.types import SetupTask
 # 이를 동적으로 해결합니다.
 
 
-class RefreshCommonJS(AbstractTask):
+class RefreshggJS(AbstractTask):
     def __init__(self, app: Heliotrope) -> None:
         self.app = app
-        self.common_js_code = ""
 
     async def start(self, delay: float) -> NoReturn:
         while True:
