@@ -38,7 +38,6 @@ from heliotrope.sanic import Heliotrope
 from heliotrope.tasks.manager import SuperVisor
 from heliotrope.tasks.mirroring import MirroringTask
 from heliotrope.tasks.refresh import RefreshggJS
-from heliotrope.utils import is_the_first_process
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -64,8 +63,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
         # Task setup
         supervisor = SuperVisor(heliotrope)
-        if is_the_first_process:
-            supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
+        supervisor.add_task(MirroringTask.setup, heliotrope.config.MIRRORING_DELAY)
         supervisor.add_task(RefreshggJS.setup, heliotrope.config.REFRESH_GG_JS_DELAY)
         heliotrope.add_task(supervisor.start(heliotrope.config.SUPERVISOR_DELAY))
 
