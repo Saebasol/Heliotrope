@@ -49,9 +49,9 @@ class RefreshCommonJS(AbstractTask):
             await sleep(delay)
             renew = await self.app.ctx.hitomi_request.get_gg_js()
             if self.app.ctx.common.gg.code != renew:
-                logger.warning("local common js code is different from remote")
-                logger.info("Update common js code")
-                self.app.ctx.common = Common.setup(renew)
+                logger.warning("local gg js code is different from remote")
+                logger.info("Update gg js code")
+                self.app.ctx.common.gg.refresh(renew)
 
     @classmethod
     def setup(cls, app: Heliotrope, delay: float) -> SetupTask:

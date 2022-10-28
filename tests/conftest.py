@@ -60,9 +60,7 @@ async def image_url():
     code = await hitomi_request.get_gg_js()
     common_js = Common.setup(code)
     gi = Galleryinfo.from_dict(galleryinfo)
-    yield common_js.url_from_url_from_hash(
-        str(gi.id), gi.files.[0], "webp", "", "a"
-    )
+    yield common_js.url_from_url_from_hash(str(gi.id), gi.files[0], "webp", "", "a")
 
 
 @fixture

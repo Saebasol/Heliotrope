@@ -84,7 +84,7 @@ class Common:
             html,
         )
 
-    def get_thumbnail(self, galleryid: str, image: File):
+    def get_thumbnail(self, galleryid: str, image: File) -> str:
         return self.url_from_url_from_hash(galleryid, image, "webpbigtn", "webp", "tn")
 
     def convert_thumbnail(self, info: Info) -> dict[str, str]:
@@ -101,8 +101,8 @@ class Common:
         ]
 
     def image_url_from_image(self, galleryid: str, image: File, no_webp: bool) -> str:
-        # webp = None
-        # if image.hash and image.hash and not no_webp:
-        #     webp = "webp"
+        ext = "webp"
+        if image.hasavif:
+            ext = "avif"
 
-        return self.url_from_url_from_hash(galleryid, image, "webp", "", "a")
+        return self.url_from_url_from_hash(galleryid, image, ext, "", "a")

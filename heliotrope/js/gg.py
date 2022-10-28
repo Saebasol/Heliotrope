@@ -5,31 +5,32 @@ from decimal import Decimal
 class GG:
     def __init__(self, code: str) -> None:
         self.code = code
-        self.b = ""
         self.case: list[int] = []
-        self.init_o = 0
-        self.re_alloc_o = 0
+        self.default_o = 0
+        self.in_case_o = 0
 
     def parse(self) -> None:
-        self.case.clear()
         lines = self.code.split("\n")
         for line in lines:
             if line.startswith("var o = ") and line.endswith(";"):
-                self.init_o = int(line.removeprefix("var o = ").removesuffix(";"))
+                self.default_o = int(line.removeprefix("var o = ").removesuffix(";"))
             if line.startswith("o = ") and line.endswith("; break;"):
-                self.re_alloc_o = int(
-                    line.removeprefix("o = ").removesuffix("; break;")
-                )
+                self.in_case_o = int(line.removeprefix("o = ").removesuffix("; break;"))
             if line.startswith("case "):
                 matched_int = line.removeprefix("case ").removesuffix(":")
                 self.case.append(int(matched_int))
             if line.startswith("b: "):
                 self.b = line.removeprefix("b: '").removesuffix("'")
 
+    def refresh(self, code: str):
+        self.code = code
+        self.case.clear()
+        self.parse()
+
     def m(self, g: int) -> int:
         if g in self.case:
-            return self.re_alloc_o
-        return self.init_o
+            return self.in_case_o
+        return self.default_o
 
     def s(self, h: str) -> str:
         m = re.search(r"(..)(.)$", h)
