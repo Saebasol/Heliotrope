@@ -32,9 +32,9 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info = VersionInfo(major=6, minor=4, micro=4, releaselevel="final", serial=0)
+version_info = VersionInfo(major=7, minor=0, micro=0, releaselevel="alpha", serial=0)
 
 __version__ = f"{version_info.major}.{version_info.minor}.{version_info.micro}"
 
 if version_info.releaselevel != "final":
-    __version__ = f"{__version__}-{version_info.releaselevel}.{version_info.serial}"
+    __version__ = f"{__version__}-{version_info.releaselevel}.{version_info.serial}-experimental"
