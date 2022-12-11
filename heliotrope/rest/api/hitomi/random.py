@@ -33,13 +33,13 @@ hitomi_random = Blueprint("hitomi_random", url_prefix="/random")
 
 
 class HitomiRandomView(HTTPMethodView):
-    @openapi.summary("Get random result in hitomi")  # type: ignore
-    @openapi.tag("hitomi")  # type: ignore
-    @openapi.body(  # type: ignore
+    @openapi.summary("Get random result in hitomi")  
+    @openapi.tag("hitomi")  
+    @openapi.body(  
         {
             "application/json": openapi.Object(
                 {
-                    "query": Schema.make(value=["language:korean"]),  # type: ignore
+                    "query": Schema.make(value=["language:korean"]),  
                 }
             )
         }
