@@ -33,8 +33,8 @@ hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
 
 
 class HitomiListView(HTTPMethodView):
-    @openapi.tag("hitomi")  # type: ignore
-    @openapi.summary("Get latest hitomi info list")  # type: ignore
+    @openapi.tag("hitomi")
+    @openapi.summary("Get latest hitomi info list") 
     @openapi.parameter(name="index", location="path", schema=int)
     @openapi.parameter(name="language", location="query", schema=str)
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:

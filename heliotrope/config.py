@@ -36,7 +36,7 @@ def list_converter(value: str) -> list[Any]:
     raise ValueError
 
 
-class HeliotropeConfig(Config):
+class HeliotropeConfig(Config): # type: ignore[misc]
     def __init__(
         self,
         defaults: dict[str, Union[str, bool, int, float, None]] = {},
