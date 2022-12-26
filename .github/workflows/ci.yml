@@ -64,7 +64,7 @@ jobs:
         ports:
           - 27017:27017
         options:
-          --health-cmd mongo
+          --health-cmd sudo docker exec -d mongo mongosh
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -81,10 +81,10 @@ jobs:
           pip install -r requirements/test.txt
       - name: Make MongoDB collection
         run: |
-          mongo -u root -p test --eval "db.getSiblingDB('hitomi').createCollection('info')"
+          sudo docker exec -d mongo "mongosh -u root -p test --eval db.getSiblingDB('hitomi').createCollection('info')"
       - name: Make collection index
         run: |
-          mongo -u root -p test --eval "db.getSiblingDB('hitomi').getCollection('info').createIndex({'title':'text'}, {'language_override': 'korean'})"              
+          sudo docker exec -d mongo "mongosh -u root -p test --eval "db.getSiblingDB('hitomi').getCollection('info').createIndex({'title':'text'}, {'language_override': 'korean'})"              
       - name: Run tests
         run: |
           pytest --cov=heliotrope --cov-report=xml --asyncio-mode=auto
