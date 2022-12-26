@@ -33,8 +33,8 @@ hitomi_image = Blueprint("hitomi_image", url_prefix="/image")
 
 
 class HitomiImageView(HTTPMethodView):
-    @openapi.tag("hitomi")  # type: ignore
-    @openapi.summary("Get hitomi image url list")  # type: ignore
+    @openapi.tag("hitomi")
+    @openapi.summary("Get hitomi image url list")
     @openapi.parameter(name="id", location="path", schema=int)
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
         # BUG: Very slow response

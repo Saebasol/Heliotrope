@@ -33,8 +33,8 @@ hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")
 
 
 class HitomiGalleryinfoView(HTTPMethodView):
-    @openapi.tag("hitomi")  # type: ignore
-    @openapi.summary("Get hitomi galleryinfo")  # type: ignore
+    @openapi.tag("hitomi")
+    @openapi.summary("Get hitomi galleryinfo")
     @openapi.parameter(name="id", location="path", schema=int)
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
         if galleryinfo := await request.app.ctx.orm.get_galleryinfo(id):

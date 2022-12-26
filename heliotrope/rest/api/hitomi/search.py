@@ -34,9 +34,9 @@ hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 
 
 class HitomiSearchView(HTTPMethodView):
-    @openapi.tag("hitomi")  # type: ignore
-    @openapi.summary("Get search result in hitomi")  # type: ignore
-    @openapi.body(  # type: ignore
+    @openapi.tag("hitomi")
+    @openapi.summary("Get search result in hitomi")
+    @openapi.body(
         {
             "application/json": openapi.Object(
                 {
