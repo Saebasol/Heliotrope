@@ -58,7 +58,11 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         init(
             heliotrope.config.SENTRY_DSN,
             integrations=[SanicIntegration()],
+            traces_sample_rate=1.0,
             release=__version__,
+            _experiments={
+                "profiles_sample_rate": 1.0,
+            },
         )
 
         # Task setup

@@ -34,8 +34,8 @@ hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
 
 
 class HitomiInfoView(HTTPMethodView):
-    @openapi.tag("hitomi")  # type: ignore
-    @openapi.summary("Get hitomi info")  # type: ignore
+    @openapi.tag("hitomi")
+    @openapi.summary("Get hitomi info")
     @openapi.parameter(name="id", location="path", schema=int)
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
         info = await request.app.ctx.odm.get_info(id)
