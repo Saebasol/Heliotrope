@@ -30,6 +30,9 @@ class Related:
     id: int = field(init=False)
     related_id: int
 
+    def __post_init__(self) -> None:
+        self.related_id = int(self.related_id)
+
     def to_id(self) -> int:
         return self.related_id
 
