@@ -22,28 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+from sys import argv
 
-def main() -> None:  # pragma: no cover
-    # I've done all of my testing on this.
-    from sys import argv
-
-    from heliotrope.argparser import parse_args
-    from heliotrope.config import HeliotropeConfig
-    from heliotrope.server import create_app
-
-    heliotrope_config = HeliotropeConfig()
-
-    args = parse_args(argv[1:])
-    heliotrope_config.update_with_args(args)
-
-    app = create_app(heliotrope_config)
-    app.run(
-        heliotrope_config.HOST,
-        heliotrope_config.PORT,
-        debug=heliotrope_config.DEBUG,
-        workers=heliotrope_config.WORKERS,
-    )
+from heliotrope.argparser import parse_args
+from heliotrope.config import HeliotropeConfig
+from heliotrope.server import create_app
 
 
-if __name__ == "__main__":  # pragma: no cover
-    main()
+heliotrope_config = HeliotropeConfig()
+
+args = parse_args(argv[1:])
+heliotrope_config.update_with_args(args)
+
+app = create_app(heliotrope_config)
+app.run(
+    heliotrope_config.HOST,
+    heliotrope_config.PORT,
+    debug=heliotrope_config.DEBUG,
+    workers=heliotrope_config.WORKERS,
+)
