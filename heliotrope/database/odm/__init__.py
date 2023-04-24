@@ -107,7 +107,10 @@ class ODM(AbstractInfoDatabase):
                 gender_common_tag in data
                 for gender_common_tag in self.gender_common_tags
             ):
-                query_dict.update({"tags": data})
+                if query_dict.get("tags") is not None:
+                    query_dict["tags"]["$all"].append(data)
+                else:
+                    query_dict.update({"tags": {"$all": [data]}})
             else:
                 title = data
 
