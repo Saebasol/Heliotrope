@@ -6,11 +6,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 class FileSchema(ForeignKeySchema):
     __tablename__ = "file"
 
-    def __post_init__(self):
-        self.hasavif = bool(self.hasavif)
-        self.hasjxl = bool(self.hasjxl)
-        self.haswebp = bool(self.haswebp)
-
     hasavif: Mapped[bool] = mapped_column(Boolean)
     hash: Mapped[str] = mapped_column(String)
     height: Mapped[int] = mapped_column(Integer)
