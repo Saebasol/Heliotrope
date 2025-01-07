@@ -21,11 +21,11 @@ class HitomiGalleryinfoView(HTTPMethodView):
     ) -> HTTPResponse:
         galleryinfo = await GetGalleryinfoUseCase(
             request.app.ctx.hitomi_la_galleryinfo_repository
-        ).execute(id)
-        if not galleryinfo:
-            galleryinfo = await GetGalleryinfoUseCase(
-                request.app.ctx.sa_galleryinfo_repository
-            ).execute(id)
+        ).execute(id) or await GetGalleryinfoUseCase(
+            request.app.ctx.sa_galleryinfo_repository
+        ).execute(
+            id
+        )
 
         return json(galleryinfo.to_dict())
 
