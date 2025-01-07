@@ -31,6 +31,8 @@ class Deserializer:
                             value = []
                         else:
                             value = [arg_type.from_dict(v) for v in value]
+                    elif arg_type is int:
+                        value = [int(v) for v in value]
 
             converted_data[key] = value
         return cls(**converted_data)
