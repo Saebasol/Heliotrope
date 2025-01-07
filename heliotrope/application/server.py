@@ -38,7 +38,6 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 def create_app(config: HeliotropeConfig) -> Heliotrope:
     heliotrope = Heliotrope("heliotrope")
     heliotrope.config.update(config)
-    print(heliotrope.config)
     heliotrope.blueprint(api_endpoint)
     heliotrope.before_server_start(startup)
     heliotrope.before_server_stop(closeup)
