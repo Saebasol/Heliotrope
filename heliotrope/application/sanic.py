@@ -5,6 +5,7 @@ from sanic.app import Sanic
 from sanic.request import Request
 
 from heliotrope.application.config import HeliotropeConfig
+from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.galleryinfo.domain.repository import (
     HitomiLaGalleryinfoRepository,
@@ -20,6 +21,7 @@ class HeliotropeContext(SimpleNamespace):
     hitomi_la: HitomiLa
     sa_galleryinfo_repository: SAGalleryinfoRepository
     hitomi_la_galleryinfo_repository: HitomiLaGalleryinfoRepository
+    javascript_interpreter: JavaScriptInterpreter
 
 
 class Heliotrope(Sanic[HeliotropeConfig, HeliotropeContext]): ...

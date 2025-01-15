@@ -35,16 +35,13 @@ class HitomiLaGalleryinfoRepository(GalleryinfoRepository):
         byte_start = (page - 1) * item * 4
         byte_end = byte_start + item * 4 - 1
         headers = {
-            "origin": self.hitomi_la.base_url.human_repr(),
+            **self.hitomi_la.headers,
             "Range": f"bytes={byte_start}-{byte_end}",
         }
         return await self.__fetch_galleryinfo(headers=headers)
 
     async def get_all_galleryinfo_ids(self) -> list[int]:
-        headers = {
-            "origin": self.hitomi_la.base_url.human_repr(),
-        }
-        return await self.__fetch_galleryinfo(headers=headers)
+        return await self.__fetch_galleryinfo(headers=self.hitomi_la.headers)
 
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> None:
         raise NotImplementedError

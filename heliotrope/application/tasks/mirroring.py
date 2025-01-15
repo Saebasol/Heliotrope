@@ -8,7 +8,6 @@ from heliotrope.infrastructure.sqlalchemy.galleryinfo.domain.repository import (
 from heliotrope.core.galleryinfo.usecases.get import GetAllGalleryinfoIdsUseCase
 from heliotrope.core.galleryinfo.usecases.get import GetGalleryinfoUseCase
 from heliotrope.core.galleryinfo.usecases.add import BulkAddGalleryinfoUseCase
-from tqdm.asyncio import tqdm
 
 
 class MirroringTask:
@@ -45,5 +44,5 @@ class MirroringTask:
             for i in range(0, len(compared), concurrent_size)
         ]
 
-        for concurrent in tqdm(concurrents):
+        for concurrent in concurrents:
             await self.process_concurrent(concurrent)

@@ -1,5 +1,6 @@
 from asyncio import AbstractEventLoop
 from heliotrope.application.config import HeliotropeConfig
+from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.application.sanic import Heliotrope
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
@@ -23,6 +24,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     )
     heliotrope.ctx.sa_galleryinfo_repository = SAGalleryinfoRepository(
         heliotrope.ctx.sa
+    )
+    heliotrope.ctx.javascript_interpreter = await JavaScriptInterpreter.setup(
+        heliotrope.ctx.hitomi_la
     )
 
 

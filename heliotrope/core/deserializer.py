@@ -1,12 +1,12 @@
 from datetime import date, datetime
-from typing import Any, Self, Union
+from typing import Any, Mapping, Self, Union
 
 from typing import get_type_hints, get_args, get_origin
 
 
 class Deserializer:
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Self:
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
         converted_data: dict[str, Any] = {}
         type_hints = get_type_hints(cls)
 

@@ -1,11 +1,11 @@
-from typing import Any, Self, get_type_hints, get_origin, get_args
+from typing import Any, Mapping, Self, get_type_hints, get_origin, get_args
 from heliotrope.core.deserializer import Deserializer
 from sqlalchemy.orm import Mapped
 
 
 class SchemaDeserializer(Deserializer):
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Self:
+    def from_dict(cls, data: Mapping[str, Any]) -> Self:
         type_hints = get_type_hints(cls)
         for key, value in type_hints.items():
             if get_origin(value) is Mapped:

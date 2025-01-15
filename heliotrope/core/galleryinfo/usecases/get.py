@@ -28,9 +28,8 @@ class GetAllGalleryinfoIdsUseCase:
     def __init__(self, galleryinfo_repository: GalleryinfoRepository) -> None:
         self.galleryinfo_repository = galleryinfo_repository
 
-    def __await__(self,):
+    def __await__(self):
         return self.execute().__await__()
 
     async def execute(self) -> list[int]:
         return await self.galleryinfo_repository.get_all_galleryinfo_ids()
-
