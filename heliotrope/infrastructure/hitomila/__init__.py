@@ -21,6 +21,18 @@ class HitomiLa:
         for index_file in self.index_files:
             yield self.ltn_url.with_path(index_file)
 
+    @property
+    def user_agent(self) -> str:
+        return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+    @property
+    def headers(self) -> dict[str, str]:
+        return {
+            "User-Agent": self.user_agent,
+            "origin": self.base_url.human_repr(),
+            "referer": self.base_url.human_repr(),
+        }
+
     @classmethod
     async def create(cls, index_files: list[str]) -> "HitomiLa":
         return cls(ClientSession(), index_files)

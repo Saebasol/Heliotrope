@@ -1,13 +1,10 @@
 from heliotrope.infrastructure.sqlalchemy.mixin import ForeignKeySchema
 from sqlalchemy import String, Boolean, Integer
 from sqlalchemy.orm import Mapped, mapped_column
-from heliotrope.core.file.domain.entity import File
 
 
 class FileSchema(ForeignKeySchema):
     __tablename__ = "file"
-
-    __post_init__ = File.__post_init__
 
     hasavif: Mapped[bool] = mapped_column(Boolean)
     hash: Mapped[str] = mapped_column(String)

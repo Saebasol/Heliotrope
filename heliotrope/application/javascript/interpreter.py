@@ -2,6 +2,7 @@ from pythonmonkey import eval
 import re
 
 
+from heliotrope.core.info.domain.entity import Info
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.core.file.domain.entity import File
 
@@ -9,7 +10,17 @@ from heliotrope.core.file.domain.entity import File
 class JavaScriptInterpreter:
     def __init__(self, hitomi_la: HitomiLa) -> None:
         self.hitomi_la = hitomi_la
+        self.gg_code = ""
         eval(r"var gg = {}")
+
+    def get_thumbnail(self, galleryid: int, image: File) -> str:
+        return self.url_from_url_from_hash(galleryid, image, "webpbigtn", "webp", "tn")
+
+    def convert_thumbnail(self, info: Info) -> dict[str, str]:
+        thumnbnail_url = self.get_thumbnail(info.id, info.thumbnail)
+        info_dict = info.to_dict()
+        info_dict["thumbnail"] = thumnbnail_url
+        return info_dict
 
     def image_urls(
         self, galleryid: int, images: list[File], no_webp: bool
@@ -69,6 +80,12 @@ class JavaScriptInterpreter:
         ) as response:
             return await response.text()
 
+    async def refresh_gg_js(self):
+        gg_code = await self.get_gg_js()
+        if self.gg_code != gg_code:
+            self.gg_code = gg_code
+            eval(self.gg_code)
+
     async def get_gg_js(self):
         async with self.hitomi_la.session.get(
             self.hitomi_la.ltn_url.with_path("gg.js")
@@ -80,13 +97,9 @@ class JavaScriptInterpreter:
         to_eval = self.parse_common_js(common_js_code)
         eval(to_eval)
 
-    async def evulate_gg_js(self):
-        gg_js_code = await self.get_gg_js()
-        eval(gg_js_code)
-
     @classmethod
     async def setup(cls, hitomi_la: HitomiLa):
         interpreter = cls(hitomi_la)
         await interpreter.evulate_common_js()
-        await interpreter.evulate_gg_js()
+        await interpreter.refresh_gg_js()
         return interpreter

@@ -18,7 +18,7 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
     async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
         async with self.sa.session_maker() as session:
             async with session.begin():
-                result = await session.execute(
+                stmt = (
                     select(GalleryinfoSchema)
                     .where(GalleryinfoSchema.id == id)
                     .options(
@@ -33,6 +33,7 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                         selectinload(GalleryinfoSchema.characters),
                     )
                 )
+                result = await session.execute(stmt)
 
                 schema = result.scalars().first()
                 if schema:
@@ -56,7 +57,6 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
         async with self.sa.session_maker() as session:
             async with session.begin():
                 stmt = select(GalleryinfoSchema.id).order_by(GalleryinfoSchema.id)
-
                 result = await session.execute(stmt)
                 return list(result.scalars().all())
 
