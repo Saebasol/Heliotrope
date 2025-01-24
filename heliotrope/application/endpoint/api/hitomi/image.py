@@ -5,6 +5,7 @@ from sanic_ext.extensions.openapi import openapi
 
 from heliotrope.application.sanic import HeliotropeRequest
 
+from heliotrope.core.galleryinfo.exception import GalleryinfoNotFound
 from heliotrope.core.galleryinfo.usecases.get import GetGalleryinfoUseCase
 
 hitomi_image = Blueprint("hitomi_image", url_prefix="/image")
@@ -19,13 +20,14 @@ class HitomiImageView(HTTPMethodView):
         request: HeliotropeRequest,
         id: int,
     ) -> HTTPResponse:
-        galleryinfo = await GetGalleryinfoUseCase(
-            request.app.ctx.hitomi_la_galleryinfo_repository
-        ).execute(id) or await GetGalleryinfoUseCase(
-            request.app.ctx.sa_galleryinfo_repository
-        ).execute(
-            id
-        )
+        try:
+            galleryinfo = await GetGalleryinfoUseCase(
+                request.app.ctx.sa_galleryinfo_repository
+            ).execute(id)
+        except GalleryinfoNotFound:
+            galleryinfo = await GetGalleryinfoUseCase(
+                request.app.ctx.hitomi_la_galleryinfo_repository
+            ).execute(id)
 
         files = request.app.ctx.javascript_interpreter.image_urls(
             id, galleryinfo.files, False
