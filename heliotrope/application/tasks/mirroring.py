@@ -113,12 +113,14 @@ class MirroringTask:
         await BulkAddInfoUseCase(self.mongodb).execute(infos)
 
     async def mirror(self) -> None:
+        mirroed = False
         remote_differences = await self._get_differences(
             GetAllGalleryinfoIdsUseCase(self.hitomi_la),
             GetAllGalleryinfoIdsUseCase(self.sqlalchemy),
         )
 
         if remote_differences:
+            mirroed = True
             self.progress.is_mirroring_galleryinfo = True
             await self._process_in_jobs(
                 remote_differences,
@@ -136,7 +138,8 @@ class MirroringTask:
             await self._process_in_jobs(local_differences, self._fetch_and_store_info)
             self.progress.is_converting_to_info = False
 
-        self.progress.last_mirrored = now()
+        if mirroed:
+            self.progress.last_mirrored = now()
 
     async def start(self, delay: float) -> None:
         while True:
