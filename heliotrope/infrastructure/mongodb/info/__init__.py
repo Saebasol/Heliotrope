@@ -1,5 +1,5 @@
 from typing import Optional, Self, TypedDict
-from pymongo import AsyncMongoClient
+from pymongo import AsyncMongoClient, uri_parser
 
 
 class HitomiFileJSON(TypedDict):
@@ -35,4 +35,5 @@ class MongoDB:
 
     @classmethod
     async def create(cls, mongodb_url: str) -> Self:
-        return cls(AsyncMongoClient(mongodb_url), "mongodb.net" in mongodb_url)
+        host, _ = uri_parser.parse_host(mongodb_url)
+        return cls(AsyncMongoClient(mongodb_url), "mongodb.net" in host)
