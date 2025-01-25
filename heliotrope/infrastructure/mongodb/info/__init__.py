@@ -27,13 +27,12 @@ class HitomiInfoJSON(TypedDict):
 
 class MongoDB:
     def __init__(
-        self, client: AsyncMongoClient[HitomiInfoJSON], is_atlas: bool
+        self, client: AsyncMongoClient[HitomiInfoJSON], use_atlas_search: bool
     ) -> None:
         self.client = client
         self.collection = self.client.hitomi.info
-        self.is_atlas = is_atlas
+        self.use_atlas_search = use_atlas_search
 
     @classmethod
-    async def create(cls, mongodb_url: str) -> Self:
-        host, _ = uri_parser.parse_host(mongodb_url)
-        return cls(AsyncMongoClient(mongodb_url), "mongodb.net" in host)
+    async def create(cls, mongodb_url: str, use_atlas_search: bool = False) -> Self:
+        return cls(AsyncMongoClient(mongodb_url), use_atlas_search)
