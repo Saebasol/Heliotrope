@@ -55,7 +55,7 @@ jobs:
       - name: Check type
         run: poetry run pyright
       - name: Check untyped function
-        run: poetry run mypy ./crenata
+        run: poetry run mypy ./heliotrope
   test:
     runs-on: ubuntu-latest
     services:
