@@ -16,36 +16,46 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install -U pip
-        pip install -r requirements/style.txt
-    - name: Checking style
-      run: |
-        black ./heliotrope --check
-        isort ./heliotrope --check --profile=black
-
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Setup poetry
+        run: |
+          python -m pip install pip
+          pip install poetry
+          #add path for poetry
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: poetry install --no-interaction --with style
+      - name: Check style with black
+        run: poetry run black --check .
+      - name: Check style with isort
+        run: poetry run isort --check .
+        
   type:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - name: Install Dependencies
-      run: |
-        python -m pip install -U pip
-        pip install mypy
-        pip install -r requirements/deps.txt
-    - name: Mypy cheking
-      run: mypy ./heliotrope --strict
-
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Setup poetry
+        run: |
+          python -m pip install pip
+          pip install poetry
+          #add path for poetry
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: poetry install --no-interaction --with type
+      - name: Check type
+        run: poetry run pyright
+      - name: Check untyped function
+        run: poetry run mypy ./crenata
   test:
     runs-on: ubuntu-latest
     services:
@@ -56,41 +66,23 @@ jobs:
           POSTGRES_DB: test_heliotrope
         ports:
           - 127.0.0.1:5432:5432
-      mongo:
-        image: mongo
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: test
-        ports:
-          - 27017:27017
-        options:
-          --health-cmd mongosh
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-          --name mongo 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+      - name: Checkout branch
+        uses: actions/checkout@v3
+      - name: Setup python 3.11
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: "3.11"
+      - name: Setup poetry
+        run: |
+          python -m pip install pip
+          pip install poetry
+          #add path for poetry
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
       - name: Install dependencies
-        run: |
-          python -m pip install -U pip
-          pip install -r requirements/deps.txt
-          pip install -r requirements/test.txt
-      - name: Make MongoDB collection
-        run: |
-          sudo docker exec -d mongo mongosh -u root -p test --eval "db.getSiblingDB('hitomi').createCollection('info')"
-      - name: Make collection index
-        run: |
-          sudo docker exec -d mongo mongosh -u root -p test --eval "db.getSiblingDB('hitomi').getCollection('info').createIndex({'title':'text'}, {'language_override': 'korean'})"         
-      - name: Run tests
-        run: |
-          pytest --cov=heliotrope --cov-report=xml --asyncio-mode=auto
-      - name: Codecov
-        uses: codecov/codecov-action@v1
+        run: poetry install --no-interaction --with test
+      - name: Check test
+        run: poetry run pytest --asyncio-mode=auto
 
   build-and-push-image:
     runs-on: ubuntu-latest

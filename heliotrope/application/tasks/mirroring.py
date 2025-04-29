@@ -1,30 +1,26 @@
 from asyncio import gather, sleep
 from dataclasses import dataclass
+from datetime import datetime
+from time import tzname
 from typing import Any, Callable, Coroutine
-from heliotrope.core.galleryinfo.domain.entity import Galleryinfo
-from heliotrope.core.info.domain.entity import Info
-from heliotrope.core.info.usecases.add import BulkAddInfoUseCase
-from heliotrope.core.info.usecases.get import GetAllInfoIdsUseCase
-from heliotrope.core.serializer import Serializer
-from heliotrope.infrastructure.hitomila.galleryinfo.domain.repository import (
-    HitomiLaGalleryinfoRepository,
-)
-from heliotrope.infrastructure.mongodb.info.domain.repository import (
-    MongoDBInfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.galleryinfo.domain.repository import (
-    SAGalleryinfoRepository,
-)
-from heliotrope.core.galleryinfo.usecases.get import (
+
+from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
+from heliotrope.application.usecases.create.info import BulkCreateInfoUseCase
+from heliotrope.application.usecases.get.galleryinfo import (
     GetAllGalleryinfoIdsUseCase,
     GetGalleryinfoUseCase,
 )
-from heliotrope.core.galleryinfo.usecases.add import (
-    AddGalleryinfoUseCase,
+from heliotrope.application.usecases.get.info import GetAllInfoIdsUseCase
+from heliotrope.domain.entities.galleryinfo import Galleryinfo
+from heliotrope.domain.entities.info import Info
+from heliotrope.domain.serializer import Serializer
+from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
+    HitomiLaGalleryinfoRepository,
 )
-
-from datetime import datetime
-from time import tzname
+from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
+    SAGalleryinfoRepository,
+)
 
 
 def now():
@@ -104,13 +100,13 @@ class MirroringTask:
         ]
         results = await gather(*tasks)
         for result in results:
-            await AddGalleryinfoUseCase(target_repository).execute(result)
+            await CreateGalleryinfoUseCase(target_repository).execute(result)
 
     async def _fetch_and_store_info(self, ids: list[int]) -> None:
         tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
         results = await gather(*tasks)
         infos = list(map(Info.from_galleryinfo, results))
-        await BulkAddInfoUseCase(self.mongodb).execute(infos)
+        await BulkCreateInfoUseCase(self.mongodb).execute(infos)
 
     async def mirror(self) -> None:
         mirroed = False

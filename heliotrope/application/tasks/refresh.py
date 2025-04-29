@@ -1,8 +1,7 @@
 from asyncio.tasks import sleep
 from typing import NoReturn
 
-
-from heliotrope.application.sanic import Heliotrope
+from heliotrope.infrastructure.sanic import Heliotrope
 
 
 class RefreshggJS:

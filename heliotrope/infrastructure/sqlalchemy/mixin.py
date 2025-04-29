@@ -1,10 +1,9 @@
 from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-
-from heliotrope.infrastructure.sqlalchemy.serializer import SchemaSerializer
 from heliotrope.infrastructure.sqlalchemy.base import Base
 from heliotrope.infrastructure.sqlalchemy.deserializer import SchemaDeserializer
+from heliotrope.infrastructure.sqlalchemy.serializer import SchemaSerializer
 
 
 class Schema(Base, SchemaDeserializer, SchemaSerializer, kw_only=True):

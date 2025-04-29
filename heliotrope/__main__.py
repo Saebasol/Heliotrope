@@ -6,9 +6,9 @@ def main() -> None:  # pragma: no cover
     from sanic import Sanic
     from sanic.worker.loader import AppLoader
 
-    from heliotrope.application.server import create_app
-    from heliotrope.application.config import HeliotropeConfig
-    from heliotrope.application.argparser import parse_args
+    from heliotrope.infrastructure.argparser import parse_args
+    from heliotrope.infrastructure.config import HeliotropeConfig
+    from heliotrope.infrastructure.server import create_app
 
     heliotrope_config = HeliotropeConfig()
 

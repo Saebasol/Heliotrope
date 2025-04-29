@@ -1,4 +1,5 @@
 from typing import Optional, Self, TypedDict
+
 from pymongo import AsyncMongoClient, uri_parser
 
 

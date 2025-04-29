@@ -1,6 +1,8 @@
-from typing import Any, Mapping, Self, get_type_hints, get_origin, get_args
-from heliotrope.core.deserializer import Deserializer
+from typing import Any, Mapping, Self, get_args, get_origin, get_type_hints
+
 from sqlalchemy.orm import Mapped
+
+from heliotrope.domain.deserializer import Deserializer
 
 
 class SchemaDeserializer(Deserializer):

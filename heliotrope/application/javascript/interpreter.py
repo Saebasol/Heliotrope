@@ -1,10 +1,10 @@
-from pythonmonkey import eval
 import re
 
+from pythonmonkey import eval
 
-from heliotrope.core.info.domain.entity import Info
+from heliotrope.domain.entities.file import File
+from heliotrope.domain.entities.info import Info
 from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.core.file.domain.entity import File
 
 
 class JavaScriptInterpreter:
@@ -12,6 +12,7 @@ class JavaScriptInterpreter:
         self.hitomi_la = hitomi_la
         self.gg_code = ""
         eval(r"var gg = {}")
+        eval("const domain2 = 'gold-usergeneratedcontent.net';")
 
     def get_thumbnail(self, galleryid: int, image: File) -> str:
         return self.url_from_url_from_hash(galleryid, image, "webpbigtn", "webp", "tn")
@@ -52,27 +53,39 @@ class JavaScriptInterpreter:
             "rewrite_tn_paths",
         ]
 
-        pattern = re.compile(
-            rf"""
-            (
-                function\s+({"|".join(target_functions)})           # "function" 키워드와 함수 이름을 매칭합니다.
-                \s*                                                 # 공백 문자(스페이스, 탭 등)가 0개 이상 나올 수 있음을 매칭합니다.
-                \(                                                  # 여는 괄호 '('를 매칭합니다.
-                [^)]*                                               # 닫는 괄호 ')'가 나오기 전까지의 모든 문자를 매칭합니다 (즉, 함수의 인자 목록).
-                \)                                                  # 닫는 괄호 ')'를 매칭합니다.
-                \s*                                                 # 공백 문자(스페이스, 탭 등)가 0개 이상 나올 수 있음을 매칭합니다.
-                {{                                                  # 여는 중괄호 '{{'를 매칭합니다. 함수 본문 시작.
-                (?:                                                 # 비캡처 그룹 시작. 캡처하지 않으면서 내부를 그룹화합니다.
-                    [^{{}}]                                         # 여는 중괄호 '{'나 닫는 중괄호 '}'가 아닌 모든 문자를 매칭합니다.
-                    |                                               # 또는
-                    {{.*?}}                                         # 중첩된 중괄호가 포함된 텍스트를 비탐욕적으로 매칭합니다.
-                )*                                                  # 비캡처 그룹의 내용을 0회 이상 반복합니다.
-                }}                                                  # 닫는 중괄호 '}}'를 매칭합니다. 함수 본문 끝.
-            )
-            """,
-            re.DOTALL | re.VERBOSE,
+        pattern_start = re.compile(
+            rf"function\s+({'|'.join(target_functions)})\s*\([^)]*\)\s*{{"
         )
-        return "\n".join([match[0] for match in pattern.findall(js_code)])
+
+        functions: list[str] = []
+        pos = 0
+        while pos < len(js_code):
+            match = pattern_start.search(js_code, pos)
+            if not match:
+                break
+
+            start_pos = match.start()
+            brace_count = 0
+            i = match.end() - 1  # 여는 중괄호 위치에서 시작
+
+            # 균형 맞는 닫는 중괄호 찾기
+            while i < len(js_code):
+                if js_code[i] == "{":
+                    brace_count += 1
+                elif js_code[i] == "}":
+                    brace_count -= 1
+                    if brace_count == 0:  # 균형이 맞춰진 경우
+                        break
+                i += 1
+
+            if i < len(js_code):
+                # 함수 전체 텍스트 추출
+                function_text = js_code[start_pos : i + 1]
+                functions.append(function_text)
+
+            pos = i + 1
+
+        return "\n".join(functions)
 
     async def get_common_js(self):
         async with self.hitomi_la.session.get(

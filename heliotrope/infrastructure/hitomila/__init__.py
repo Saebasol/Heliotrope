@@ -1,4 +1,5 @@
 from typing import Generator
+
 from aiohttp import ClientSession
 from yarl import URL
 
@@ -14,7 +15,7 @@ class HitomiLa:
 
     @property
     def ltn_url(self) -> URL:
-        return self.base_url.with_host("ltn.hitomi.la")
+        return URL("https://ltn.gold-usergeneratedcontent.net/")
 
     @property
     def index_url(self) -> Generator[URL, None, None]:
