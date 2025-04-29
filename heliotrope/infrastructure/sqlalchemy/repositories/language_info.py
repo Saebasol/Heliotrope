@@ -1,4 +1,4 @@
-from sqlalchemy import select, and_
+from sqlalchemy import and_, select
 
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (

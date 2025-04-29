@@ -31,7 +31,6 @@ from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
 from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
 from heliotrope.infrastructure.sqlalchemy.mixin import Schema
 
-
 relationship = partial(
     relationship,
     cascade="all, delete",

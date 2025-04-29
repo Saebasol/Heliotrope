@@ -15,4 +15,3 @@ class FileSchema(ForeignKeySchema):
     hasjxl: Mapped[bool] = mapped_column(Boolean, default=False)
     haswebp: Mapped[bool] = mapped_column(Boolean, default=False)
     single: Mapped[bool] = mapped_column(Boolean, default=False)
-

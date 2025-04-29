@@ -24,3 +24,13 @@ class InfoRepository(ABC):
     @abstractmethod
     async def get_list_info(self, page: int = 1, item: int = 25) -> list[Info]:
         raise NotImplementedError
+
+    @abstractmethod
+    async def search_by_query(
+        self, query: list[str], page: int = 0, item: int = 25
+    ) -> tuple[int, list[Info]]:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def get_random_info(self, query: list[str]) -> Info | None:
+        raise NotImplementedError

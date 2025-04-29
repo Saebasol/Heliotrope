@@ -26,7 +26,10 @@ class HeliotropeImageProxyView(HTTPMethodView):
 
         # Check url is pixiv and hitomi
         # url이 히토미 또는 픽시브인지 확인
-        if not match(r"https:\/\/.+?(\.gold-usergeneratedcontent\.net|\.pximg\.net)", unquote_image_url):
+        if not match(
+            r"https:\/\/.+?(\.gold-usergeneratedcontent\.net|\.pximg\.net)",
+            unquote_image_url,
+        ):
             raise InvalidUsage
 
         headers = request.app.ctx.hitomi_la.headers

@@ -48,4 +48,3 @@ class LanguageSchema(Schema):
 
     name: str = field(init=False)
     language_localname: str = field(init=False)
-

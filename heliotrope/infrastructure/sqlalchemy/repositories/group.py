@@ -1,4 +1,4 @@
-from sqlalchemy import select, and_
+from sqlalchemy import and_, select
 
 from heliotrope.domain.entities.group import Group
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy

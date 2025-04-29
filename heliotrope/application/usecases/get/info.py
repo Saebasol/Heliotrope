@@ -33,3 +33,25 @@ class GetAllInfoIdsUseCase:
 
     async def execute(self) -> list[int]:
         return await self.info_repository.get_all_info_ids()
+
+
+class GetRandomInfoUseCase:
+    def __init__(self, info_repository: InfoRepository) -> None:
+        self.info_repository = info_repository
+
+    async def execute(self, query: list[str]) -> Info:
+        info = await self.info_repository.get_random_info(query)
+        if info:
+            return info
+
+        raise InfoNotFound
+
+
+class SearchByQueryUseCase:
+    def __init__(self, info_repository: InfoRepository) -> None:
+        self.info_repository = info_repository
+
+    async def execute(
+        self, query: list[str], page: int = 0, item: int = 25
+    ) -> tuple[int, list[Info]]:
+        return await self.info_repository.search_by_query(query, page, item)
