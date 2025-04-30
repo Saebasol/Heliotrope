@@ -5,7 +5,12 @@ from functools import partial
 from typing import Optional
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, reconstructor, relationship
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    reconstructor,  # pyright: ignore[reportUnknownVariableType]
+    relationship,
+)
 
 from heliotrope.infrastructure.sqlalchemy.association import (
     galleryinfo_artist,
@@ -48,7 +53,7 @@ class GalleryinfoSchema(Schema):
         self.language_url = self._language_info.language_url
         self.language_localname = self._localname.name
 
-    @reconstructor  # pyright: ignore[reportUnknownVariableType]
+    @reconstructor
     def init_on_load(self) -> None:
         self.__post_init__()
 
