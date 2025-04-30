@@ -5,12 +5,8 @@ from functools import partial
 from typing import Optional
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import (
-    Mapped,
-    mapped_column,
-    reconstructor,  # pyright: ignore[reportUnknownVariableType]
-    relationship,
-)
+from sqlalchemy.orm import reconstructor  # pyright: ignore[reportUnknownVariableType]
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from heliotrope.infrastructure.sqlalchemy.association import (
     galleryinfo_artist,
