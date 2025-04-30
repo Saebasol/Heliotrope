@@ -48,7 +48,7 @@ class GalleryinfoSchema(Schema):
         self.language_url = self._language_info.language_url
         self.language_localname = self._localname.name
 
-    @reconstructor
+    @reconstructor  # pyright: ignore[reportUnknownVariableType]
     def init_on_load(self) -> None:
         self.__post_init__()
 

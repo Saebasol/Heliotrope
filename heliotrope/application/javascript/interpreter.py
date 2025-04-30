@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import re
 
 from pythonmonkey import eval  # pyright: ignore[reportMissingTypeStubs]
