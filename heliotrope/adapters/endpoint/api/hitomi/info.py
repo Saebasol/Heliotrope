@@ -15,7 +15,9 @@ hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
 class HitomiInfoView(HTTPMethodView):
     @openapi.tag("Hitomi")
     @openapi.summary("Get hitomi info")
-    @openapi.parameter(name="id", location="path", schema=int)
+    @openapi.parameter(  # pyright: ignore[reportUnknownMemberType]
+        name="id", location="path", schema=int
+    )
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
         try:
             info = await GetInfoUseCase(request.app.ctx.mongodb_repository).execute(id)

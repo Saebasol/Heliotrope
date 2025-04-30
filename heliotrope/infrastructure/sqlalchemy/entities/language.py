@@ -15,12 +15,12 @@ class LanguageSchema(Schema):
 
     __tablename__ = "language"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.name = self._language_info.language
         self.language_localname = self._localname.name
 
     @reconstructor
-    def init_on_load(self):
+    def init_on_load(self) -> None:
         self.__post_init__()
 
     # 외래 키 관계

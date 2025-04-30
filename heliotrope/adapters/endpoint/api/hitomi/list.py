@@ -16,7 +16,9 @@ hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
 class HitomiListView(HTTPMethodView):
     @openapi.tag("Hitomi")
     @openapi.summary("Get latest hitomi info list")
-    @openapi.parameter(name="index", location="path", schema=int)
+    @openapi.parameter(  # pyright: ignore[reportUnknownMemberType]
+        name="index", location="path", schema=int
+    )
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
         total = len(await GetAllInfoIdsUseCase(request.app.ctx.mongodb_repository))
 

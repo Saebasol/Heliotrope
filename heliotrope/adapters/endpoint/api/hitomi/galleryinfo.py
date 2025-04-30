@@ -13,7 +13,9 @@ hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")
 class HitomiGalleryinfoView(HTTPMethodView):
     @openapi.tag("Hitomi")
     @openapi.summary("Get hitomi.la galleryinfo")
-    @openapi.parameter(name="id", location="path", schema=int)
+    @openapi.parameter(  # pyright: ignore[reportUnknownMemberType]
+        name="id", location="path", schema=int
+    )
     async def get(
         self,
         request: HeliotropeRequest,

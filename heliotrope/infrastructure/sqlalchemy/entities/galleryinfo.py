@@ -42,14 +42,14 @@ relationship = partial(
 class GalleryinfoSchema(Schema):
     __tablename__ = "galleryinfo"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.type = self._type.type
         self.language = self._language_info.language
         self.language_url = self._language_info.language_url
         self.language_localname = self._localname.name
 
     @reconstructor
-    def init_on_load(self):
+    def init_on_load(self) -> None:
         self.__post_init__()
 
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False)

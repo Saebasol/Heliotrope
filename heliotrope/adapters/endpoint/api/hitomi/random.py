@@ -1,4 +1,3 @@
-from sanic import NotFound
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
@@ -14,7 +13,7 @@ hitomi_random = Blueprint("hitomi_random", url_prefix="/random")
 class HitomiRandomView(HTTPMethodView):
     @openapi.summary("Get random result in hitomi")
     @openapi.tag("hitomi")
-    @openapi.body(
+    @openapi.body(  # pyright: ignore[reportUnknownMemberType]
         {
             "application/json": openapi.Object(
                 {

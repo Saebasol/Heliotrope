@@ -1,3 +1,4 @@
+from typing import Generator
 from heliotrope.application.exceptions import GalleryinfoNotFound
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
@@ -28,7 +29,7 @@ class GetAllGalleryinfoIdsUseCase:
     def __init__(self, galleryinfo_repository: GalleryinfoRepository) -> None:
         self.galleryinfo_repository = galleryinfo_repository
 
-    def __await__(self):
+    def __await__(self) -> Generator[None, None, list[int]]:
         return self.execute().__await__()
 
     async def execute(self) -> list[int]:

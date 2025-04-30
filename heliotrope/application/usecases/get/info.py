@@ -1,3 +1,4 @@
+from typing import Generator
 from heliotrope.application.exceptions import InfoNotFound
 from heliotrope.domain.entities.info import Info
 from heliotrope.domain.repositories.info import InfoRepository
@@ -28,7 +29,7 @@ class GetAllInfoIdsUseCase:
     def __init__(self, info_repository: InfoRepository) -> None:
         self.info_repository = info_repository
 
-    def __await__(self):
+    def __await__(self) -> Generator[None, None, list[int]]:
         return self.execute().__await__()
 
     async def execute(self) -> list[int]:

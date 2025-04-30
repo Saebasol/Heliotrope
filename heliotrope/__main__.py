@@ -16,15 +16,17 @@ def main() -> None:  # pragma: no cover
     heliotrope_config.update_with_args(args)
 
     loader = AppLoader(factory=partial(create_app, heliotrope_config))
-    app = loader.load()
+    app = (  # pyright: ignore[reportUnknownVariableType]
+        loader.load()  # pyright: ignore[reportUnknownMemberType]
+    )
 
-    app.prepare(
+    app.prepare(  # pyright: ignore[reportUnknownMemberType]
         heliotrope_config.HOST,
         heliotrope_config.PORT,
         debug=heliotrope_config.DEBUG,
         workers=heliotrope_config.WORKERS,
     )
-    Sanic.serve(app, app_loader=loader)
+    Sanic.serve(app, app_loader=loader)  # pyright: ignore[reportUnknownMemberType]
 
 
 if __name__ == "__main__":  # pragma: no cover

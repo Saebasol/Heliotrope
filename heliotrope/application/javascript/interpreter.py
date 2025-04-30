@@ -1,6 +1,7 @@
+from __future__ import annotations
 import re
 
-from pythonmonkey import eval
+from pythonmonkey import eval  # pyright: ignore[reportMissingTypeStubs]
 
 from heliotrope.domain.entities.file import File
 from heliotrope.domain.entities.info import Info
@@ -39,10 +40,10 @@ class JavaScriptInterpreter:
 
     def url_from_url_from_hash(
         self, galleryid: int, image: File, dir: str, ext: str, base: str
-    ):
+    ) -> str:
         return eval("url_from_url_from_hash")(str(galleryid), image, dir, ext, base)
 
-    def parse_common_js(self, js_code: str):
+    def parse_common_js(self, js_code: str) -> str:
         target_functions = [
             "subdomain_from_url",
             "url_from_url",
@@ -87,31 +88,31 @@ class JavaScriptInterpreter:
 
         return "\n".join(functions)
 
-    async def get_common_js(self):
+    async def get_common_js(self) -> str:
         async with self.hitomi_la.session.get(
             self.hitomi_la.ltn_url.with_path("common.js")
         ) as response:
             return await response.text()
 
-    async def refresh_gg_js(self):
+    async def refresh_gg_js(self) -> None:
         gg_code = await self.get_gg_js()
         if self.gg_code != gg_code:
             self.gg_code = gg_code
             eval(self.gg_code)
 
-    async def get_gg_js(self):
+    async def get_gg_js(self) -> str:
         async with self.hitomi_la.session.get(
             self.hitomi_la.ltn_url.with_path("gg.js")
         ) as response:
             return await response.text()
 
-    async def evulate_common_js(self):
+    async def evulate_common_js(self) -> None:
         common_js_code = await self.get_common_js()
         to_eval = self.parse_common_js(common_js_code)
         eval(to_eval)
 
     @classmethod
-    async def setup(cls, hitomi_la: HitomiLa):
+    async def setup(cls, hitomi_la: HitomiLa) -> JavaScriptInterpreter:
         interpreter = cls(hitomi_la)
         await interpreter.evulate_common_js()
         await interpreter.refresh_gg_js()

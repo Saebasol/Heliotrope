@@ -4,7 +4,7 @@ from heliotrope.domain.serializer import Serializer
 
 
 class SchemaSerializer(Serializer):
-    def _dict_factory(self, data: Any):
+    def _dict_factory(self, data: Any) -> dict[str, Any]:
         serialized = super()._dict_factory(data)
         if serialized.get("related"):
             serialized["related"] = [
