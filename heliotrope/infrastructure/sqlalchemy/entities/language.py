@@ -1,7 +1,8 @@
 from dataclasses import field
 
 from sqlalchemy import ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, reconstructor, relationship
+from sqlalchemy.orm import reconstructor  # pyright: ignore[reportUnknownVariableType]
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
