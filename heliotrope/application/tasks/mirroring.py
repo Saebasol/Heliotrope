@@ -23,7 +23,7 @@ from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
 )
 
 
-def now():
+def now() -> str:
     return f"({tzname[0]}) {datetime.now()}"
 
 

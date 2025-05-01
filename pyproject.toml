@@ -11,8 +11,6 @@ python = "^3.12"
 sanic = "^25.3.0"
 aiohttp = "^3.11.18"
 sqlalchemy = "^2.0.36"
-black = "^24.10.0"
-isort = "^5.13.2"
 pythonmonkey = "^1.1.0"
 pymongo = "^4.11.1"
 sanic-ext = "^23.12.0"
@@ -22,6 +20,26 @@ sentry-sdk = "^2.27.0"
 include = ["heliotrope"]
 typeCheckingMode = "strict"
 
+[tool.poetry.group.style.dependencies]
+black = "^24.10.0"
+isort = "^5.10.1"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.1.3"
+pytest-cov = "^3.0.0"
+pytest-asyncio = "^0.19.0"
+
+[tool.poetry.group.type.dependencies]
+pyright = "^1.1.344"
+mypy = "^1.5.1"
+
+[tool.isort]
+src_paths = ["heliotrope", "tests"]
+profile = "black"
+
+[tool.mypy]
+disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before-def", "call-arg", "arg-type", "call-overload", "valid-type", "var-annotated", "override", "return", "empty-body", "return-value", "assignment", "method-assign", "type-var", "operator", "index", "list-item", "dict-item", "typeddict-item", "typeddict-unknown-key", "has-type", "import", "no-redef", "func-returns-value", "abstract", "type-abstract", "safe-super", "valid-newtype", "exit-return", "name-match", "literal-required", "no-overload-impl", "unused-coroutine", "top-level-await", "assert-type", "truthy-function", "str-format", "str-bytes-safe", "annotation-unchecked", "syntax", "misc"]
+disallow_untyped_defs = true
 
 [build-system]
 requires = ["poetry-core"]

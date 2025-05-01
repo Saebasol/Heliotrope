@@ -14,7 +14,7 @@ hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 class HitomiSearchView(HTTPMethodView):
     @openapi.tag("hitomi")
     @openapi.summary("Get search result in hitomi")
-    @openapi.body(
+    @openapi.body(  # pyright: ignore[reportUnknownMemberType]
         {
             "application/json": openapi.Object(
                 {

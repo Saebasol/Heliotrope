@@ -1,7 +1,8 @@
 from dataclasses import field
 
 from sqlalchemy import ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, reconstructor, relationship
+from sqlalchemy.orm import reconstructor  # pyright: ignore[reportUnknownVariableType]
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
@@ -15,12 +16,12 @@ class LanguageSchema(Schema):
 
     __tablename__ = "language"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.name = self._language_info.language
         self.language_localname = self._localname.name
 
     @reconstructor
-    def init_on_load(self):
+    def init_on_load(self) -> None:
         self.__post_init__()
 
     # 외래 키 관계

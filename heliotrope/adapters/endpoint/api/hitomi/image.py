@@ -13,7 +13,9 @@ hitomi_image = Blueprint("hitomi_image", url_prefix="/image")
 class HitomiImageView(HTTPMethodView):
     @openapi.tag("Hitomi")
     @openapi.summary("Get hitomi.la image")
-    @openapi.parameter(name="id", location="path", schema=int)
+    @openapi.parameter(  # pyright: ignore[reportUnknownMemberType]
+        name="id", location="path", schema=int
+    )
     async def get(
         self,
         request: HeliotropeRequest,

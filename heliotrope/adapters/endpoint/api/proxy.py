@@ -1,5 +1,5 @@
 from re import match
-from typing import Optional
+from typing import Optional, cast
 from urllib.parse import unquote
 
 from sanic.blueprints import Blueprint
@@ -16,7 +16,9 @@ proxy_endpoint = Blueprint("proxy", url_prefix="/proxy")
 class HeliotropeImageProxyView(HTTPMethodView):
     @openapi.tag("proxy")
     @openapi.summary("Proxy image")
-    @openapi.parameter(name="image_url", location="path", schema=str)
+    @openapi.parameter(  # pyright: ignore[reportUnknownMemberType]
+        name="image_url", location="path", schema=str
+    )
     async def get(
         self, request: HeliotropeRequest, image_url: str
     ) -> Optional[HTTPResponse]:
@@ -45,8 +47,9 @@ class HeliotropeImageProxyView(HTTPMethodView):
             if request_response.status != 200:
                 raise NotFound
 
-            response: HTTPResponse = await request.respond(
-                content_type=request_response.content_type
+            response = cast(
+                HTTPResponse,
+                await request.respond(content_type=request_response.content_type),
             )
 
             # Use chunk

@@ -1,6 +1,6 @@
 from typing import Optional, Self, TypedDict
 
-from pymongo import AsyncMongoClient, uri_parser
+from pymongo import AsyncMongoClient
 
 
 class HitomiFileJSON(TypedDict):

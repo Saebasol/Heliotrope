@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
 from contextvars import ContextVar
 
 from sqlalchemy.ext.asyncio import async_sessionmaker

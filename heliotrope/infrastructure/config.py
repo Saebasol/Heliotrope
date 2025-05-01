@@ -88,12 +88,14 @@ class HeliotropeConfig(Config):
     def load_config_with_config_json(self, path: str) -> None:
         with open(path, "r") as f:
             config = loads(f.read())
-            self.update_config(config)
+            self.update_config(config)  # pyright: ignore[reportUnknownMemberType]
         return None
 
     def update_with_args(self, args: Namespace) -> None:
         if not self.USE_ENV:
-            self.update_config({k.upper(): v for k, v in vars(args).items()})
+            self.update_config(  # pyright: ignore[reportUnknownMemberType]
+                {k.upper(): v for k, v in vars(args).items()}
+            )
         if self.CONFIG:
             self.load_config_with_config_json(self.CONFIG)
         return None
