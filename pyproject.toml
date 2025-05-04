@@ -5,6 +5,7 @@ description = "Hitomi.la mirror api"
 authors = ["Ryu Juheon <saidbysolo@gmail.com>"]
 license = "MIT License"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
