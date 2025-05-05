@@ -22,12 +22,6 @@ class HeliotropeConfig(Config):
         *,
         converters: Optional[Sequence[Callable[[str], Any]]] = [list_converter]
     ):
-        super().__init__(
-            defaults=defaults,
-            env_prefix=env_prefix,
-            keep_alive=keep_alive,
-            converters=converters,
-        )
         # Default
         self.update(
             {
@@ -65,6 +59,12 @@ class HeliotropeConfig(Config):
                 "API_LICENSE_NAME": "MIT",
                 "API_LICENSE_URL": "https://github.com/Saebasol/Heliotrope/blob/main/LICENSE",
             }
+        )
+        super().__init__(
+            defaults=defaults,
+            env_prefix=env_prefix,
+            keep_alive=keep_alive,
+            converters=converters,
         )
 
     # Heliotrope
