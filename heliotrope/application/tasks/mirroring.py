@@ -4,6 +4,8 @@ from datetime import datetime
 from time import tzname
 from typing import Any, Callable, Coroutine
 
+from sanic.log import logger
+
 from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
 from heliotrope.application.usecases.create.info import BulkCreateInfoUseCase
 from heliotrope.application.usecases.get.galleryinfo import (
@@ -109,14 +111,14 @@ class MirroringTask:
         await BulkCreateInfoUseCase(self.mongodb).execute(infos)
 
     async def mirror(self) -> None:
-        mirroed = False
+        mirroring_is_end = False
         remote_differences = await self._get_differences(
             GetAllGalleryinfoIdsUseCase(self.hitomi_la),
             GetAllGalleryinfoIdsUseCase(self.sqlalchemy),
         )
 
         if remote_differences:
-            mirroed = True
+            mirroring_is_end = True
             self.progress.is_mirroring_galleryinfo = True
             await self._process_in_jobs(
                 remote_differences,
@@ -134,10 +136,11 @@ class MirroringTask:
             await self._process_in_jobs(local_differences, self._fetch_and_store_info)
             self.progress.is_converting_to_info = False
 
-        if mirroed:
+        if mirroring_is_end:
             self.progress.last_mirrored = now()
 
     async def start(self, delay: float) -> None:
+        logger.info(f"Starting Mirroring task with delay: {delay}")
         while True:
             self.progress.last_checked = now()
             await self.mirror()

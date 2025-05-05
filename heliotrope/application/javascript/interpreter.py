@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from pythonmonkey import eval  # pyright: ignore[reportMissingTypeStubs]
+from sanic.log import logger
 
 from heliotrope.domain.entities.file import File
 from heliotrope.domain.entities.info import Info
@@ -114,7 +115,10 @@ class JavaScriptInterpreter:
 
     @classmethod
     async def setup(cls, hitomi_la: HitomiLa) -> JavaScriptInterpreter:
+        logger.info("Setting up JavaScript interpreter")
         interpreter = cls(hitomi_la)
+        logger.debug("Evaluating common.js")
         await interpreter.evulate_common_js()
+        logger.debug("Initializing gg.js")
         await interpreter.refresh_gg_js()
         return interpreter

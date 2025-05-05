@@ -1,4 +1,5 @@
 from asyncio import AbstractEventLoop
+from functools import partial
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
@@ -6,7 +7,9 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
+from heliotrope.application.tasks.manager import callback
 from heliotrope.application.tasks.mirroring import MirroringTask
+from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.infrastructure.config import HeliotropeConfig
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
@@ -45,9 +48,32 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         heliotrope.ctx.mongodb_repository,
     )
 
-    heliotrope.add_task(
-        heliotrope.ctx.mirroring_task.start(heliotrope.config.MIRRORING_DELAY)
-    )
+    refresh_gg_js = RefreshggJS(heliotrope)
+
+    for task, name in [
+        (
+            lambda: refresh_gg_js.start(heliotrope.config.REFRESH_GG_JS_DELAY),
+            "refresh_gg_js",
+        ),
+        (
+            lambda: heliotrope.ctx.mirroring_task.start(
+                heliotrope.config.MIRRORING_DELAY
+            ),
+            "mirroring_task",
+        ),
+    ]:
+        added_task = heliotrope.add_task(
+            task(),
+            name=name,
+        )
+        assert added_task
+        added_task.add_done_callback(
+            partial(
+                callback,
+                retry_task=task,
+                app=heliotrope,
+            )
+        )
 
     if heliotrope.config.PRODUCTION:
         init(
