@@ -4,7 +4,7 @@ from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse
 from sanic.views import HTTPMethodView
 
-from heliotrope.infrastructure.sanic import HeliotropeRequest
+from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 about_endpoint = Blueprint("about", url_prefix="/about")
 

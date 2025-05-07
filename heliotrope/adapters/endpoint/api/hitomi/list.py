@@ -8,7 +8,7 @@ from heliotrope.application.usecases.get.info import (
     GetAllInfoIdsUseCase,
     GetListInfoUseCase,
 )
-from heliotrope.infrastructure.sanic import HeliotropeRequest
+from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
 

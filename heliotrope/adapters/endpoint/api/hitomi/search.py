@@ -6,7 +6,7 @@ from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
 
 from heliotrope.application.usecases.get.info import SearchByQueryUseCase
-from heliotrope.infrastructure.sanic import HeliotropeRequest
+from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 
