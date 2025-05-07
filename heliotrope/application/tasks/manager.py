@@ -3,7 +3,7 @@ from typing import Any, Callable, Coroutine, NoReturn
 
 from sanic.log import logger
 
-from heliotrope.infrastructure.sanic import Heliotrope
+from heliotrope.infrastructure.sanic.app import Heliotrope
 
 
 def callback(

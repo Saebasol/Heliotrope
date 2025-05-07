@@ -8,7 +8,7 @@ from sanic.response import HTTPResponse
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
-from heliotrope.infrastructure.sanic import HeliotropeRequest
+from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 proxy_endpoint = Blueprint("proxy", url_prefix="/proxy")
 

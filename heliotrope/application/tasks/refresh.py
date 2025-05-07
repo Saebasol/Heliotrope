@@ -3,7 +3,7 @@ from typing import NoReturn
 
 from sanic.log import logger
 
-from heliotrope.infrastructure.sanic import Heliotrope
+from heliotrope.infrastructure.sanic.app import Heliotrope
 
 
 class RefreshggJS:

@@ -3,7 +3,7 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
-from heliotrope.infrastructure.sanic import HeliotropeRequest
+from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 progress_endpoint = Blueprint("progress", url_prefix="/progress")
 

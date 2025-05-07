@@ -10,14 +10,14 @@ from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.application.tasks.manager import callback
 from heliotrope.application.tasks.mirroring import MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
-from heliotrope.infrastructure.config import HeliotropeConfig
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
     HitomiLaGalleryinfoRepository,
 )
 from heliotrope.infrastructure.mongodb import MongoDB
 from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
-from heliotrope.infrastructure.sanic import Heliotrope
+from heliotrope.infrastructure.sanic.app import Heliotrope
+from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,

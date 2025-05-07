@@ -7,8 +7,8 @@ def main() -> None:  # pragma: no cover
     from sanic.worker.loader import AppLoader
 
     from heliotrope.infrastructure.argparser import parse_args
-    from heliotrope.infrastructure.config import HeliotropeConfig
-    from heliotrope.infrastructure.server import create_app
+    from heliotrope.infrastructure.sanic.bootstrap import create_app
+    from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 
     heliotrope_config = HeliotropeConfig()
 
@@ -26,6 +26,7 @@ def main() -> None:  # pragma: no cover
         debug=heliotrope_config.DEBUG,
         workers=heliotrope_config.WORKERS,
     )
+
     Sanic.serve(app, app_loader=loader)  # pyright: ignore[reportUnknownMemberType]
 
 

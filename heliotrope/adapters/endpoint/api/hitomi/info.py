@@ -7,7 +7,7 @@ from heliotrope.application.exceptions import GalleryinfoNotFound, InfoNotFound
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
 from heliotrope.application.usecases.get.info import GetInfoUseCase
 from heliotrope.domain.entities.info import Info
-from heliotrope.infrastructure.sanic import HeliotropeRequest
+from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
 
