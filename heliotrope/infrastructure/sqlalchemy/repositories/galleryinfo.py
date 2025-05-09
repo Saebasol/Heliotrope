@@ -52,7 +52,7 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                 stmt = select(GalleryinfoSchema).where(GalleryinfoSchema.id == id)
                 result = await session.execute(stmt)
 
-                schema = result.scalars().first()
+                schema = result.scalar()
                 if schema:
                     schema_dict = schema.to_dict()
                     return Galleryinfo.from_dict(schema_dict)

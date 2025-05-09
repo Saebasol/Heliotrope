@@ -1,13 +1,14 @@
-from asyncio import gather, sleep
+from asyncio import as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
-from typing import Any, Callable, Coroutine, cast
+from typing import Any, Callable, Coroutine
 
+import memray
 from sanic.log import logger
 
 from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
-from heliotrope.application.usecases.create.info import BulkCreateInfoUseCase
+from heliotrope.application.usecases.create.info import CreateInfoUseCase
 from heliotrope.application.usecases.get.galleryinfo import (
     GetAllGalleryinfoIdsUseCase,
     GetGalleryinfoUseCase,
@@ -27,6 +28,30 @@ from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
 
 def now() -> str:
     return f"({tzname[0]}) {datetime.now()}"
+
+
+class Proxy:
+    def __init__(self, progress_dict: dict[str, Any]) -> None:
+        self.progress_dict = progress_dict
+
+    def reset(self) -> None:
+        self.job_completed = 0
+        self.total = 0
+        self.job_total = 0
+
+    def __getattr__(self, name: str) -> Any:
+        if name in self.progress_dict:
+            return self.progress_dict[name]
+
+        return super().__getattr__(  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType, reportAttributeAccessIssue]
+            name
+        )
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name == "progress_dict":
+            super().__setattr__(name, value)
+        else:
+            self.progress_dict[name] = value
 
 
 @dataclass
@@ -72,34 +97,7 @@ class MirroringTask:
         self.hitomi_la = hitomi_la
         self.sqlalchemy = sqlalchemy
         self.mongodb = mongodb
-        self.mirroring_progress_dict = mirroring_progress_dict
-
-    @property
-    def progress(self) -> MirroringProgress:
-        class Proxy:
-            def __init__(self, progress_dict: Any) -> None:
-                self.progress_dict = progress_dict
-
-            def reset(self) -> None:
-                self.job_completed = 0
-                self.total = 0
-                self.job_total = 0
-
-            def __getattr__(self, name: str) -> Any:
-                if name in self.progress_dict:
-                    return self.progress_dict[name]
-
-                return super().__getattr__(  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType, reportAttributeAccessIssue]
-                    name
-                )
-
-            def __setattr__(self, name: str, value: Any) -> None:
-                if name == "progress_dict":
-                    super().__setattr__(name, value)
-                else:
-                    self.progress_dict[name] = value
-
-        return cast(MirroringProgress, Proxy(self.mirroring_progress_dict))
+        self.progress = Proxy(mirroring_progress_dict)
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
@@ -141,15 +139,15 @@ class MirroringTask:
             self._preprocess(GetGalleryinfoUseCase(self.hitomi_la).execute, id)
             for id in ids
         ]
-        results = await gather(*tasks)
-        for result in results:
+        for result in as_completed(tasks):
+            result = await result
             await CreateGalleryinfoUseCase(target_repository).execute(result)
 
     async def _fetch_and_store_info(self, ids: list[int]) -> None:
         tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
-        results = await gather(*tasks)
-        infos = list(map(Info.from_galleryinfo, results))
-        await BulkCreateInfoUseCase(self.mongodb).execute(infos)
+        for result in as_completed(tasks):
+            result = await result
+            await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
 
     async def mirror(self) -> None:
         mirroring_is_end = False
