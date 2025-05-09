@@ -7,7 +7,6 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
-from heliotrope.application.tasks.manager import callback
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.infrastructure.hitomila import HitomiLa
