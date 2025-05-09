@@ -110,6 +110,13 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
+        "--mirroring-concurrent-size",
+        type=int,
+        default=100,
+        help="The number of concurrent mirroring tasks (default: 100)",
+    )
+
+    config.add_argument(
         "--config",
         type=str,
         default="",

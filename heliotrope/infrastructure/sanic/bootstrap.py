@@ -76,6 +76,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 heliotrope.ctx.mongodb_repository,
                 mirroring_progress_dict,
             )
+            mirroring_task.CONCURRENT_SIZE = heliotrope.config.MIRRORING_CONCURRENT_SIZE
 
             heliotrope.add_task(mirroring_task.start(heliotrope.config.MIRRORING_DELAY))
             namespace.is_running = True
