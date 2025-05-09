@@ -4,7 +4,6 @@ from datetime import datetime
 from time import tzname
 from typing import Any, Callable, Coroutine
 
-import memray
 from sanic.log import logger
 
 from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
@@ -111,13 +110,13 @@ class MirroringTask:
         self,
         source_usecase: GetAllGalleryinfoIdsUseCase,
         target_usecase: GetAllGalleryinfoIdsUseCase | GetAllInfoIdsUseCase,
-    ) -> list[int]:
+    ) -> tuple[int, ...]:
         source_ids = await source_usecase.execute()
         target_ids = await target_usecase.execute()
-        return list(set(source_ids) - set(target_ids))
+        return tuple(set(source_ids) - set(target_ids))
 
     async def _process_in_jobs(
-        self, ids: list[int], process_function: Callable[[list[int]], Any]
+        self, ids: tuple[int, ...], process_function: Callable[[tuple[int, ...]], Any]
     ) -> None:
         jobs = [
             ids[i : i + self.CONCURRENT_SIZE]
@@ -133,7 +132,7 @@ class MirroringTask:
         self.progress.mirrored = len(ids)
 
     async def _fetch_and_store_galleryinfo(
-        self, ids: list[int], target_repository: SAGalleryinfoRepository
+        self, ids: tuple[int, ...], target_repository: SAGalleryinfoRepository
     ) -> None:
         tasks = [
             self._preprocess(GetGalleryinfoUseCase(self.hitomi_la).execute, id)
@@ -143,7 +142,7 @@ class MirroringTask:
             result = await result
             await CreateGalleryinfoUseCase(target_repository).execute(result)
 
-    async def _fetch_and_store_info(self, ids: list[int]) -> None:
+    async def _fetch_and_store_info(self, ids: tuple[int, ...]) -> None:
         tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
         for result in as_completed(tasks):
             result = await result
