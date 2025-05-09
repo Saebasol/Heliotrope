@@ -2,7 +2,7 @@ from asyncio import as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
-from typing import Any, Callable, Coroutine
+from typing import Any, Callable, Coroutine, cast
 
 from sanic.log import logger
 
@@ -96,7 +96,7 @@ class MirroringTask:
         self.hitomi_la = hitomi_la
         self.sqlalchemy = sqlalchemy
         self.mongodb = mongodb
-        self.progress = Proxy(mirroring_progress_dict)
+        self.progress = cast(MirroringProgress, Proxy(mirroring_progress_dict))
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
