@@ -2,7 +2,7 @@ from asyncio import gather, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
-from typing import Any, Callable, Coroutine
+from typing import Any, Callable, Coroutine, cast
 
 from sanic.log import logger
 
@@ -45,6 +45,19 @@ class MirroringProgress(Serializer):
         self.total = 0
         self.job_total = 0
 
+    @classmethod
+    def default(cls) -> "MirroringProgress":
+        return cls(
+            total=0,
+            job_total=0,
+            job_completed=0,
+            mirrored=0,
+            is_mirroring_galleryinfo=False,
+            is_converting_to_info=False,
+            last_checked="",
+            last_mirrored="",
+        )
+
 
 class MirroringTask:
     CONCURRENT_SIZE: int = 100
@@ -54,11 +67,39 @@ class MirroringTask:
         hitomi_la: HitomiLaGalleryinfoRepository,
         sqlalchemy: SAGalleryinfoRepository,
         mongodb: MongoDBInfoRepository,
+        mirroring_progress_dict: dict[str, Any],
     ) -> None:
         self.hitomi_la = hitomi_la
         self.sqlalchemy = sqlalchemy
         self.mongodb = mongodb
-        self.progress = MirroringProgress(0, 0, 0, 0, False, False, "", "")
+        self.mirroring_progress_dict = mirroring_progress_dict
+
+    @property
+    def progress(self) -> MirroringProgress:
+        class Proxy:
+            def __init__(self, progress_dict: Any) -> None:
+                self.progress_dict = progress_dict
+
+            def reset(self) -> None:
+                self.job_completed = 0
+                self.total = 0
+                self.job_total = 0
+
+            def __getattr__(self, name: str) -> Any:
+                if name in self.progress_dict:
+                    return self.progress_dict[name]
+
+                return super().__getattr__(  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType, reportAttributeAccessIssue]
+                    name
+                )
+
+            def __setattr__(self, name: str, value: Any) -> None:
+                if name == "progress_dict":
+                    super().__setattr__(name, value)
+                else:
+                    self.progress_dict[name] = value
+
+        return cast(MirroringProgress, Proxy(self.mirroring_progress_dict))
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
@@ -127,7 +168,7 @@ class MirroringTask:
             self.progress.is_mirroring_galleryinfo = False
 
         local_differences = await self._get_differences(
-            GetAllGalleryinfoIdsUseCase(self.hitomi_la),
+            GetAllGalleryinfoIdsUseCase(self.sqlalchemy),
             GetAllInfoIdsUseCase(self.mongodb),
         )
 

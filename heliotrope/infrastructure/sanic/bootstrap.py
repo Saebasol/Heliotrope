@@ -1,5 +1,5 @@
 from asyncio import AbstractEventLoop
-from functools import partial
+from multiprocessing import Lock, Manager
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
@@ -8,7 +8,7 @@ from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.application.tasks.manager import callback
-from heliotrope.application.tasks.mirroring import MirroringTask
+from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
@@ -24,7 +24,24 @@ from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
 )
 
 
+async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
+    manager = Manager()
+    heliotrope.shared_ctx.namespace = manager.Namespace()
+    heliotrope.shared_ctx.mirroring_progress_dict = manager.dict()
+    heliotrope.shared_ctx.mirroring_progress_dict.update(
+        MirroringProgress.default().to_dict()
+    )
+    heliotrope.shared_ctx.namespace.is_running = False
+
+
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
+    if heliotrope.config.PRODUCTION:
+        init(
+            heliotrope.config.SENTRY_DSN,
+            integrations=[SanicIntegration()],
+            release=__version__,
+        )
+
     heliotrope.ctx.sa = await SQLAlchemy.create(heliotrope.config.GALLERYINFO_DB_URL)
     heliotrope.ctx.hitomi_la = await HitomiLa.create(heliotrope.config.INDEX_FILES)
     heliotrope.ctx.mongodb = await MongoDB.create(heliotrope.config.INFO_DB_URL)
@@ -42,45 +59,27 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     heliotrope.ctx.javascript_interpreter = await JavaScriptInterpreter.setup(
         heliotrope.ctx.hitomi_la
     )
-    heliotrope.ctx.mirroring_task = MirroringTask(
-        heliotrope.ctx.hitomi_la_galleryinfo_repository,
-        heliotrope.ctx.sa_galleryinfo_repository,
-        heliotrope.ctx.mongodb_repository,
-    )
 
     refresh_gg_js = RefreshggJS(heliotrope)
 
-    for task, name in [
-        (
-            lambda: refresh_gg_js.start(heliotrope.config.REFRESH_GG_JS_DELAY),
-            "refresh_gg_js",
-        ),
-        (
-            lambda: heliotrope.ctx.mirroring_task.start(
-                heliotrope.config.MIRRORING_DELAY
-            ),
-            "mirroring_task",
-        ),
-    ]:
-        added_task = heliotrope.add_task(
-            task(),
-            name=name,
-        )
-        assert added_task
-        added_task.add_done_callback(
-            partial(
-                callback,
-                retry_task=task,
-                app=heliotrope,
-            )
-        )
+    heliotrope.add_task(
+        refresh_gg_js.start(heliotrope.config.REFRESH_GG_JS_DELAY),
+    )
 
-    if heliotrope.config.PRODUCTION:
-        init(
-            heliotrope.config.SENTRY_DSN,
-            integrations=[SanicIntegration()],
-            release=__version__,
-        )
+    with Lock():
+        namespace = heliotrope.shared_ctx.namespace
+        mirroring_progress_dict = heliotrope.shared_ctx.mirroring_progress_dict
+
+        if not namespace.is_running:
+            mirroring_task = MirroringTask(
+                heliotrope.ctx.hitomi_la_galleryinfo_repository,
+                heliotrope.ctx.sa_galleryinfo_repository,
+                heliotrope.ctx.mongodb_repository,
+                mirroring_progress_dict,
+            )
+
+            heliotrope.add_task(mirroring_task.start(heliotrope.config.MIRRORING_DELAY))
+            namespace.is_running = True
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -95,6 +94,7 @@ def create_app(config: HeliotropeConfig) -> Heliotrope:
     heliotrope = Heliotrope("heliotrope")
     heliotrope.config.update(config)
     heliotrope.blueprint(endpoint)
+    heliotrope.main_process_start(main_process_startup)
     heliotrope.before_server_start(startup)
     heliotrope.before_server_stop(closeup)
 
