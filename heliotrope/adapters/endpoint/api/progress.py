@@ -13,7 +13,7 @@ class MirroringProgressView(HTTPMethodView):
     @openapi.summary("Get mirroring progress")
     async def get(self, request: HeliotropeRequest) -> HTTPResponse:
         return json(
-            request.app.shared_ctx.mirroring_progress.copy(),
+            request.app.shared_ctx.mirroring_progress_dict.copy(),
             headers={"Access-Control-Allow-Origin": "*"},
         )
 
