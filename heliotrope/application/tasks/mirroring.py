@@ -2,7 +2,7 @@ from asyncio import as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
-from typing import Any, Callable, Coroutine, cast
+from typing import Any, Callable, Coroutine, Generator, cast
 
 from sanic.log import logger
 
@@ -115,16 +115,17 @@ class MirroringTask:
         target_ids = await target_usecase.execute()
         return tuple(set(source_ids) - set(target_ids))
 
+    def _get_splited_id(self, ids: tuple[int, ...]) -> Generator[tuple[int, ...]]:
+        for i in range(0, len(ids), self.CONCURRENT_SIZE):
+            yield tuple(ids[i : i + self.CONCURRENT_SIZE])
+
     async def _process_in_jobs(
         self, ids: tuple[int, ...], process_function: Callable[[tuple[int, ...]], Any]
     ) -> None:
-        jobs = [
-            ids[i : i + self.CONCURRENT_SIZE]
-            for i in range(0, len(ids), self.CONCURRENT_SIZE)
-        ]
         self.progress.total = len(ids)
-        self.progress.job_total = len(jobs)
-        for job in jobs:
+        self.progress.job_total = len(ids) // self.CONCURRENT_SIZE
+
+        for job in self._get_splited_id(ids):
             await process_function(job)
             self.progress.job_completed += 1
 
