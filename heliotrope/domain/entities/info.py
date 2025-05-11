@@ -47,24 +47,28 @@ class Info(HeliotropeEntity):
         info_dict: dict[str, Any] = {}
         type_hints = get_type_hints(cls)
         renamed_keys = {
-            "artists": "artist",
-            "groups": "group",
-            "characters": "character",
-            "tags": "tag",
+            "artist": "artists",
+            "group": "groups",
+            "character": "characters",
+            "tag": "tags",
         }
 
         for key, value in type_hints.items():
-            if key in galleryinfo_dict:
+            if key in galleryinfo_dict or key in renamed_keys:
                 if value == list[str]:
-                    if key in renamed_keys:
-                        key = renamed_keys[key]
                     if key == "tag":
                         info_dict[key] = [
                             parse_male_female_tag(Tag.from_dict(tag))
-                            for tag in galleryinfo_dict[key]
+                            for tag in galleryinfo_dict[
+                                renamed_keys[key] if key in renamed_keys else key
+                            ]
                         ]
                     else:
-                        info_dict[key] = parse_tags_dict_list(galleryinfo_dict[key])
+                        info_dict[key] = parse_tags_dict_list(
+                            galleryinfo_dict[
+                                renamed_keys[key] if key in renamed_keys else key
+                            ]
+                        )
                 else:
                     info_dict[key] = galleryinfo_dict[key]
 
