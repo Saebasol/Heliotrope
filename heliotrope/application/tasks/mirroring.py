@@ -2,8 +2,7 @@ from asyncio import as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
-from types import CoroutineType
-from typing import Any, Callable, Coroutine, Generator, cast
+from typing import Any, Callable, Coroutine, cast
 
 from sanic.log import logger
 
@@ -116,41 +115,38 @@ class MirroringTask:
         target_ids = await target_usecase.execute()
         return tuple(set(source_ids) - set(target_ids))
 
-    def _id_generator(self, ids: tuple[int, ...]) -> Generator[tuple[int, ...]]:
-        for i in range(0, len(ids), self.CONCURRENT_SIZE):
-            yield ids[i : i + self.CONCURRENT_SIZE]
-
-    async def _fetch_remote_galleryinfo(self, id: int) -> Galleryinfo:
-        return await self._preprocess(GetGalleryinfoUseCase(self.hitomi_la).execute, id)
-
-    async def _fetch_local_galleryinfo(self, id: int) -> Galleryinfo:
-        return await GetGalleryinfoUseCase(self.sqlalchemy).execute(id)
-
-    def _fetch_remote_galleryinfo_generator(
-        self,
-        ids: tuple[int, ...],
-    ) -> Generator[list[CoroutineType[Any, Any, Galleryinfo]], Any, None]:
-        for id in self._id_generator(ids):
-            yield [self._fetch_remote_galleryinfo(id) for id in id]
-
-    def _fetch_local_galleryinfo_generator(
-        self,
-        ids: tuple[int, ...],
-    ) -> Generator[list[CoroutineType[Any, Any, Galleryinfo]], Any, None]:
-        for id in self._id_generator(ids):
-            yield [self._fetch_local_galleryinfo(id) for id in id]
-
-    async def _run_tasks(
-        self,
-        tasks: list[CoroutineType[Any, Any, Galleryinfo]],
-        execute: Callable[[Galleryinfo], Coroutine[Any, Any, None]],
+    async def _process_in_jobs(
+        self, ids: tuple[int, ...], process_function: Callable[[tuple[int, ...]], Any]
     ) -> None:
-        for task in as_completed(tasks):
-            result = await task
-            await execute(result)
-            self.progress.mirrored += 1
+        jobs = [
+            ids[i : i + self.CONCURRENT_SIZE]
+            for i in range(0, len(ids), self.CONCURRENT_SIZE)
+        ]
+        self.progress.total = len(ids)
+        self.progress.job_total = len(jobs)
+        for job in jobs:
+            await process_function(job)
+            self.progress.job_completed += 1
 
-        self.progress.job_completed += 1
+        self.progress.reset()
+        self.progress.mirrored = len(ids)
+
+    async def _fetch_and_store_galleryinfo(
+        self, ids: tuple[int, ...], target_repository: SAGalleryinfoRepository
+    ) -> None:
+        tasks = [
+            self._preprocess(GetGalleryinfoUseCase(self.hitomi_la).execute, id)
+            for id in ids
+        ]
+        for result in as_completed(tasks):
+            result = await result
+            await CreateGalleryinfoUseCase(target_repository).execute(result)
+
+    async def _fetch_and_store_info(self, ids: tuple[int, ...]) -> None:
+        tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
+        for result in as_completed(tasks):
+            result = await result
+            await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
 
     async def mirror(self) -> None:
         mirroring_is_end = False
@@ -162,15 +158,10 @@ class MirroringTask:
         if remote_differences:
             mirroring_is_end = True
             self.progress.is_mirroring_galleryinfo = True
-            self.progress.total = len(remote_differences)
-            self.progress.job_total = len(remote_differences) // self.CONCURRENT_SIZE
-
-            for tasks in self._fetch_remote_galleryinfo_generator(remote_differences):
-                await self._run_tasks(
-                    tasks,
-                    CreateGalleryinfoUseCase(self.sqlalchemy).execute,
-                )
-
+            await self._process_in_jobs(
+                remote_differences,
+                lambda batch: self._fetch_and_store_galleryinfo(batch, self.sqlalchemy),
+            )
             self.progress.is_mirroring_galleryinfo = False
 
         local_differences = await self._get_differences(
@@ -180,16 +171,7 @@ class MirroringTask:
 
         if local_differences:
             self.progress.is_converting_to_info = True
-            self.progress.total = len(local_differences)
-            self.progress.job_total = len(local_differences) // self.CONCURRENT_SIZE
-
-            for tasks in self._fetch_local_galleryinfo_generator(local_differences):
-                await self._run_tasks(
-                    tasks,
-                    lambda g: CreateInfoUseCase(self.mongodb).execute(
-                        Info.from_galleryinfo(g)
-                    ),
-                )
+            await self._process_in_jobs(local_differences, self._fetch_and_store_info)
             self.progress.is_converting_to_info = False
 
         if mirroring_is_end:
