@@ -84,7 +84,8 @@ class MirroringProgress(Serializer):
 
 
 class MirroringTask:
-    CONCURRENT_SIZE: int = 100
+    REMOTE_CONCURRENT_SIZE: int = 50
+    LOCAL_CONCURRENT_SIZE: int = 5
 
     def __init__(
         self,
@@ -115,17 +116,24 @@ class MirroringTask:
         target_ids = await target_usecase.execute()
         return tuple(set(source_ids) - set(target_ids))
 
-    def _get_splited_id(self, ids: tuple[int, ...]) -> Generator[tuple[int, ...]]:
-        for i in range(0, len(ids), self.CONCURRENT_SIZE):
-            yield tuple(ids[i : i + self.CONCURRENT_SIZE])
+    def _get_splited_id(
+        self, ids: tuple[int, ...], size: int
+    ) -> Generator[tuple[int, ...]]:
+        for i in range(0, len(ids), size):
+            yield tuple(ids[i : i + size])
 
     async def _process_in_jobs(
-        self, ids: tuple[int, ...], process_function: Callable[[tuple[int, ...]], Any]
+        self,
+        ids: tuple[int, ...],
+        process_function: Callable[[tuple[int, ...]], Any],
+        *,
+        is_remote: bool,
     ) -> None:
+        size = self.REMOTE_CONCURRENT_SIZE if is_remote else self.LOCAL_CONCURRENT_SIZE
         self.progress.total = len(ids)
-        self.progress.job_total = len(ids) // self.CONCURRENT_SIZE
+        self.progress.job_total = len(ids) // size
 
-        for job in self._get_splited_id(ids):
+        for job in self._get_splited_id(ids, size):
             await process_function(job)
             self.progress.job_completed += 1
 
@@ -162,6 +170,7 @@ class MirroringTask:
             await self._process_in_jobs(
                 remote_differences,
                 lambda batch: self._fetch_and_store_galleryinfo(batch, self.sqlalchemy),
+                is_remote=True,
             )
             self.progress.is_mirroring_galleryinfo = False
 
@@ -172,11 +181,13 @@ class MirroringTask:
 
         if local_differences:
             self.progress.is_converting_to_info = True
-            await self._process_in_jobs(local_differences, self._fetch_and_store_info)
+            await self._process_in_jobs(
+                local_differences, self._fetch_and_store_info, is_remote=False
+            )
             self.progress.is_converting_to_info = False
 
-        if mirroring_is_end:
-            self.progress.last_mirrored = now()
+            if mirroring_is_end:
+                self.progress.last_mirrored = now()
 
     async def start(self, delay: float) -> None:
         logger.info(f"Starting Mirroring task with delay: {delay}")

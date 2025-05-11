@@ -37,7 +37,8 @@ class HeliotropeConfig(Config):
                 "REFRESH_GG_JS_DELAY": 86400,
                 "SUPERVISOR_DELAY": 30,
                 "USE_ATLAS_SEARCH": False,
-                "MIRRORING_CONCURRENT_SIZE": 100,
+                "MIRRORING_REMOTE_CONCURRENT_SIZE": 50,
+                "MIRRORING_LOCAL_CONCURRENT_SIZE": 5,
                 # Sanic config
                 "HOST": "127.0.0.1",
                 "PORT": 8000,
@@ -80,7 +81,8 @@ class HeliotropeConfig(Config):
     SUPERVISOR_DELAY: float
     INDEX_FILES: list[str]
     USE_ATLAS_SEARCH: bool
-    MIRRORING_CONCURRENT_SIZE: int
+    MIRRORING_REMOTE_CONCURRENT_SIZE: int
+    MIRRORING_LOCAL_CONCURRENT_SIZE: int
     # Sanic config
     DEBUG: bool
     HOST: str
