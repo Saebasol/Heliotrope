@@ -129,14 +129,14 @@ class MirroringTask:
     def _fetch_remote_galleryinfo_generator(
         self,
         ids: tuple[int, ...],
-    ):
+    ) -> Generator[list[CoroutineType[Any, Any, Galleryinfo]], Any, None]:
         for id in self._id_generator(ids):
             yield [self._fetch_remote_galleryinfo(id) for id in id]
 
     def _fetch_local_galleryinfo_generator(
         self,
         ids: tuple[int, ...],
-    ):
+    ) -> Generator[list[CoroutineType[Any, Any, Galleryinfo]], Any, None]:
         for id in self._id_generator(ids):
             yield [self._fetch_local_galleryinfo(id) for id in id]
 
@@ -144,7 +144,7 @@ class MirroringTask:
         self,
         tasks: list[CoroutineType[Any, Any, Galleryinfo]],
         execute: Callable[[Galleryinfo], Coroutine[Any, Any, None]],
-    ):
+    ) -> None:
         for task in as_completed(tasks):
             result = await task
             await execute(result)
