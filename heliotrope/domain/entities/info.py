@@ -10,7 +10,7 @@ from heliotrope.domain.entities.tag import Tag
 
 def parse_tags_dict_list(tags_dict_list: list[Any]) -> list[str]:
     return [
-        str(v)
+        str(v).replace(" ", "_")
         for tags in tags_dict_list
         for k, v in tags.items()
         if k != "url"
@@ -32,13 +32,13 @@ class Info(HeliotropeEntity):
     id: int
     title: str
     thumbnail: File
-    artists: list[str]
-    groups: list[str]
+    artist: list[str]
+    group: list[str]
     type: str
     language: Optional[str]
     series: list[str]
-    characters: list[str]
-    tags: list[str]
+    character: list[str]
+    tag: list[str]
     date: datetime
 
     @classmethod
@@ -46,17 +46,29 @@ class Info(HeliotropeEntity):
         galleryinfo_dict = asdict(galleryinfo)
         info_dict: dict[str, Any] = {}
         type_hints = get_type_hints(cls)
+        renamed_keys = {
+            "artist": "artists",
+            "group": "groups",
+            "character": "characters",
+            "tag": "tags",
+        }
 
         for key, value in type_hints.items():
-            if key in galleryinfo_dict:
+            if key in galleryinfo_dict or key in renamed_keys:
                 if value == list[str]:
-                    if key == "tags":
+                    if key == "tag":
                         info_dict[key] = [
                             parse_male_female_tag(Tag.from_dict(tag))
-                            for tag in galleryinfo_dict[key]
+                            for tag in galleryinfo_dict[
+                                renamed_keys[key] if key in renamed_keys else key
+                            ]
                         ]
                     else:
-                        info_dict[key] = parse_tags_dict_list(galleryinfo_dict[key])
+                        info_dict[key] = parse_tags_dict_list(
+                            galleryinfo_dict[
+                                renamed_keys[key] if key in renamed_keys else key
+                            ]
+                        )
                 else:
                     info_dict[key] = galleryinfo_dict[key]
 

@@ -1,13 +1,13 @@
-from asyncio import gather, sleep
+from asyncio import as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
-from typing import Any, Callable, Coroutine, cast
+from typing import Any, Callable, Coroutine, Generator, cast
 
 from sanic.log import logger
 
 from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
-from heliotrope.application.usecases.create.info import BulkCreateInfoUseCase
+from heliotrope.application.usecases.create.info import CreateInfoUseCase
 from heliotrope.application.usecases.get.galleryinfo import (
     GetAllGalleryinfoIdsUseCase,
     GetGalleryinfoUseCase,
@@ -27,6 +27,30 @@ from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
 
 def now() -> str:
     return f"({tzname[0]}) {datetime.now()}"
+
+
+class Proxy:
+    def __init__(self, progress_dict: dict[str, Any]) -> None:
+        self.progress_dict = progress_dict
+
+    def reset(self) -> None:
+        self.job_completed = 0
+        self.total = 0
+        self.job_total = 0
+
+    def __getattr__(self, name: str) -> Any:
+        if name in self.progress_dict:
+            return self.progress_dict[name]
+
+        return super().__getattr__(  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType, reportAttributeAccessIssue]
+            name
+        )
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name == "progress_dict":
+            super().__setattr__(name, value)
+        else:
+            self.progress_dict[name] = value
 
 
 @dataclass
@@ -60,7 +84,8 @@ class MirroringProgress(Serializer):
 
 
 class MirroringTask:
-    CONCURRENT_SIZE: int = 100
+    REMOTE_CONCURRENT_SIZE: int = 50
+    LOCAL_CONCURRENT_SIZE: int = 5
 
     def __init__(
         self,
@@ -72,34 +97,7 @@ class MirroringTask:
         self.hitomi_la = hitomi_la
         self.sqlalchemy = sqlalchemy
         self.mongodb = mongodb
-        self.mirroring_progress_dict = mirroring_progress_dict
-
-    @property
-    def progress(self) -> MirroringProgress:
-        class Proxy:
-            def __init__(self, progress_dict: Any) -> None:
-                self.progress_dict = progress_dict
-
-            def reset(self) -> None:
-                self.job_completed = 0
-                self.total = 0
-                self.job_total = 0
-
-            def __getattr__(self, name: str) -> Any:
-                if name in self.progress_dict:
-                    return self.progress_dict[name]
-
-                return super().__getattr__(  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType, reportAttributeAccessIssue]
-                    name
-                )
-
-            def __setattr__(self, name: str, value: Any) -> None:
-                if name == "progress_dict":
-                    super().__setattr__(name, value)
-                else:
-                    self.progress_dict[name] = value
-
-        return cast(MirroringProgress, Proxy(self.mirroring_progress_dict))
+        self.progress = cast(MirroringProgress, Proxy(mirroring_progress_dict))
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
@@ -113,21 +111,29 @@ class MirroringTask:
         self,
         source_usecase: GetAllGalleryinfoIdsUseCase,
         target_usecase: GetAllGalleryinfoIdsUseCase | GetAllInfoIdsUseCase,
-    ) -> list[int]:
+    ) -> tuple[int, ...]:
         source_ids = await source_usecase.execute()
         target_ids = await target_usecase.execute()
-        return list(set(source_ids) - set(target_ids))
+        return tuple(set(source_ids) - set(target_ids))
+
+    def _get_splited_id(
+        self, ids: tuple[int, ...], size: int
+    ) -> Generator[tuple[int, ...]]:
+        for i in range(0, len(ids), size):
+            yield tuple(ids[i : i + size])
 
     async def _process_in_jobs(
-        self, ids: list[int], process_function: Callable[[list[int]], Any]
+        self,
+        ids: tuple[int, ...],
+        process_function: Callable[[tuple[int, ...]], Any],
+        *,
+        is_remote: bool,
     ) -> None:
-        jobs = [
-            ids[i : i + self.CONCURRENT_SIZE]
-            for i in range(0, len(ids), self.CONCURRENT_SIZE)
-        ]
+        size = self.REMOTE_CONCURRENT_SIZE if is_remote else self.LOCAL_CONCURRENT_SIZE
         self.progress.total = len(ids)
-        self.progress.job_total = len(jobs)
-        for job in jobs:
+        self.progress.job_total = len(ids) // size
+
+        for job in self._get_splited_id(ids, size):
             await process_function(job)
             self.progress.job_completed += 1
 
@@ -135,21 +141,21 @@ class MirroringTask:
         self.progress.mirrored = len(ids)
 
     async def _fetch_and_store_galleryinfo(
-        self, ids: list[int], target_repository: SAGalleryinfoRepository
+        self, ids: tuple[int, ...], target_repository: SAGalleryinfoRepository
     ) -> None:
         tasks = [
             self._preprocess(GetGalleryinfoUseCase(self.hitomi_la).execute, id)
             for id in ids
         ]
-        results = await gather(*tasks)
-        for result in results:
+        for result in as_completed(tasks):
+            result = await result
             await CreateGalleryinfoUseCase(target_repository).execute(result)
 
-    async def _fetch_and_store_info(self, ids: list[int]) -> None:
+    async def _fetch_and_store_info(self, ids: tuple[int, ...]) -> None:
         tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
-        results = await gather(*tasks)
-        infos = list(map(Info.from_galleryinfo, results))
-        await BulkCreateInfoUseCase(self.mongodb).execute(infos)
+        for result in as_completed(tasks):
+            result = await result
+            await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
 
     async def mirror(self) -> None:
         mirroring_is_end = False
@@ -164,6 +170,7 @@ class MirroringTask:
             await self._process_in_jobs(
                 remote_differences,
                 lambda batch: self._fetch_and_store_galleryinfo(batch, self.sqlalchemy),
+                is_remote=True,
             )
             self.progress.is_mirroring_galleryinfo = False
 
@@ -174,11 +181,13 @@ class MirroringTask:
 
         if local_differences:
             self.progress.is_converting_to_info = True
-            await self._process_in_jobs(local_differences, self._fetch_and_store_info)
+            await self._process_in_jobs(
+                local_differences, self._fetch_and_store_info, is_remote=False
+            )
             self.progress.is_converting_to_info = False
 
-        if mirroring_is_end:
-            self.progress.last_mirrored = now()
+            if mirroring_is_end:
+                self.progress.last_mirrored = now()
 
     async def start(self, delay: float) -> None:
         logger.info(f"Starting Mirroring task with delay: {delay}")

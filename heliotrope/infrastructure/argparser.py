@@ -110,6 +110,20 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
+        "--mirroring-remote-concurrent-size",
+        type=int,
+        default=50,
+        help="The number of concurrent requests to the remote server (default: 50)",
+    )
+
+    config.add_argument(
+        "--mirroring-local-concurrent-size",
+        type=int,
+        default=5,
+        help="The number of concurrent requests to the local database (default: 5)",
+    )
+
+    config.add_argument(
         "--config",
         type=str,
         default="",

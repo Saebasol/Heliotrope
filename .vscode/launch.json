@@ -6,10 +6,13 @@
     "configurations": [
         {
             "name": "Python: Module",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "heliotrope",
-            "args": ["--config", "config.json"],
+            "args": [
+                "--config",
+                "config.json"
+            ],
         }
     ]
 }
