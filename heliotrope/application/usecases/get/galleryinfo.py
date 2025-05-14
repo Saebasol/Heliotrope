@@ -1,6 +1,6 @@
 from typing import Generator
 
-from heliotrope.application.exceptions import GalleryinfoNotFound
+from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
 

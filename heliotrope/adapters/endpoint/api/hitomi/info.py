@@ -3,7 +3,7 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
-from heliotrope.application.exceptions import GalleryinfoNotFound, InfoNotFound
+from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
 from heliotrope.application.usecases.get.info import GetInfoUseCase
 from heliotrope.domain.entities.info import Info
