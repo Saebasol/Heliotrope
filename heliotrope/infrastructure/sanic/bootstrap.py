@@ -9,6 +9,7 @@ from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
+from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
     HitomiLaGalleryinfoRepository,
@@ -17,6 +18,7 @@ from heliotrope.infrastructure.mongodb import MongoDB
 from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
+from heliotrope.infrastructure.sanic.error import not_found
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
@@ -97,6 +99,9 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:
     heliotrope = Heliotrope("heliotrope")
+    heliotrope.exception(  # pyright: ignore[reportUnknownMemberType]
+        GalleryinfoNotFound, InfoNotFound
+    )(not_found)
     heliotrope.config.update(config)
     heliotrope.blueprint(endpoint)
     heliotrope.main_process_start(main_process_startup)

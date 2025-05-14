@@ -3,8 +3,8 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
-from heliotrope.application.exceptions import GalleryinfoNotFound
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
+from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")
