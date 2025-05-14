@@ -153,6 +153,8 @@ class MongoDBInfoRepository(InfoRepository):
         )
 
         count_list = await count_cursor.to_list()
+        if not count_list:
+            return 0, []
 
         count_dict = cast(dict[str, Any], count_list[0])
 
