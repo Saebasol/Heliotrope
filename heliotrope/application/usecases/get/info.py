@@ -1,7 +1,7 @@
 from typing import Generator
 
-from heliotrope.domain.exceptions import InfoNotFound
 from heliotrope.domain.entities.info import Info
+from heliotrope.domain.exceptions import InfoNotFound
 from heliotrope.domain.repositories.info import InfoRepository
 
 
