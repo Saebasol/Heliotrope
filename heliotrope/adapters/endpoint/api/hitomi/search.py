@@ -12,7 +12,7 @@ hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 
 
 class HitomiSearchView(HTTPMethodView):
-    @openapi.tag("hitomi")
+    @openapi.tag("Hitomi")
     @openapi.summary("Get search result in hitomi")
     @openapi.body(  # pyright: ignore[reportUnknownMemberType]
         {

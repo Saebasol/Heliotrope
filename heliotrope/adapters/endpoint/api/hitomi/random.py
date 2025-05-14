@@ -11,8 +11,8 @@ hitomi_random = Blueprint("hitomi_random", url_prefix="/random")
 
 
 class HitomiRandomView(HTTPMethodView):
+    @openapi.tag("Hitomi")
     @openapi.summary("Get random result in hitomi")
-    @openapi.tag("hitomi")
     @openapi.body(  # pyright: ignore[reportUnknownMemberType]
         {
             "application/json": openapi.Object(
