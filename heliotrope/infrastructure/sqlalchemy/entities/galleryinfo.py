@@ -99,11 +99,9 @@ class GalleryinfoSchema(Schema):
         secondary=galleryinfo_tag,
     )
 
-    related: Mapped[list[RelatedSchema]] = relationship(RelatedSchema, lazy="joined")
-    scene_indexes: Mapped[list[SceneIndexSchema]] = relationship(
-        SceneIndexSchema, lazy="joined"
-    )
-    files: Mapped[list[FileSchema]] = relationship(FileSchema, lazy="joined")
+    related: Mapped[list[RelatedSchema]] = relationship(RelatedSchema)
+    scene_indexes: Mapped[list[SceneIndexSchema]] = relationship(SceneIndexSchema)
+    files: Mapped[list[FileSchema]] = relationship(FileSchema)
 
     _type: Mapped[TypeSchema] = relationship(TypeSchema, uselist=False)
 
