@@ -152,10 +152,12 @@ class MirroringTask:
             await CreateGalleryinfoUseCase(target_repository).execute(result)
 
     async def _fetch_and_store_info(self, ids: tuple[int, ...]) -> None:
-        tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
+        tasks = [self.sqlalchemy.get_raw_galleryinfo_json(id) for id in ids]
         for result in as_completed(tasks):
             result = await result
-            await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
+            await CreateInfoUseCase(self.mongodb).execute(
+                Info.from_galleryinfo(Galleryinfo.from_dict(result))
+            )
 
     async def mirror(self) -> None:
         mirroring_is_end = False
