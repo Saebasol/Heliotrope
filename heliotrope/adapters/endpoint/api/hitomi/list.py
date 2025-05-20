@@ -8,6 +8,7 @@ from heliotrope.application.usecases.get.info import (
     GetAllInfoIdsUseCase,
     GetListInfoUseCase,
 )
+from heliotrope.application.utils import check_int64
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_list = Blueprint("hitomi_list", url_prefix="/list")
@@ -20,6 +21,7 @@ class HitomiListView(HTTPMethodView):
         name="index", location="path", schema=int
     )
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
+        check_int64(index)
         total = len(await GetAllInfoIdsUseCase(request.app.ctx.mongodb_repository))
 
         start_at_zero = index - 1
