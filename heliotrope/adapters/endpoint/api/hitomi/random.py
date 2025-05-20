@@ -30,7 +30,6 @@ class HitomiRandomView(HTTPMethodView):
 
         return json(
             {
-                "status": 200,
                 **request.app.ctx.javascript_interpreter.convert_thumbnail(info),
             }
         )

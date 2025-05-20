@@ -38,7 +38,6 @@ class HitomiSearchView(HTTPMethodView):
             ).execute(query, offset)
             return json(
                 {
-                    "status": 200,
                     "result": [
                         request.app.ctx.javascript_interpreter.convert_thumbnail(result)
                         for result in results
