@@ -46,8 +46,7 @@ class HeliotropeConfig(Config):
                 "DEBUG": False,
                 "ACCESS_LOG": False,
                 "FORWARDED_SECRET": "",
-                "_FALLBACK_ERROR_FORMAT": "json",
-                # Sanic ext config
+                # Sanic ext config  
                 "OAS_UI_DEFAULT": "swagger",
                 "OAS_URI_REDOC": False,
                 # Open API config
@@ -63,7 +62,7 @@ class HeliotropeConfig(Config):
             }
         )
         super().__init__(
-            defaults=defaults,
+            defaults={**{"_FALLBACK_ERROR_FORMAT": "json"}, **defaults},
             env_prefix=env_prefix,
             keep_alive=keep_alive,
             converters=converters,
