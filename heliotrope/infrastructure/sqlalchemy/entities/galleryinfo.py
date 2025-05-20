@@ -103,13 +103,15 @@ class GalleryinfoSchema(Schema):
     scene_indexes: Mapped[list[SceneIndexSchema]] = relationship(SceneIndexSchema)
     files: Mapped[list[FileSchema]] = relationship(FileSchema)
 
-    _type: Mapped[TypeSchema] = relationship(TypeSchema, uselist=False)
+    _type: Mapped[TypeSchema] = relationship(TypeSchema, uselist=False, lazy="joined")
 
     _language_info: Mapped[LanguageInfoSchema] = relationship(
-        LanguageInfoSchema, uselist=False
+        LanguageInfoSchema, uselist=False, lazy="joined"
     )
 
-    _localname: Mapped[LocalnameSchema] = relationship(LocalnameSchema, uselist=False)
+    _localname: Mapped[LocalnameSchema] = relationship(
+        LocalnameSchema, uselist=False, lazy="joined"
+    )
 
     type: str = field(init=False)
 
