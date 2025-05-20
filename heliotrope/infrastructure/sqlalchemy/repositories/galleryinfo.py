@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import select, text
+from sqlalchemy import select
 
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
