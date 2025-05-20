@@ -38,7 +38,7 @@ class JavaScriptInterpreter:
         if image.hasavif:
             ext = "avif"
 
-        return self.url_from_url_from_hash(galleryid, image, ext, "", "a")
+        return self.url_from_url_from_hash(galleryid, image, ext, "", "")
 
     def url_from_url_from_hash(
         self, galleryid: int, image: File, dir: str, ext: str, base: str
