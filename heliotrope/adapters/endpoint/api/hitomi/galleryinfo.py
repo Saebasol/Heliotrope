@@ -4,6 +4,7 @@ from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
+from heliotrope.application.utils import check_int32
 from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
@@ -21,6 +22,7 @@ class HitomiGalleryinfoView(HTTPMethodView):
         request: HeliotropeRequest,
         id: int,
     ) -> HTTPResponse:
+        check_int32(id)
         try:
             galleryinfo = await GetGalleryinfoUseCase(
                 request.app.ctx.sa_galleryinfo_repository

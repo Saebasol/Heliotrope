@@ -5,6 +5,7 @@ from sanic_ext.extensions.openapi import openapi
 
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
 from heliotrope.application.usecases.get.info import GetInfoUseCase
+from heliotrope.application.utils import check_int64
 from heliotrope.domain.entities.info import Info
 from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
@@ -19,6 +20,7 @@ class HitomiInfoView(HTTPMethodView):
         name="id", location="path", schema=int
     )
     async def get(self, request: HeliotropeRequest, id: int) -> HTTPResponse:
+        check_int64(id)
         try:
             info = await GetInfoUseCase(request.app.ctx.mongodb_repository).execute(id)
         except InfoNotFound:
