@@ -46,7 +46,7 @@ class HeliotropeConfig(Config):
                 "DEBUG": False,
                 "ACCESS_LOG": False,
                 "FORWARDED_SECRET": "",
-                # Sanic ext config  
+                # Sanic ext config
                 "OAS_UI_DEFAULT": "swagger",
                 "OAS_URI_REDOC": False,
                 # Open API config
