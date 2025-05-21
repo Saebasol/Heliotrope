@@ -27,9 +27,11 @@ class SQLAlchemy:
     def session_maker(self) -> async_sessionmaker[AsyncSession]:
         return self._session_maker
 
+    async def create_all_table(self) -> None:
+        async with self._engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
     @classmethod
-    async def create(cls, db_url: str) -> SQLAlchemy:
+    def create(cls, db_url: str) -> SQLAlchemy:
         engine = create_async_engine(db_url)
-        async with engine.begin() as connection:
-            await connection.run_sync(Base.metadata.create_all)
         return cls(engine)

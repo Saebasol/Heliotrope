@@ -43,7 +43,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             release=__version__,
         )
 
-    heliotrope.ctx.sa = await SQLAlchemy.create(heliotrope.config.GALLERYINFO_DB_URL)
+    heliotrope.ctx.sa = SQLAlchemy.create(heliotrope.config.GALLERYINFO_DB_URL)
     heliotrope.ctx.hitomi_la = await HitomiLa.create(heliotrope.config.INDEX_FILES)
     heliotrope.ctx.mongodb = await MongoDB.create(heliotrope.config.INFO_DB_URL)
 
@@ -72,6 +72,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         mirroring_progress_dict = heliotrope.shared_ctx.mirroring_progress_dict
 
         if not namespace.is_running:
+            await heliotrope.ctx.sa.create_all_table()
             mirroring_task = MirroringTask(
                 heliotrope.ctx.hitomi_la_galleryinfo_repository,
                 heliotrope.ctx.sa_galleryinfo_repository,
