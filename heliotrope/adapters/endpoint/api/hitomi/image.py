@@ -38,7 +38,6 @@ class HitomiImageView(HTTPMethodView):
 
         return json(
             {
-                "status": 200,
                 "files": list(files),
             }
         )

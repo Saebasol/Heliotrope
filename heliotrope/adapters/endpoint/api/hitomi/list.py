@@ -35,7 +35,6 @@ class HitomiListView(HTTPMethodView):
 
         return json(
             {
-                "status": 200,
                 "list": [
                     request.app.ctx.javascript_interpreter.convert_thumbnail(info)
                     for info in info_list
