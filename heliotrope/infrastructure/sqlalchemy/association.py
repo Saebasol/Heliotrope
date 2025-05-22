@@ -3,7 +3,10 @@ from sqlalchemy import Column, ForeignKey, Integer, Table
 from heliotrope.infrastructure.sqlalchemy.base import Base
 
 galleryinfo_id = lambda: Column(
-    "galleryinfo_id", Integer, ForeignKey("galleryinfo.id"), primary_key=True
+    "galleryinfo_id",
+    Integer,
+    ForeignKey("galleryinfo.id", ondelete="CASCADE"),
+    primary_key=True,
 )
 
 galleryinfo_artist = Table(

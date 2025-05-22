@@ -5,8 +5,7 @@ from functools import partial
 from typing import Optional
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import reconstructor  # pyright: ignore[reportUnknownVariableType]
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, reconstructor, relationship
 
 from heliotrope.infrastructure.sqlalchemy.association import (
     galleryinfo_artist,
@@ -32,11 +31,22 @@ from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
 from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
 from heliotrope.infrastructure.sqlalchemy.mixin import Schema
 
-relationship = partial(
+one_to_many_relationship = partial(
     relationship,
-    cascade="all, delete",
+    cascade="all, delete-orphan",
     passive_deletes=True,
     lazy="selectin",
+)
+
+many_to_many_relationship = partial(
+    relationship,
+    passive_deletes=True,
+    lazy="selectin",
+)
+many_to_one_relationship = partial(
+    relationship,
+    uselist=False,
+    lazy="joined",
 )
 
 
@@ -73,43 +83,47 @@ class GalleryinfoSchema(Schema):
     datepublished: Mapped[Optional[date_]] = mapped_column(Date, default=None)
     blocked: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    artists: Mapped[list[ArtistSchema]] = relationship(
+    artists: Mapped[list[ArtistSchema]] = many_to_many_relationship(
         ArtistSchema,
         secondary=galleryinfo_artist,
     )
-    characters: Mapped[list[CharacterSchema]] = relationship(
+    characters: Mapped[list[CharacterSchema]] = many_to_many_relationship(
         CharacterSchema,
         secondary=galleryinfo_character,
     )
 
-    groups: Mapped[list[GroupSchema]] = relationship(
+    groups: Mapped[list[GroupSchema]] = many_to_many_relationship(
         GroupSchema,
         secondary=galleryinfo_group,
     )
-    languages: Mapped[list[LanguageSchema]] = relationship(
+    languages: Mapped[list[LanguageSchema]] = many_to_many_relationship(
         LanguageSchema,
         secondary=galleryinfo_language,
     )
-    parodys: Mapped[list[ParodySchema]] = relationship(
+    parodys: Mapped[list[ParodySchema]] = many_to_many_relationship(
         ParodySchema,
         secondary=galleryinfo_parody,
     )
-    tags: Mapped[list[TagSchema]] = relationship(
+    tags: Mapped[list[TagSchema]] = many_to_many_relationship(
         TagSchema,
         secondary=galleryinfo_tag,
     )
 
-    related: Mapped[list[RelatedSchema]] = relationship(RelatedSchema)
-    scene_indexes: Mapped[list[SceneIndexSchema]] = relationship(SceneIndexSchema)
-    files: Mapped[list[FileSchema]] = relationship(FileSchema)
+    related: Mapped[list[RelatedSchema]] = one_to_many_relationship(RelatedSchema)
+    scene_indexes: Mapped[list[SceneIndexSchema]] = one_to_many_relationship(
+        SceneIndexSchema
+    )
+    files: Mapped[list[FileSchema]] = one_to_many_relationship(FileSchema)
 
-    _type: Mapped[TypeSchema] = relationship(TypeSchema, uselist=False, lazy="joined")
+    _type: Mapped[TypeSchema] = many_to_one_relationship(
+        TypeSchema, uselist=False, lazy="joined"
+    )
 
-    _language_info: Mapped[LanguageInfoSchema] = relationship(
+    _language_info: Mapped[LanguageInfoSchema] = many_to_one_relationship(
         LanguageInfoSchema, uselist=False, lazy="joined"
     )
 
-    _localname: Mapped[LocalnameSchema] = relationship(
+    _localname: Mapped[LocalnameSchema] = many_to_one_relationship(
         LocalnameSchema, uselist=False, lazy="joined"
     )
 
