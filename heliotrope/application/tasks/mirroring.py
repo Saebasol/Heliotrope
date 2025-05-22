@@ -92,7 +92,7 @@ class MirroringProgress(Serializer):
 
 class MirroringTask:
     REMOTE_CONCURRENT_SIZE: int = 50
-    LOCAL_CONCURRENT_SIZE: int = 5
+    LOCAL_CONCURRENT_SIZE: int = 25
 
     def __init__(
         self,
