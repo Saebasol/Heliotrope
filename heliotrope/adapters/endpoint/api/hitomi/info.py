@@ -26,7 +26,7 @@ class HitomiInfoView(HTTPMethodView):
         except InfoNotFound:
             try:
                 galleryinfo = await GetGalleryinfoUseCase(
-                    request.app.ctx.sa_galleryinfo_repository
+                    request.app.ctx.hitomi_la_galleryinfo_repository
                 ).execute(id)
                 info = Info.from_galleryinfo(galleryinfo)
             except GalleryinfoNotFound:
