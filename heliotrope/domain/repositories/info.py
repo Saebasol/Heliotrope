@@ -30,3 +30,11 @@ class InfoRepository(ABC):
     @abstractmethod
     async def get_random_info(self, query: list[str]) -> Info | None:
         raise NotImplementedError
+
+    @abstractmethod
+    async def is_info_exists(self, id: int) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete_info(self, id: int) -> None:
+        raise NotImplementedError

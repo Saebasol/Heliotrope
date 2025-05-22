@@ -165,3 +165,9 @@ class MongoDBInfoRepository(InfoRepository):
             pipeline, allowDiskUse=True
         ):
             return Info.from_dict(json_info)
+
+    async def is_info_exists(self, id: int) -> bool:
+        return await self.mongodb.collection.count_documents({"id": id}) > 0
+
+    async def delete_info(self, id: int) -> None:
+        await self.mongodb.collection.delete_one({"id": id})
