@@ -7,6 +7,7 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
+from heliotrope.application.tasks.integrity import IntegrityTask
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
@@ -73,6 +74,12 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
         if not namespace.is_running:
             await heliotrope.ctx.sa.create_all_table()
+            integrity_task = IntegrityTask(
+                heliotrope.ctx.hitomi_la_galleryinfo_repository,
+                heliotrope.ctx.sa_galleryinfo_repository,
+                heliotrope.ctx.mongodb_repository,
+                mirroring_progress_dict,
+            )
             mirroring_task = MirroringTask(
                 heliotrope.ctx.hitomi_la_galleryinfo_repository,
                 heliotrope.ctx.sa_galleryinfo_repository,
@@ -87,6 +94,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             )
 
             heliotrope.add_task(mirroring_task.start(heliotrope.config.MIRRORING_DELAY))
+            heliotrope.add_task(
+                integrity_task.start(heliotrope.config.INTEGRITY_CHECK_DELAY)
+            )
             namespace.is_running = True
 
 

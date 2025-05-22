@@ -58,6 +58,7 @@ class Proxy:
 
 @dataclass
 class MirroringProgress(Serializer):
+    index_files: list[str]
     total: int
     job_total: int
     job_completed: int
@@ -76,6 +77,7 @@ class MirroringProgress(Serializer):
     @classmethod
     def default(cls) -> "MirroringProgress":
         return cls(
+            index_files=[],
             total=0,
             job_total=0,
             job_completed=0,
@@ -94,15 +96,16 @@ class MirroringTask:
 
     def __init__(
         self,
-        hitomi_la: HitomiLaGalleryinfoRepository,
-        sqlalchemy: SAGalleryinfoRepository,
-        mongodb: MongoDBInfoRepository,
+        hitomi_la_repo: HitomiLaGalleryinfoRepository,
+        sqlalchemy_repo: SAGalleryinfoRepository,
+        mongodb_repo: MongoDBInfoRepository,
         mirroring_progress_dict: dict[str, Any],
     ) -> None:
-        self.hitomi_la = hitomi_la
-        self.sqlalchemy = sqlalchemy
-        self.mongodb = mongodb
+        self.hitomi_la = hitomi_la_repo
+        self.sqlalchemy = sqlalchemy_repo
+        self.mongodb = mongodb_repo
         self.progress = cast(MirroringProgress, Proxy(mirroring_progress_dict))
+        self.progress.index_files = hitomi_la_repo.hitomi_la.index_files
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
@@ -175,6 +178,9 @@ class MirroringTask:
                 ignore_order=True,
             )
             if diff:
+                logger.warning(
+                    f"Integrity check failed for ID {remote_result.id}: {diff}"
+                )
                 await DeleteGalleryinfoUseCase(self.sqlalchemy).execute(
                     remote_result.id
                 )
