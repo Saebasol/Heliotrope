@@ -53,11 +53,6 @@ class MongoDBInfoRepository(InfoRepository):
         await self.mongodb.collection.insert_one(HitomiInfoJSON(**info.to_dict()))
         return info.id
 
-    async def bulk_add_info(self, infos: list[Info]) -> None:
-        await self.mongodb.collection.insert_many(
-            [HitomiInfoJSON(**info.to_dict()) for info in infos]
-        )
-
     async def get_list_info(self, page: int = 1, item: int = 25) -> list[Info]:
         offset = page * item
         infos: list[Info] = []

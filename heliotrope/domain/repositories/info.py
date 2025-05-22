@@ -18,10 +18,6 @@ class InfoRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def bulk_add_info(self, infos: list[Info]) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
     async def get_list_info(self, page: int = 1, item: int = 25) -> list[Info]:
         raise NotImplementedError
 

@@ -10,17 +10,9 @@ class GalleryinfoRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_galleryinfo_ids(self, page: int = 1, item: int = 25) -> list[int]:
-        raise NotImplementedError
-
-    @abstractmethod
     async def get_all_galleryinfo_ids(self) -> list[int]:
         raise NotImplementedError
 
     @abstractmethod
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> int:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def bulk_add_galleryinfo(self, galleryinfos: list[Galleryinfo]) -> None:
         raise NotImplementedError

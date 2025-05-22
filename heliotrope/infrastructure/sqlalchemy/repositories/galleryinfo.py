@@ -58,19 +58,6 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                     return Galleryinfo.from_dict(schema_dict)
                 return None
 
-    async def get_galleryinfo_ids(self, page: int = 1, item: int = 25) -> list[int]:
-        async with self.sa.session_maker() as session:
-            async with session.begin():
-                stmt = (
-                    select(GalleryinfoSchema.id)
-                    .order_by(GalleryinfoSchema.id)
-                    .limit(item)
-                    .offset((page - 1) * item)
-                )
-
-                result = await session.execute(stmt)
-                return list(result.scalars().all())
-
     async def get_all_galleryinfo_ids(self) -> list[int]:
         async with self.sa.session_maker() as session:
             async with session.begin():
@@ -162,10 +149,3 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                 merged_galleryinfo = await session.merge(galleryinfo_schema)
                 await session.commit()
                 return merged_galleryinfo.id
-
-    async def bulk_add_galleryinfo(self, galleryinfos: list[Galleryinfo]) -> None:
-        async with self.sa.session_maker() as session:
-            async with session.begin():
-                session.add_all(
-                    [GalleryinfoSchema.from_dict(g.to_dict()) for g in galleryinfos]
-                )
