@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
@@ -149,3 +149,16 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                 merged_galleryinfo = await session.merge(galleryinfo_schema)
                 await session.commit()
                 return merged_galleryinfo.id
+
+    async def is_galleryinfo_exists(self, id: int) -> bool:
+        async with self.sa.session_maker() as session:
+            async with session.begin():
+                stmt = select(1).where(GalleryinfoSchema.id == id)
+                result = await session.execute(stmt)
+                return result.scalar() is not None
+
+    async def delete_galleryinfo(self, id: int) -> None:
+        async with self.sa.session_maker() as session:
+            async with session.begin():
+                stmt = delete(GalleryinfoSchema).where(GalleryinfoSchema.id == id)
+                await session.execute(stmt)

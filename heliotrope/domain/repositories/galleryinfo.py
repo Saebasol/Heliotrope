@@ -16,3 +16,11 @@ class GalleryinfoRepository(ABC):
     @abstractmethod
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> int:
         raise NotImplementedError
+
+    @abstractmethod
+    async def is_galleryinfo_exists(self, id: int) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete_galleryinfo(self, id: int) -> None:
+        raise NotImplementedError
