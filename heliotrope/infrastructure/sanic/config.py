@@ -36,10 +36,9 @@ class HeliotropeConfig(Config):
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_GG_JS_DELAY": 86400,
                 "INTEGRITY_CHECK_DELAY": 86400,
-                "SUPERVISOR_DELAY": 30,
                 "USE_ATLAS_SEARCH": False,
                 "MIRRORING_REMOTE_CONCURRENT_SIZE": 50,
-                "MIRRORING_LOCAL_CONCURRENT_SIZE": 5,
+                "MIRRORING_LOCAL_CONCURRENT_SIZE": 25,
                 # Sanic config
                 "HOST": "127.0.0.1",
                 "PORT": 8000,
