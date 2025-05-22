@@ -16,6 +16,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+from heliotrope.infrastructure.sqlalchemy.association import *
 from heliotrope.infrastructure.sqlalchemy.base import Base
 from heliotrope.infrastructure.sqlalchemy.entities import *
 
