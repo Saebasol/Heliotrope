@@ -33,7 +33,7 @@ async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) 
     heliotrope.shared_ctx.mirroring_progress_dict.update(
         MirroringProgress.default().to_dict()
     )
-    heliotrope.shared_ctx.namespace.is_running = False
+    heliotrope.shared_ctx.namespace.is_running_first_process = False
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -72,7 +72,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         namespace = heliotrope.shared_ctx.namespace
         mirroring_progress_dict = heliotrope.shared_ctx.mirroring_progress_dict
 
-        if not namespace.is_running:
+        if not namespace.is_running_first_process:
             await heliotrope.ctx.sa.create_all_table()
             integrity_task = IntegrityTask(
                 heliotrope.ctx.hitomi_la_galleryinfo_repository,
@@ -97,7 +97,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             heliotrope.add_task(
                 integrity_task.start(heliotrope.config.INTEGRITY_CHECK_DELAY)
             )
-            namespace.is_running = True
+            namespace.is_running_first_process = True
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
