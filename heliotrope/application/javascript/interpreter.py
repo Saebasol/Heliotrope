@@ -18,7 +18,11 @@ class JavaScriptInterpreter:
         eval("const domain2 = 'gold-usergeneratedcontent.net';")
 
     def get_thumbnail(self, galleryid: int, image: File) -> str:
-        return self.url_from_url_from_hash(galleryid, image, "webpbigtn", "webp", "tn")
+        ext = "webp"
+        if image.hasavif:
+            ext = "avif"
+
+        return self.url_from_url_from_hash(galleryid, image, ext + "bigtn", ext, "tn")
 
     def convert_thumbnail(self, info: Info) -> dict[str, str]:
         thumnbnail_url = self.get_thumbnail(info.id, info.thumbnail)
