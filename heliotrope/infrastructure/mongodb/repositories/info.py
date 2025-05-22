@@ -95,9 +95,7 @@ class MongoDBInfoRepository(InfoRepository):
                 title = data
         return title, query_dict
 
-    def make_pipeline(
-        self, query: list[str], offset: int, item: int
-    ) -> list[dict[str, Any]]:
+    def make_pipeline(self, query: list[str]) -> list[dict[str, Any]]:
         title, query_dict = self._parse_query(query)
 
         pipeline: list[dict[str, Any]] = [
@@ -127,8 +125,7 @@ class MongoDBInfoRepository(InfoRepository):
         self, query: list[str], page: int = 0, item: int = 25
     ) -> tuple[int, list[Info]]:
         offset = page * item
-
-        pipeline = self.make_pipeline(query, offset, item)
+        pipeline = self.make_pipeline(query)
         pipeline.extend(
             [
                 {"$skip": offset},
@@ -158,7 +155,8 @@ class MongoDBInfoRepository(InfoRepository):
         ]
 
     async def get_random_info(self, query: list[str]) -> Info | None:
-        pipeline = self.make_pipeline(query, 0, 1)
+        pipeline = self.make_pipeline(query)
+        del pipeline[2]  # remove sort
         pipeline.append({"$sample": {"size": 1}})
 
         async for json_info in await self.mongodb.collection.aggregate(
