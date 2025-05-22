@@ -1,11 +1,14 @@
 from asyncio import sleep
 
+from sanic.log import logger
+
 from heliotrope.application.tasks.mirroring import MirroringTask
 from heliotrope.application.usecases.get.galleryinfo import GetAllGalleryinfoIdsUseCase
 
 
 class IntegrityTask(MirroringTask):
     async def start(self, delay: float) -> None:
+        logger.info(f"Starting Integrity task with delay: {delay}")
         while True:
             await sleep(delay)
             if (

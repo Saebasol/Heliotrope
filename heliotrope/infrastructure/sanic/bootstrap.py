@@ -8,6 +8,7 @@ from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.application.tasks.integrity import IntegrityTask
+from heliotrope.application.tasks.manager import TaskManager
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
@@ -63,9 +64,12 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     )
 
     refresh_gg_js = RefreshggJS(heliotrope)
+    task_manager = TaskManager(heliotrope)
 
-    heliotrope.add_task(
-        refresh_gg_js.start(heliotrope.config.REFRESH_GG_JS_DELAY),
+    task_manager.register_task(
+        refresh_gg_js.start,
+        RefreshggJS.__name__,
+        heliotrope.config.REFRESH_GG_JS_DELAY,
     )
 
     with Lock():
@@ -93,9 +97,15 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
             )
 
-            heliotrope.add_task(mirroring_task.start(heliotrope.config.MIRRORING_DELAY))
-            heliotrope.add_task(
-                integrity_task.start(heliotrope.config.INTEGRITY_CHECK_DELAY)
+            task_manager.register_task(
+                mirroring_task.start,
+                MirroringTask.__name__,
+                heliotrope.config.MIRRORING_DELAY,
+            )
+            task_manager.register_task(
+                integrity_task.start,
+                IntegrityTask.__name__,
+                heliotrope.config.INTEGRITY_CHECK_DELAY,
             )
             namespace.is_running_first_process = True
 
