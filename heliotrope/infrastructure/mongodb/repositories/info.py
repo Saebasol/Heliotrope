@@ -53,11 +53,6 @@ class MongoDBInfoRepository(InfoRepository):
         await self.mongodb.collection.insert_one(HitomiInfoJSON(**info.to_dict()))
         return info.id
 
-    async def bulk_add_info(self, infos: list[Info]) -> None:
-        await self.mongodb.collection.insert_many(
-            [HitomiInfoJSON(**info.to_dict()) for info in infos]
-        )
-
     async def get_list_info(self, page: int = 1, item: int = 25) -> list[Info]:
         offset = page * item
         infos: list[Info] = []
@@ -170,3 +165,9 @@ class MongoDBInfoRepository(InfoRepository):
             pipeline, allowDiskUse=True
         ):
             return Info.from_dict(json_info)
+
+    async def is_info_exists(self, id: int) -> bool:
+        return await self.mongodb.collection.count_documents({"id": id}) > 0
+
+    async def delete_info(self, id: int) -> None:
+        await self.mongodb.collection.delete_one({"id": id})

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
@@ -57,19 +57,6 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                     schema_dict = schema.to_dict()
                     return Galleryinfo.from_dict(schema_dict)
                 return None
-
-    async def get_galleryinfo_ids(self, page: int = 1, item: int = 25) -> list[int]:
-        async with self.sa.session_maker() as session:
-            async with session.begin():
-                stmt = (
-                    select(GalleryinfoSchema.id)
-                    .order_by(GalleryinfoSchema.id)
-                    .limit(item)
-                    .offset((page - 1) * item)
-                )
-
-                result = await session.execute(stmt)
-                return list(result.scalars().all())
 
     async def get_all_galleryinfo_ids(self) -> list[int]:
         async with self.sa.session_maker() as session:
@@ -163,9 +150,15 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                 await session.commit()
                 return merged_galleryinfo.id
 
-    async def bulk_add_galleryinfo(self, galleryinfos: list[Galleryinfo]) -> None:
+    async def is_galleryinfo_exists(self, id: int) -> bool:
         async with self.sa.session_maker() as session:
             async with session.begin():
-                session.add_all(
-                    [GalleryinfoSchema.from_dict(g.to_dict()) for g in galleryinfos]
-                )
+                stmt = select(1).where(GalleryinfoSchema.id == id)
+                result = await session.execute(stmt)
+                return result.scalar() is not None
+
+    async def delete_galleryinfo(self, id: int) -> None:
+        async with self.sa.session_maker() as session:
+            async with session.begin():
+                stmt = delete(GalleryinfoSchema).where(GalleryinfoSchema.id == id)
+                await session.execute(stmt)

@@ -7,6 +7,8 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
+from heliotrope.application.tasks.integrity import IntegrityTask
+from heliotrope.application.tasks.manager import TaskManager
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
@@ -32,7 +34,7 @@ async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) 
     heliotrope.shared_ctx.mirroring_progress_dict.update(
         MirroringProgress.default().to_dict()
     )
-    heliotrope.shared_ctx.namespace.is_running = False
+    heliotrope.shared_ctx.namespace.is_running_first_process = False
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -62,17 +64,26 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     )
 
     refresh_gg_js = RefreshggJS(heliotrope)
+    task_manager = TaskManager(heliotrope)
 
-    heliotrope.add_task(
-        refresh_gg_js.start(heliotrope.config.REFRESH_GG_JS_DELAY),
+    task_manager.register_task(
+        refresh_gg_js.start,
+        RefreshggJS.__name__,
+        heliotrope.config.REFRESH_GG_JS_DELAY,
     )
 
     with Lock():
         namespace = heliotrope.shared_ctx.namespace
         mirroring_progress_dict = heliotrope.shared_ctx.mirroring_progress_dict
 
-        if not namespace.is_running:
+        if not namespace.is_running_first_process:
             await heliotrope.ctx.sa.create_all_table()
+            integrity_task = IntegrityTask(
+                heliotrope.ctx.hitomi_la_galleryinfo_repository,
+                heliotrope.ctx.sa_galleryinfo_repository,
+                heliotrope.ctx.mongodb_repository,
+                mirroring_progress_dict,
+            )
             mirroring_task = MirroringTask(
                 heliotrope.ctx.hitomi_la_galleryinfo_repository,
                 heliotrope.ctx.sa_galleryinfo_repository,
@@ -86,8 +97,17 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
             )
 
-            heliotrope.add_task(mirroring_task.start(heliotrope.config.MIRRORING_DELAY))
-            namespace.is_running = True
+            task_manager.register_task(
+                mirroring_task.start,
+                MirroringTask.__name__,
+                heliotrope.config.MIRRORING_DELAY,
+            )
+            task_manager.register_task(
+                integrity_task.start,
+                IntegrityTask.__name__,
+                heliotrope.config.INTEGRITY_CHECK_DELAY,
+            )
+            namespace.is_running_first_process = True
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:

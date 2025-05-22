@@ -46,5 +46,8 @@ class HitomiLaGalleryinfoRepository(GalleryinfoRepository):
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> int:
         raise NotImplementedError
 
-    async def bulk_add_galleryinfo(self, galleryinfos: list[Galleryinfo]) -> None:
+    async def is_galleryinfo_exists(self, id: int) -> bool:
+        return await self.get_galleryinfo(id) is not None
+
+    async def delete_galleryinfo(self, id: int) -> None:
         raise NotImplementedError
