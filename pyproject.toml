@@ -33,7 +33,7 @@ pytest-cov = "^6.1.1"
 pytest-asyncio = "^0.19.0"
 
 [tool.poetry.group.type.dependencies]
-pyright = "^1.1.344"
+pyright = "^1.1.401"
 mypy = "^1.5.1"
 
 [tool.isort]
