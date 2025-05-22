@@ -4,10 +4,13 @@ from datetime import datetime
 from time import tzname
 from typing import Any, Callable, Coroutine, Generator, cast
 
+from deepdiff import DeepDiff
 from sanic.log import logger
 
 from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
 from heliotrope.application.usecases.create.info import CreateInfoUseCase
+from heliotrope.application.usecases.delete.galleryinfo import DeleteGalleryinfoUseCase
+from heliotrope.application.usecases.delete.info import DeleteInfoUseCase
 from heliotrope.application.usecases.get.galleryinfo import (
     GetAllGalleryinfoIdsUseCase,
     GetGalleryinfoUseCase,
@@ -61,6 +64,7 @@ class MirroringProgress(Serializer):
     mirrored: int
     is_mirroring_galleryinfo: bool
     is_converting_to_info: bool
+    is_integrity_checking: bool
     last_checked: str
     last_mirrored: str
 
@@ -78,6 +82,7 @@ class MirroringProgress(Serializer):
             mirrored=0,
             is_mirroring_galleryinfo=False,
             is_converting_to_info=False,
+            is_integrity_checking=False,
             last_checked="",
             last_mirrored="",
         )
@@ -157,6 +162,28 @@ class MirroringTask:
             result = await result
             await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
 
+    async def _integrity_check(self, ids: tuple[int, ...]) -> None:
+        tasks = [GetGalleryinfoUseCase(self.hitomi_la).execute(id) for id in ids]
+        for result in as_completed(tasks):
+            remote_result = await result
+            local_result = await GetGalleryinfoUseCase(self.sqlalchemy).execute(
+                remote_result.id
+            )
+            diff = DeepDiff(
+                remote_result.to_dict(),
+                local_result.to_dict(),
+                ignore_order=True,
+            )
+            if diff:
+                await DeleteGalleryinfoUseCase(self.sqlalchemy).execute(
+                    remote_result.id
+                )
+                await DeleteInfoUseCase(self.mongodb).execute(remote_result.id)
+                await CreateGalleryinfoUseCase(self.sqlalchemy).execute(remote_result)
+                await CreateInfoUseCase(self.mongodb).execute(
+                    Info.from_galleryinfo(remote_result)
+                )
+
     async def mirror(self) -> None:
         mirroring_is_end = False
         remote_differences = await self._get_differences(
@@ -189,9 +216,14 @@ class MirroringTask:
             if mirroring_is_end:
                 self.progress.last_mirrored = now()
 
+        await self._process_in_jobs(
+            remote_differences, self._integrity_check, is_remote=False
+        )
+
     async def start(self, delay: float) -> None:
         logger.info(f"Starting Mirroring task with delay: {delay}")
         while True:
             self.progress.last_checked = now()
-            await self.mirror()
-            await sleep(delay)
+            if not self.progress.is_integrity_checking:
+                await self.mirror()
+                await sleep(delay)
