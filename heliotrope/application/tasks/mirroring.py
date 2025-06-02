@@ -226,10 +226,27 @@ class MirroringTask:
             remote_differences, self._integrity_check, is_remote=False
         )
 
-    async def start(self, delay: float) -> None:
+    async def start_mirroring(self, delay: float) -> None:
         logger.info(f"Starting Mirroring task with delay: {delay}")
         while True:
             self.progress.last_checked = now()
             if not self.progress.is_integrity_checking:
                 await self.mirror()
                 await sleep(delay)
+
+    async def start_integrity_check(self, delay: float) -> None:
+        logger.info(f"Starting Integrity Check task with delay: {delay}")
+        while True:
+            await sleep(delay)
+            self.progress.last_checked = now()
+            if (
+                not self.progress.is_mirroring_galleryinfo
+                and not self.progress.is_converting_to_info
+            ):
+                self.progress.is_integrity_checking = True
+                await self._process_in_jobs(
+                    tuple(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy)),
+                    self._integrity_check,
+                    is_remote=False,
+                )
+                self.progress.is_integrity_checking = False
