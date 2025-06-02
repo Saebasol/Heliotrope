@@ -5,7 +5,6 @@ from sanic.app import Sanic
 from sanic.request import Request
 
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
-from heliotrope.application.tasks.integrity import IntegrityTask
 from heliotrope.application.tasks.mirroring import MirroringTask
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
@@ -29,7 +28,6 @@ class HeliotropeContext(SimpleNamespace):
     mongodb_repository: MongoDBInfoRepository
     javascript_interpreter: JavaScriptInterpreter
     mirroring_task: MirroringTask
-    integrity_task: IntegrityTask
 
 
 class Heliotrope(Sanic[HeliotropeConfig, HeliotropeContext]): ...
