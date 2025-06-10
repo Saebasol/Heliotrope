@@ -1,4 +1,4 @@
-from asyncio import as_completed, sleep
+from asyncio import Lock, as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
@@ -106,6 +106,7 @@ class MirroringTask:
         self.mongodb = mongodb_repo
         self.progress = cast(MirroringProgress, Proxy(mirroring_progress_dict))
         self.progress.index_files = hitomi_la_repo.hitomi_la.index_files
+        self._task_lock = Lock()
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
@@ -230,23 +231,25 @@ class MirroringTask:
         logger.info(f"Starting Mirroring task with delay: {delay}")
         while True:
             self.progress.last_checked = now()
-            if not self.progress.is_integrity_checking:
-                await self.mirror()
-                await sleep(delay)
+            async with self._task_lock:
+                if not self.progress.is_integrity_checking:
+                    await self.mirror()
+                    await sleep(delay)
 
     async def start_integrity_check(self, delay: float) -> None:
         logger.info(f"Starting Integrity Check task with delay: {delay}")
         while True:
             await sleep(delay)
             self.progress.last_checked = now()
-            if (
-                not self.progress.is_mirroring_galleryinfo
-                and not self.progress.is_converting_to_info
-            ):
-                self.progress.is_integrity_checking = True
-                await self._process_in_jobs(
-                    tuple(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy)),
-                    self._integrity_check,
-                    is_remote=False,
-                )
-                self.progress.is_integrity_checking = False
+            async with self._task_lock:
+                if (
+                    not self.progress.is_mirroring_galleryinfo
+                    and not self.progress.is_converting_to_info
+                ):
+                    self.progress.is_integrity_checking = True
+                    await self._process_in_jobs(
+                        tuple(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy)),
+                        self._integrity_check,
+                        is_remote=False,
+                    )
+                    self.progress.is_integrity_checking = False
