@@ -59,8 +59,8 @@ class MongoDBInfoRepository(InfoRepository):
 
         async for json_info in await self.mongodb.collection.aggregate(
             [
-                {"$project": {"_id": 0}},
                 {"$sort": {"id": -1}},
+                {"$project": {"_id": 0}},
                 {"$skip": offset},
                 {"$limit": item},
             ],
