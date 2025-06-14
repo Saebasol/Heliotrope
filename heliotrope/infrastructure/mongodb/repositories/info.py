@@ -88,9 +88,9 @@ class MongoDBInfoRepository(InfoRepository):
                     query_dict[key] = {"$all": [value]}
             elif data.startswith(tuple(gender_common_tags)):
                 if "tags" in query_dict:
-                    query_dict["tags"]["$all"].append(data)
+                    query_dict["tag"]["$all"].append(data)
                 else:
-                    query_dict["tags"] = {"$all": [data]}
+                    query_dict["tag"] = {"$all": [data]}
             else:
                 title = data
         return title, query_dict
