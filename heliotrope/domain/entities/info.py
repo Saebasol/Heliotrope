@@ -20,10 +20,10 @@ def parse_tags_dict_list(tags_dict_list: list[Any]) -> list[str]:
 
 def parse_male_female_tag(tag: Tag) -> str:
     tag_name = tag.tag.replace(" ", "_")
-    if tag.male:
-        return f"male:{tag_name}"
     if tag.female:
         return f"female:{tag_name}"
+    if tag.male:
+        return f"male:{tag_name}"
     return f"tag:{tag_name}"
 
 
@@ -32,13 +32,13 @@ class Info(HeliotropeEntity):
     id: int
     title: str
     thumbnail: File
-    artist: list[str]
-    group: list[str]
+    artists: list[str]
+    groups: list[str]
     type: str
     language: Optional[str]
     series: list[str]
-    character: list[str]
-    tag: list[str]
+    characters: list[str]
+    tags: list[str]
     date: datetime
 
     @classmethod
@@ -46,29 +46,17 @@ class Info(HeliotropeEntity):
         galleryinfo_dict = asdict(galleryinfo)
         info_dict: dict[str, Any] = {}
         type_hints = get_type_hints(cls)
-        renamed_keys = {
-            "artist": "artists",
-            "group": "groups",
-            "character": "characters",
-            "tag": "tags",
-        }
 
         for key, value in type_hints.items():
-            if key in galleryinfo_dict or key in renamed_keys:
+            if key in galleryinfo_dict:
                 if value == list[str]:
-                    if key == "tag":
+                    if key == "tags":
                         info_dict[key] = [
                             parse_male_female_tag(Tag.from_dict(tag))
-                            for tag in galleryinfo_dict[
-                                renamed_keys[key] if key in renamed_keys else key
-                            ]
+                            for tag in galleryinfo_dict[key]
                         ]
                     else:
-                        info_dict[key] = parse_tags_dict_list(
-                            galleryinfo_dict[
-                                renamed_keys[key] if key in renamed_keys else key
-                            ]
-                        )
+                        info_dict[key] = parse_tags_dict_list(galleryinfo_dict[key])
                 else:
                     info_dict[key] = galleryinfo_dict[key]
 

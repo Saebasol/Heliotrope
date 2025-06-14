@@ -69,30 +69,37 @@ class MongoDBInfoRepository(InfoRepository):
             infos.append(Info.from_dict(json_info))
         return infos
 
-    def _parse_query(self, query: list[str]) -> tuple[str, dict[str, Any]]:
+    def _parse_query(self, querys: list[str]) -> tuple[str, dict[str, Any]]:
         # Tags are received in the following format: female:big_breasts
         # If it is not in the following format, it is regarded as a title.
-        info_tags = ["artist", "group", "type", "language", "series", "character"]
-        gender_common_tags = ["female", "tags", "male"]
+        info_tags = {
+            "artist": "artists",
+            "group": "groups",
+            "type": "type",
+            "language": "language",
+            "series": "series",
+            "character": "characters",
+        }
+        gender_common_tags = ["female", "tag", "male"]
         query_dict: dict[str, Any] = {}
 
         title = ""
-        for data in query:
-            if data.startswith(tuple(info_tags)):
-                tag = data.split(":")
+        for query in querys:
+            if query.startswith(tuple(info_tags)):
+                tag = query.split(":")
                 key = tag[0]
                 value = tag[1]
                 if key in query_dict:
-                    query_dict[key]["$all"].append(value)
+                    query_dict[info_tags[key]]["$all"].append(value)
                 else:
-                    query_dict[key] = {"$all": [value]}
-            elif data.startswith(tuple(gender_common_tags)):
+                    query_dict[info_tags[key]] = {"$all": [value]}
+            elif query.startswith(tuple(gender_common_tags)):
                 if "tags" in query_dict:
-                    query_dict["tag"]["$all"].append(data)
+                    query_dict["tags"]["$all"].append(query)
                 else:
-                    query_dict["tag"] = {"$all": [data]}
+                    query_dict["tags"] = {"$all": [query]}
             else:
-                title = data
+                title = query
         return title, query_dict
 
     def make_pipeline(self, query: list[str]) -> list[dict[str, Any]]:
