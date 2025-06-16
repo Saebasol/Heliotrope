@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from asyncio import Task
 from typing import Any, Callable, Coroutine, NoReturn
 
@@ -93,7 +94,9 @@ class TaskManager:
         error_info["last_error_type"] = current_error_type
 
         logger.error(f"{task_name} - Error #{error_info['count']}: {str(error)}")
-        logger.error(f"{task_name} - Traceback: {error.__traceback__}")
+        logger.error(
+            f"{task_name} - Traceback: {''.join(traceback.format_exception(type(error), error, error.__traceback__))}"
+        )
 
         if error_info["count"] >= self.max_retry_attempts:
             logger.critical(
