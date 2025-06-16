@@ -30,7 +30,7 @@ class HitomiInfoView(HTTPMethodView):
                 ).execute(id)
                 info = Info.from_galleryinfo(galleryinfo)
             except GalleryinfoNotFound:
-                raise InfoNotFound
+                raise InfoNotFound(str(id))
 
         return json(
             {

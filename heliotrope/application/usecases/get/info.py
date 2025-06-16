@@ -13,7 +13,7 @@ class GetInfoUseCase:
         info = await self.info_repository.get_info(id)
 
         if info is None:
-            raise InfoNotFound
+            raise InfoNotFound(str(id))
 
         return info
 
@@ -46,7 +46,7 @@ class GetRandomInfoUseCase:
         if info:
             return info
 
-        raise InfoNotFound
+        raise InfoNotFound(f"Random info with query {query}")
 
 
 class SearchByQueryUseCase:
