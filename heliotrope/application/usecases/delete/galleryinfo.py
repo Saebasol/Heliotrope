@@ -8,5 +8,5 @@ class DeleteGalleryinfoUseCase:
 
     async def execute(self, id: int) -> None:
         if not await self.galleryinfo_repository.is_galleryinfo_exists(id):
-            raise GalleryinfoNotFound
+            raise GalleryinfoNotFound(str(int))
         await self.galleryinfo_repository.delete_galleryinfo(id)

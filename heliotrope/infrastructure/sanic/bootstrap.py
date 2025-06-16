@@ -42,6 +42,13 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             heliotrope.config.SENTRY_DSN,
             integrations=[SanicIntegration()],
             release=__version__,
+            ignore_errors=[
+                GalleryinfoNotFound,
+                InfoNotFound,
+            ],
+            traces_sample_rate=0.1,
+            profile_session_sample_rate=1.0,
+            profile_lifecycle="trace",
         )
 
     heliotrope.ctx.sa = SQLAlchemy.create(heliotrope.config.GALLERYINFO_DB_URL)

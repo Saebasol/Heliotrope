@@ -18,6 +18,7 @@ from heliotrope.application.usecases.get.galleryinfo import (
 from heliotrope.application.usecases.get.info import GetAllInfoIdsUseCase
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.entities.info import Info
+from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.domain.serializer import Serializer
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
     HitomiLaGalleryinfoRepository,
@@ -169,10 +170,14 @@ class MirroringTask:
     async def _integrity_check(self, ids: tuple[int, ...]) -> None:
         tasks = [GetGalleryinfoUseCase(self.hitomi_la).execute(id) for id in ids]
         for result in as_completed(tasks):
-            remote_result = await result
-            local_result = await GetGalleryinfoUseCase(self.sqlalchemy).execute(
-                remote_result.id
-            )
+            try:
+                remote_result = await result
+                local_result = await GetGalleryinfoUseCase(self.sqlalchemy).execute(
+                    remote_result.id
+                )
+            except GalleryinfoNotFound as e:
+                logger.warning(e)
+                continue
             diff = DeepDiff(
                 remote_result.to_dict(),
                 local_result.to_dict(),

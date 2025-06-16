@@ -13,7 +13,7 @@ class GetGalleryinfoUseCase:
         galleryinfo = await self.galleryinfo_repository.get_galleryinfo(id)
 
         if galleryinfo is None:
-            raise GalleryinfoNotFound
+            raise GalleryinfoNotFound(str(id))
 
         return galleryinfo
 
