@@ -254,7 +254,7 @@ class MirroringTask:
     async def start_integrity_check(self, delay: float) -> None:
         logger.info(f"Starting Integrity Check task with delay: {delay}")
         while True:
-            await sleep(10)
+            await sleep(delay)
             self.progress.last_checked = now()
             async with self._task_lock:
                 if (
