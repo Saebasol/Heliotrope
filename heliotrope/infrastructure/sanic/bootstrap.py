@@ -46,7 +46,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 GalleryinfoNotFound,
                 InfoNotFound,
             ],
-            traces_sample_rate=0.1,
+            traces_sample_rate=1.0,
             profile_session_sample_rate=1.0,
             profile_lifecycle="trace",
         )

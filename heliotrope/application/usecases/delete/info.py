@@ -8,5 +8,5 @@ class DeleteInfoUseCase:
 
     async def execute(self, id: int) -> None:
         if not await self.info_repository.is_info_exists(id):
-            raise InfoNotFound(str(id))
+            raise InfoNotFound.from_id(id)
         await self.info_repository.delete_info(id)

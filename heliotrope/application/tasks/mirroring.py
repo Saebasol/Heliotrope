@@ -108,6 +108,7 @@ class MirroringTask:
         self.progress = cast(MirroringProgress, Proxy(mirroring_progress_dict))
         self.progress.index_files = hitomi_la_repo.hitomi_la.index_files
         self._task_lock = Lock()
+        self.skip_ids: set[int] = set()
 
     # Edge case: 1783616 <=> 1669497
     async def _preprocess(
@@ -168,16 +169,24 @@ class MirroringTask:
             await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
 
     async def _integrity_check(self, ids: tuple[int, ...]) -> None:
-        tasks = [GetGalleryinfoUseCase(self.hitomi_la).execute(id) for id in ids]
-        for result in as_completed(tasks):
+        async def __safety(id: int) -> Galleryinfo | None:
             try:
-                remote_result = await result
-                local_result = await GetGalleryinfoUseCase(self.sqlalchemy).execute(
-                    remote_result.id
+                return await GetGalleryinfoUseCase(self.hitomi_la).execute(id)
+            except GalleryinfoNotFound:
+                logger.warning(
+                    f"Galleryinfo with ID {result} not found remotely. Maybe deleted?"
+                    " I'll skip it and not check it next time."
                 )
-            except GalleryinfoNotFound as e:
-                logger.warning(e)
+                self.skip_ids.add(id)
+
+        tasks = [__safety(id) for id in ids]
+        for result in as_completed(tasks):
+            remote_result = await result
+            if remote_result is None:
                 continue
+            local_result = await GetGalleryinfoUseCase(self.sqlalchemy).execute(
+                remote_result.id
+            )
             diff = DeepDiff(
                 remote_result.to_dict(),
                 local_result.to_dict(),
@@ -254,7 +263,10 @@ class MirroringTask:
                 ):
                     self.progress.is_integrity_checking = True
                     await self._process_in_jobs(
-                        tuple(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy)),
+                        tuple(
+                            set(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy))
+                            - self.skip_ids
+                        ),
                         self._integrity_check,
                         is_remote=False,
                     )

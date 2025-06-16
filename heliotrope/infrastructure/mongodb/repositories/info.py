@@ -1,31 +1,8 @@
-from typing import Any, Optional, TypedDict, cast
+from typing import Any, Optional, cast
 
 from heliotrope.domain.entities.info import Info
 from heliotrope.domain.repositories.info import InfoRepository
-from heliotrope.infrastructure.mongodb import MongoDB
-
-
-class HitomiFileJSON(TypedDict):
-    width: int
-    hash: str
-    haswebp: bool
-    hasavif: bool
-    name: str
-    height: int
-
-
-class HitomiInfoJSON(TypedDict):
-    id: int
-    title: str
-    thumbnail: HitomiFileJSON
-    artist: list[str]
-    group: list[str]
-    type: str
-    language: Optional[str]
-    series: list[str]
-    character: list[str]
-    tags: list[str]
-    date: str
+from heliotrope.infrastructure.mongodb import HitomiInfoJSON, MongoDB
 
 
 class MongoDBInfoRepository(InfoRepository):
