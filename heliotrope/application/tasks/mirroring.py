@@ -174,7 +174,7 @@ class MirroringTask:
                 return await GetGalleryinfoUseCase(self.hitomi_la).execute(id)
             except GalleryinfoNotFound:
                 logger.warning(
-                    f"Galleryinfo with ID {result} not found remotely. Maybe deleted?"
+                    f"Galleryinfo with ID {id} not found remotely. Maybe deleted?"
                     " I'll skip it and not check it next time."
                 )
                 self.skip_ids.add(id)
