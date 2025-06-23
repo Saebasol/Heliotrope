@@ -158,13 +158,13 @@ class MirroringTask:
             self._preprocess(GetGalleryinfoUseCase(self.hitomi_la).execute, id)
             for id in ids
         ]
-        for result in as_completed(tasks):
+        async for result in as_completed(tasks):
             result = await result
             await CreateGalleryinfoUseCase(target_repository).execute(result)
 
     async def _fetch_and_store_info(self, ids: tuple[int, ...]) -> None:
         tasks = [GetGalleryinfoUseCase(self.sqlalchemy).execute(id) for id in ids]
-        for result in as_completed(tasks):
+        async for result in as_completed(tasks):
             result = await result
             await CreateInfoUseCase(self.mongodb).execute(Info.from_galleryinfo(result))
 
@@ -180,7 +180,7 @@ class MirroringTask:
                 self.skip_ids.add(id)
 
         tasks = [__safety(id) for id in ids]
-        for result in as_completed(tasks):
+        async for result in as_completed(tasks):
             remote_result = await result
             if remote_result is None:
                 continue
