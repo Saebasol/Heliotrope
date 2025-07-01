@@ -1,3 +1,4 @@
+import math
 from asyncio import Lock, as_completed, sleep
 from dataclasses import dataclass
 from datetime import datetime
@@ -142,7 +143,7 @@ class MirroringTask:
     ) -> None:
         size = self.REMOTE_CONCURRENT_SIZE if is_remote else self.LOCAL_CONCURRENT_SIZE
         self.progress.total = len(ids)
-        self.progress.job_total = len(ids) // size
+        self.progress.job_total = math.ceil(len(ids) / size)
 
         for job in self._get_splited_id(ids, size):
             await process_function(job)
@@ -238,7 +239,7 @@ class MirroringTask:
                 self.progress.last_mirrored = now()
 
         await self._process_in_jobs(
-            remote_differences, self._integrity_check, is_remote=False
+            local_differences, self._integrity_check, is_remote=False
         )
 
     async def start_mirroring(self, delay: float) -> None:
@@ -247,7 +248,12 @@ class MirroringTask:
             self.progress.last_checked = now()
             async with self._task_lock:
                 if not self.progress.is_integrity_checking:
-                    await self.mirror()
+                    try:
+                        await self.mirror()
+                    finally:
+                        self.progress.is_converting_to_info = False
+                        self.progress.is_mirroring_galleryinfo = False
+                        self.progress.reset()
 
             await sleep(delay)
 
@@ -262,12 +268,16 @@ class MirroringTask:
                     and not self.progress.is_converting_to_info
                 ):
                     self.progress.is_integrity_checking = True
-                    await self._process_in_jobs(
-                        tuple(
-                            set(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy))
-                            - self.skip_ids
-                        ),
-                        self._integrity_check,
-                        is_remote=False,
-                    )
-                    self.progress.is_integrity_checking = False
+                    try:
+                        await self._process_in_jobs(
+                            tuple(
+                                set(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy))
+                                - self.skip_ids
+                            ),
+                            self._integrity_check,
+                            is_remote=False,
+                        )
+                    finally:
+                        self.progress.is_integrity_checking = False
+                        self.skip_ids.clear()
+                        self.progress.reset()
