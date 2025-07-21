@@ -1680,43 +1680,43 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
 name = "pythonmonkey"
-version = "1.1.1"
+version = "1.2.0"
 description = "Seamless interop between Python and JavaScript."
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "pythonmonkey-1.1.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ad653c000059837cd8e5513ead4dfa6fac01dea13044b911235d0de39593a1f3"},
-    {file = "pythonmonkey-1.1.1-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:da5a1a7efc94b9255192a8b378a9e4f8c1e0d19b09d5e2bb0cfd30e8d07ea6ef"},
-    {file = "pythonmonkey-1.1.1-cp310-cp310-manylinux_2_31_x86_64.whl", hash = "sha256:a663e24ed6c97ddcc3a49af1bb19e3e6817e4307bd496911986633a9b0d2c5b9"},
-    {file = "pythonmonkey-1.1.1-cp310-cp310-manylinux_2_35_aarch64.whl", hash = "sha256:23e7269e6d766c5b1062f5c3b1ecdb011a9e7f06d24fd3760f8a9e83097d9852"},
-    {file = "pythonmonkey-1.1.1-cp310-cp310-win_amd64.whl", hash = "sha256:f87764c1406bb432659a05dee0cac2ce847be0b9a85e6e6ca2ee5fcf6feb6d95"},
-    {file = "pythonmonkey-1.1.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:731240e74af3b0730d30f02787056df9bbb36369a8f1d78a3b208b81e8905e6d"},
-    {file = "pythonmonkey-1.1.1-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:1e35f8516e9191adbb03a180439a5c225e94308789e17c1f987c69efe957a530"},
-    {file = "pythonmonkey-1.1.1-cp311-cp311-manylinux_2_31_x86_64.whl", hash = "sha256:76909398f47de0de47f8dd9491a62f2f6b21b1396ac5883fed6c247e3b757298"},
-    {file = "pythonmonkey-1.1.1-cp311-cp311-manylinux_2_35_aarch64.whl", hash = "sha256:ec09af85926b588f358bed81458112fc1c3c285349c80673fec5e5920f9d9d5b"},
-    {file = "pythonmonkey-1.1.1-cp311-cp311-win_amd64.whl", hash = "sha256:0a2e63742bc1f867f35e75ed9d0e0403216e536619f67e4ab078793ed2bbdfc6"},
-    {file = "pythonmonkey-1.1.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:dffb087553ac10e32fc1e4a3487d6d0584b349a6c8d6b8d55dcc4fc73827d1d1"},
-    {file = "pythonmonkey-1.1.1-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:7cc8b524f88841e2474cda70a09fe4269848cf65fe2584cb133c76d3deb57199"},
-    {file = "pythonmonkey-1.1.1-cp312-cp312-manylinux_2_31_x86_64.whl", hash = "sha256:87981ca73b43b383fef71a2fadfbea367a8e4d05f156e9ba9ad8f2f42c97a06c"},
-    {file = "pythonmonkey-1.1.1-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:0312cf447461a8f2a5e536ea40a761188670b4629291e3340e405b370a3f79b5"},
-    {file = "pythonmonkey-1.1.1-cp312-cp312-win_amd64.whl", hash = "sha256:098ad7902271cffdc49650a0853b4a4e995e94040ece496d9b76a5d6d9daa7fc"},
-    {file = "pythonmonkey-1.1.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:a7c0b50421c98fcb9a2ff0c50d65c3cf05a3d5bf95ef0e68d634f8e968924030"},
-    {file = "pythonmonkey-1.1.1-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:2c57ac9248450c73629cb63189a422df96241395eb102939cb64e443cf59e00d"},
-    {file = "pythonmonkey-1.1.1-cp313-cp313-manylinux_2_31_x86_64.whl", hash = "sha256:7d231b5ec8ffa2ab45feacba55d5fb78fa7069fad100d43cc4b23959b609b10e"},
-    {file = "pythonmonkey-1.1.1-cp313-cp313-manylinux_2_35_aarch64.whl", hash = "sha256:7b0df0690226670f289449331f0483a120d600c1a893c1bff779dc2d3334658a"},
-    {file = "pythonmonkey-1.1.1-cp313-cp313-win_amd64.whl", hash = "sha256:d60e19f0d7340378586980f0b782efb9352864fb3b832c37bfd23486bd6987fd"},
-    {file = "pythonmonkey-1.1.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:19b1a88d587fab7f4be0a3b1e931cc5f920082661a95175c5212eee244a47999"},
-    {file = "pythonmonkey-1.1.1-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:2ff99cb97d7849546f3bf33e667fa3bc323bb2d96a6ac2b8883f1d978a306c73"},
-    {file = "pythonmonkey-1.1.1-cp38-cp38-manylinux_2_31_x86_64.whl", hash = "sha256:c5c999a2a9320cbafafbe50c152d953442306c8fe33d21a68de979871eef3a68"},
-    {file = "pythonmonkey-1.1.1-cp38-cp38-manylinux_2_35_aarch64.whl", hash = "sha256:91138aafbd9e7b50fccb93613d373bde88a4a58cb6d3a0dfc63ace0b9db8f72d"},
-    {file = "pythonmonkey-1.1.1-cp38-cp38-win_amd64.whl", hash = "sha256:469cb0b348f27177ac8e202855ef0260c032a5eb1adf771897ba5fdc87b37be8"},
-    {file = "pythonmonkey-1.1.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:40746d8aa3c734740a21c52f0aaf0e3952155a15b4ac17a286536d457a357aef"},
-    {file = "pythonmonkey-1.1.1-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:ee6d631563aac0493a3883e3fa1b1dad646526356a240ae735711ecf157664ad"},
-    {file = "pythonmonkey-1.1.1-cp39-cp39-manylinux_2_31_x86_64.whl", hash = "sha256:9d665d964d968f15199c02261ca11b002e66b511e1322329cf55cb636795a6af"},
-    {file = "pythonmonkey-1.1.1-cp39-cp39-manylinux_2_35_aarch64.whl", hash = "sha256:0cf37b77f9a6efc2a6f5f64dc042f266cda22f7647013daafe07b375cb00920f"},
-    {file = "pythonmonkey-1.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:14b20a06cfe414c36421ab5017f809f2a534c43e6638c53a6fa9ef34ea719a7c"},
-    {file = "pythonmonkey-1.1.1.tar.gz", hash = "sha256:142b2505e02e7c556bd446c29d9cabb74690008c9a78f44b923f8a75ed288c61"},
+    {file = "pythonmonkey-1.2.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ecdb6b54513a7d56b7f45c3ae1dc28a4a46c0a874dccde524196256d4d7c760b"},
+    {file = "pythonmonkey-1.2.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:98493bfec858e045b8e54460bd6fbdf5af81c5e7174833dd1d7905999c16f23e"},
+    {file = "pythonmonkey-1.2.0-cp310-cp310-manylinux_2_31_aarch64.whl", hash = "sha256:c2abbdd8d58646e9c213f2272c868dec613b069d8b5efaf7767bb11b1ce728fe"},
+    {file = "pythonmonkey-1.2.0-cp310-cp310-manylinux_2_31_x86_64.whl", hash = "sha256:49c33c12741b450746191a64b143302346dd8f38785f488098c478c775785465"},
+    {file = "pythonmonkey-1.2.0-cp310-cp310-win_amd64.whl", hash = "sha256:a6b88d9653fe779f5f5d7d27c4b896afa5ec42b360ff06abe4e77af098914ef1"},
+    {file = "pythonmonkey-1.2.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:8201c3876d97d330c677cbcac7e82f74c9e0fa80f1223e4005f66d4d2be64383"},
+    {file = "pythonmonkey-1.2.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:f884cbcfc267426f53661d70ef60ff7460d18619ac69aed7f6dd297707c9d16f"},
+    {file = "pythonmonkey-1.2.0-cp311-cp311-manylinux_2_31_aarch64.whl", hash = "sha256:332c173508aa6d02d13ed9e4711ed4adbe98ec06ce3bec9d40be80bfd017d3c4"},
+    {file = "pythonmonkey-1.2.0-cp311-cp311-manylinux_2_31_x86_64.whl", hash = "sha256:02d4dcd8fda1ce5f65f31a7892b67554624153939e3f4301ffec1017f2cb7664"},
+    {file = "pythonmonkey-1.2.0-cp311-cp311-win_amd64.whl", hash = "sha256:61034cefb803029692c78645407c8b5bc3557bef924bdcaebe6588e458c69d79"},
+    {file = "pythonmonkey-1.2.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:32fbfe5f530e05d17c3d43299df88b2c5c3f7fb58644c7687bddd33e6c0851e4"},
+    {file = "pythonmonkey-1.2.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:613210f2d6204e5cad253063174997f07e79eda72c21c5ad2eebbc51cf8f585a"},
+    {file = "pythonmonkey-1.2.0-cp312-cp312-manylinux_2_31_aarch64.whl", hash = "sha256:01df1c0b1e17cd23a2e244059182c40008abed5f5c5aa45acb72339bd121770e"},
+    {file = "pythonmonkey-1.2.0-cp312-cp312-manylinux_2_31_x86_64.whl", hash = "sha256:94312e1cab80bfe430d6ebf512e3edc3b7993754de42910c5f34184ac6b76416"},
+    {file = "pythonmonkey-1.2.0-cp312-cp312-win_amd64.whl", hash = "sha256:a176650b2b821f9c0dae9e42f842bee07973b461bed840c498beaa895cca5c46"},
+    {file = "pythonmonkey-1.2.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:e9d85f80f7a1d5cefe31ba143ba7264cbef471da56a7cb8d7e83d2928ab7ca4a"},
+    {file = "pythonmonkey-1.2.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:cb51115012ac3495af6dd06c5665d3d4844508de810e5f1acafc34e6d8e721a0"},
+    {file = "pythonmonkey-1.2.0-cp313-cp313-manylinux_2_31_aarch64.whl", hash = "sha256:a2c179fc162922a272d37d5b522a5dc6e46065bf1844fa774ce3bef04d430aed"},
+    {file = "pythonmonkey-1.2.0-cp313-cp313-manylinux_2_31_x86_64.whl", hash = "sha256:79a67c2009c349347a5d67e5e8e9b4acd668a7db9ccfccba35900451b3840319"},
+    {file = "pythonmonkey-1.2.0-cp313-cp313-win_amd64.whl", hash = "sha256:d26067955a8ec6f62888689b5d0bcdfcf5bae8eafdb956c1fd3ab2c25936351b"},
+    {file = "pythonmonkey-1.2.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:e22d89f3fd49c406d98f71b982c82468697441b01e8d46f5c3a4d88e0144cd31"},
+    {file = "pythonmonkey-1.2.0-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:cf6f4ea0249f54061a00fc98413d999fecca10114312fa65f4926584fa096b18"},
+    {file = "pythonmonkey-1.2.0-cp38-cp38-manylinux_2_31_aarch64.whl", hash = "sha256:51160dded5df7b7f64c178a67b02627a3559672d9205beefc22e1a7757717dbf"},
+    {file = "pythonmonkey-1.2.0-cp38-cp38-manylinux_2_31_x86_64.whl", hash = "sha256:2c1cfde687519a3e94e5073448d73836313849d23e4cb81e24ee0d034def1b82"},
+    {file = "pythonmonkey-1.2.0-cp38-cp38-win_amd64.whl", hash = "sha256:d3c69e8fdf432c9c9deeed8c81206f843d6d2e92ad1b8742fc50d241ceb0c3b1"},
+    {file = "pythonmonkey-1.2.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:14e33fb1a91508e88d536f44686e8490a703fa12fa472764a7115b4dd9ae4194"},
+    {file = "pythonmonkey-1.2.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:9d527f324097312d101c05ce8f39f34d9c7fd1dded99089020f31fc58649768a"},
+    {file = "pythonmonkey-1.2.0-cp39-cp39-manylinux_2_31_aarch64.whl", hash = "sha256:b656becf353ce6124760829c96c729535d82dea9ce7712b91c38d8ff47c60d29"},
+    {file = "pythonmonkey-1.2.0-cp39-cp39-manylinux_2_31_x86_64.whl", hash = "sha256:6571b2327e0d7f7657ad8be93a3ada1d84d4c72a00a0ca535ff8678271cf0163"},
+    {file = "pythonmonkey-1.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:f87a49740551b39e80a401c309847cbec6f5de8da7507065788544d5305d47e7"},
+    {file = "pythonmonkey-1.2.0.tar.gz", hash = "sha256:4893c4694ecfc3a37a43946985cc089495f6d3e9aad8a974d6f9a679c4b9f1fd"},
 ]
 
 [package.dependencies]
@@ -2413,4 +2413,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "68528f33a057fe0c473f66d160c46970bfffd476a857aeb0393e3accb56f1ac8"
+content-hash = "e5ec5f3b89df17a7ab7195be1b741cd7d8f28d84c0484158750cffd98ad9bc1d"
