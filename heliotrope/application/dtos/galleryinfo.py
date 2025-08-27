@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Optional
+from typing import Any, Optional
 
 from heliotrope.domain.entities.artist import Artist
 from heliotrope.domain.entities.character import Character
@@ -40,7 +40,7 @@ class GalleryinfoDTO:
     tags: list[Tag] = field(default_factory=list[Tag])
 
     @classmethod
-    def from_domain(cls, galleryinfo: Galleryinfo):
+    def from_domain(cls, galleryinfo: Galleryinfo) -> GalleryinfoDTO:
         return cls(
             date=galleryinfo.date,
             galleryurl=galleryinfo.galleryurl,
@@ -66,7 +66,7 @@ class GalleryinfoDTO:
             tags=galleryinfo.tags,
         )
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             "date": self.date.isoformat(),
             "galleryurl": self.galleryurl,
