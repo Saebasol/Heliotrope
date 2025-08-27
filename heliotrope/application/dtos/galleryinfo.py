@@ -12,7 +12,6 @@ from heliotrope.domain.entities.group import Group
 from heliotrope.domain.entities.language import Language
 from heliotrope.domain.entities.parody import Parody
 from heliotrope.domain.entities.tag import Tag
-from datetime import date, datetime
 
 
 @dataclass
