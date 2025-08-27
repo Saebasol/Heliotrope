@@ -10,7 +10,9 @@ from heliotrope.infrastructure.sqlalchemy.entities.galleryinfo import Galleryinf
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.entities.language_localname import LocalnameSchema
+from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+    LanguageLocalnameSchema,
+)
 from heliotrope.infrastructure.sqlalchemy.entities.related import RelatedSchema
 from heliotrope.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
 from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
@@ -26,7 +28,7 @@ from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
     SALanguageInfoRepository,
 )
 from heliotrope.infrastructure.sqlalchemy.repositories.localname import (
-    SALocalnameRepository,
+    SALanguageLocalnameRepository,
 )
 from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
 from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
@@ -39,7 +41,7 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
         self.type_repository = SATypeRepository(sa)
         self.artist_repository = SAArtistRepository(sa)
         self.language_info_repository = SALanguageInfoRepository(sa)
-        self.localname_repository = SALocalnameRepository(sa)
+        self.localname_repository = SALanguageLocalnameRepository(sa)
         self.character_repository = SACharacterRepository(sa)
         self.group_repository = SAGroupRepository(sa)
         self.parody_repository = SAParodyRepository(sa)
@@ -69,19 +71,20 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
         async with self.sa.session_maker() as session:
             async with session.begin():
                 type_schema = await self.type_repository.get_or_create_type(
-                    TypeSchema(type=galleryinfo.type)
+                    TypeSchema.from_dict(galleryinfo.type.to_dict())
                 )
                 language_info_schema = (
                     await self.language_info_repository.get_or_create_language_info(
-                        LanguageInfoSchema(
-                            language=galleryinfo.language,
-                            language_url=galleryinfo.language_url,
-                        ),
+                        LanguageInfoSchema.from_dict(
+                            galleryinfo.language_info.to_dict()
+                        )
                     )
                 )
                 gallery_localname_schema = (
                     await self.localname_repository.get_or_create_localname(
-                        LocalnameSchema(name=galleryinfo.language_localname)
+                        LanguageLocalnameSchema.from_dict(
+                            galleryinfo.language_localname.to_dict()
+                        )
                     )
                 )
 
@@ -113,11 +116,8 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                 galleryinfo_schema = GalleryinfoSchema(
                     id=galleryinfo.id,
                     type_id=type_schema.id,
-                    _type=type_schema,
                     language_info_id=language_info_schema.id,
-                    _language_info=language_info_schema,
                     localname_id=gallery_localname_schema.id,
-                    _localname=gallery_localname_schema,
                     date=galleryinfo.date,
                     title=galleryinfo.title,
                     japanese_title=galleryinfo.japanese_title,
