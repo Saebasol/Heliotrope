@@ -14,6 +14,7 @@ from heliotrope.domain.entities.parody import Parody
 from heliotrope.domain.entities.tag import Tag
 from datetime import date, datetime
 
+
 @dataclass
 class GalleryinfoDTO:
     date: datetime
