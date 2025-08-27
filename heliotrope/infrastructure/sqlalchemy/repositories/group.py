@@ -1,11 +1,12 @@
 from sqlalchemy import and_, select
 
 from heliotrope.domain.entities.group import Group
+from heliotrope.domain.repositories.group import GroupRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.group import GroupSchema
 
 
-class SAGroupRepository:
+class SAGroupRepository(GroupRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
@@ -25,3 +26,8 @@ class SAGroupRepository:
             session.add(schema)
             await session.commit()
             return schema
+
+    async def get_all_groups(self) -> list[Group]:
+        async with self.sa.session_maker() as session:
+            result = await session.execute(select(GroupSchema))
+            return [Group.from_dict(row.to_dict()) for row in result.scalars().all()]

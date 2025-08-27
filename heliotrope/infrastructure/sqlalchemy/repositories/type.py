@@ -21,3 +21,8 @@ class SATypeRepository:
             session.add(type_schema)
             await session.commit()
             return type_schema
+
+    async def get_all_types(self) -> list[TypeSchema]:
+        async with self.sa.session_maker() as session:
+            result = await session.execute(select(TypeSchema))
+            return list(result.scalars().all())

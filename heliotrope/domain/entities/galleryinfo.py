@@ -10,8 +10,11 @@ from heliotrope.domain.entities.character import Character
 from heliotrope.domain.entities.file import File
 from heliotrope.domain.entities.group import Group
 from heliotrope.domain.entities.language import Language
+from heliotrope.domain.entities.language_info import LanguageInfo
+from heliotrope.domain.entities.language_localname import LanguageLocalname
 from heliotrope.domain.entities.parody import Parody
 from heliotrope.domain.entities.tag import Tag
+from heliotrope.domain.entities.type import Type
 
 
 @dataclass
@@ -20,11 +23,10 @@ class Galleryinfo(HeliotropeEntity):
     galleryurl: str
     id: int
     japanese_title: Optional[str]
-    language_localname: str
-    language_url: str
-    language: str
+    language_info: LanguageInfo
+    language_localname: LanguageLocalname
     title: str
-    type: str
+    type: Type
     video: Optional[str]
     videofilename: Optional[str]
     blocked: bool = field(default=False)

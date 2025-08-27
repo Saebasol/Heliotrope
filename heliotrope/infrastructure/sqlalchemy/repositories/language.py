@@ -6,12 +6,14 @@ from heliotrope.infrastructure.sqlalchemy.entities.language import LanguageSchem
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.entities.localname import LocalnameSchema
+from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+    LanguageLocalnameSchema,
+)
 from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
     SALanguageInfoRepository,
 )
 from heliotrope.infrastructure.sqlalchemy.repositories.localname import (
-    SALocalnameRepository,
+    SALanguageLocalnameRepository,
 )
 
 
@@ -19,12 +21,12 @@ class SALanguageRepository:
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
         self.language_info_repository = SALanguageInfoRepository(sa)
-        self.localname_repository = SALocalnameRepository(sa)
+        self.language_localname_repository = SALanguageLocalnameRepository(sa)
 
     async def get_or_create_language(self, language: Language) -> LanguageSchema:
         language_localname_schema = (
-            await self.localname_repository.get_or_create_localname(
-                LocalnameSchema(name=language.language_localname)
+            await self.language_localname_repository.get_or_create_localname(
+                LanguageLocalnameSchema.from_dict(language.language_localname.to_dict())
             )
         )
 
@@ -54,8 +56,8 @@ class SALanguageRepository:
             schema = LanguageSchema(
                 language_info_id=language_info_schema.id,
                 localname_id=language_localname_schema.id,
-                _language_info=language_info_schema,
-                _localname=language_localname_schema,
+                language_info=language_info_schema,
+                localname=language_localname_schema,
                 galleryid=language.galleryid,
                 url=language.url,
             )

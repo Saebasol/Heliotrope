@@ -10,7 +10,7 @@ from heliotrope.infrastructure.sqlalchemy.entities.galleryinfo import Galleryinf
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.entities.localname import LocalnameSchema
+from heliotrope.infrastructure.sqlalchemy.entities.language_localname import LocalnameSchema
 from heliotrope.infrastructure.sqlalchemy.entities.related import RelatedSchema
 from heliotrope.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
 from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema

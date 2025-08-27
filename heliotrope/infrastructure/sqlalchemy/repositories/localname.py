@@ -1,20 +1,22 @@
 from sqlalchemy import select
 
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.entities.localname import LocalnameSchema
+from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+    LanguageLocalnameSchema,
+)
 
 
-class SALocalnameRepository:
+class SALanguageLocalnameRepository:
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
     async def get_or_create_localname(
-        self, localname_schema: LocalnameSchema
-    ) -> LocalnameSchema:
+        self, localname_schema: LanguageLocalnameSchema
+    ) -> LanguageLocalnameSchema:
         async with self.sa.session_maker() as session:
             result = await session.execute(
-                select(LocalnameSchema).where(
-                    LocalnameSchema.name == localname_schema.name
+                select(LanguageLocalnameSchema).where(
+                    LanguageLocalnameSchema.name == localname_schema.name
                 )
             )
             schema = result.scalars().first()

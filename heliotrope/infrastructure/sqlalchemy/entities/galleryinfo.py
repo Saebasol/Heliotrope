@@ -1,11 +1,10 @@
-from dataclasses import field
 from datetime import date as date_
 from datetime import datetime
 from functools import partial
 from typing import Optional
 
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, reconstructor, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from heliotrope.infrastructure.sqlalchemy.association import (
     galleryinfo_artist,
@@ -23,7 +22,9 @@ from heliotrope.infrastructure.sqlalchemy.entities.language import LanguageSchem
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.entities.localname import LocalnameSchema
+from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+    LanguageLocalnameSchema,
+)
 from heliotrope.infrastructure.sqlalchemy.entities.parody import ParodySchema
 from heliotrope.infrastructure.sqlalchemy.entities.related import RelatedSchema
 from heliotrope.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
@@ -52,16 +53,6 @@ many_to_one_relationship = partial(
 
 class GalleryinfoSchema(Schema):
     __tablename__ = "galleryinfo"
-
-    def __post_init__(self) -> None:
-        self.type = self._type.type
-        self.language = self._language_info.language
-        self.language_url = self._language_info.language_url
-        self.language_localname = self._localname.name
-
-    @reconstructor
-    def init_on_load(self) -> None:
-        self.__post_init__()
 
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
@@ -115,22 +106,14 @@ class GalleryinfoSchema(Schema):
     )
     files: Mapped[list[FileSchema]] = one_to_many_relationship(FileSchema)
 
-    _type: Mapped[TypeSchema] = many_to_one_relationship(
+    type: Mapped[TypeSchema] = many_to_one_relationship(
         TypeSchema, uselist=False, lazy="joined"
     )
 
-    _language_info: Mapped[LanguageInfoSchema] = many_to_one_relationship(
+    language_info: Mapped[LanguageInfoSchema] = many_to_one_relationship(
         LanguageInfoSchema, uselist=False, lazy="joined"
     )
 
-    _localname: Mapped[LocalnameSchema] = many_to_one_relationship(
-        LocalnameSchema, uselist=False, lazy="joined"
+    language_localname: Mapped[LanguageLocalnameSchema] = many_to_one_relationship(
+        LanguageLocalnameSchema, uselist=False, lazy="joined"
     )
-
-    type: str = field(init=False)
-
-    language: str = field(init=False)
-
-    language_url: str = field(init=False)
-
-    language_localname: str = field(init=False)
