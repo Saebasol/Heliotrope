@@ -68,7 +68,7 @@ class GalleryinfoSchema(Schema):
         Integer, ForeignKey("language_info.id", ondelete="RESTRICT"), nullable=True
     )
     localname_id: Mapped[Optional[int]] = mapped_column(
-        Integer, ForeignKey("localname.id", ondelete="RESTRICT"), nullable=True
+        Integer, ForeignKey("language_localname.id", ondelete="RESTRICT"), nullable=True
     )
 
     datepublished: Mapped[Optional[date_]] = mapped_column(Date, default=None)

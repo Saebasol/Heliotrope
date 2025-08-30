@@ -22,7 +22,9 @@ class LanguageSchema(Schema):
         Integer, ForeignKey("language_info.id", ondelete="RESTRICT"), nullable=False
     )
     localname_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("localname.id", ondelete="RESTRICT"), nullable=False
+        Integer,
+        ForeignKey("language_localname.id", ondelete="RESTRICT"),
+        nullable=False,
     )
 
     galleryid: Mapped[int | None] = mapped_column(Integer, nullable=True)

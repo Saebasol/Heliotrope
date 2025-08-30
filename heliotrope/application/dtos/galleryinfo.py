@@ -2,20 +2,24 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Optional
 
+from heliotrope.application.dtos.language import LanguageDTO
+from heliotrope.domain.base import HeliotropeEntity
 from heliotrope.domain.entities.artist import Artist
 from heliotrope.domain.entities.character import Character
 from heliotrope.domain.entities.file import File
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.entities.group import Group
-from heliotrope.domain.entities.language import Language
+from heliotrope.domain.entities.language_info import LanguageInfo
+from heliotrope.domain.entities.language_localname import LanguageLocalname
 from heliotrope.domain.entities.parody import Parody
 from heliotrope.domain.entities.tag import Tag
+from heliotrope.domain.entities.type import Type
 
 
 @dataclass
-class GalleryinfoDTO:
+class GalleryinfoDTO(HeliotropeEntity):
     date: datetime
     galleryurl: str
     id: int
@@ -33,7 +37,7 @@ class GalleryinfoDTO:
     characters: list[Character] = field(default_factory=list[Character])
     files: list[File] = field(default_factory=list[File])
     groups: list[Group] = field(default_factory=list[Group])
-    languages: list[Language] = field(default_factory=list[Language])
+    languages: list[LanguageDTO] = field(default_factory=list[LanguageDTO])
     parodys: list[Parody] = field(default_factory=list[Parody])
     related: list[int] = field(default_factory=list[int])
     scene_indexes: list[int] = field(default_factory=list[int])
@@ -59,35 +63,37 @@ class GalleryinfoDTO:
             characters=galleryinfo.characters,
             files=galleryinfo.files,
             groups=galleryinfo.groups,
-            languages=galleryinfo.languages,
+            languages=[LanguageDTO.from_domain(lang) for lang in galleryinfo.languages],
             parodys=galleryinfo.parodys,
             related=galleryinfo.related,
             scene_indexes=galleryinfo.scene_indexes,
             tags=galleryinfo.tags,
         )
 
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "date": self.date.isoformat(),
-            "galleryurl": self.galleryurl,
-            "id": self.id,
-            "japanese_title": self.japanese_title,
-            "language_localname": self.language_localname,
-            "language_url": self.language_url,
-            "language": self.language,
-            "title": self.title,
-            "type": self.type,
-            "video": self.video,
-            "videofilename": self.videofilename,
-            "blocked": self.blocked,
-            "datepublished": self.datepublished,
-            "artists": [artist.to_dict() for artist in self.artists],
-            "characters": [character.to_dict() for character in self.characters],
-            "files": [file.to_dict() for file in self.files],
-            "groups": [group.to_dict() for group in self.groups],
-            "languages": [language.to_dict() for language in self.languages],
-            "parodys": [parody.to_dict() for parody in self.parodys],
-            "related": self.related,
-            "scene_indexes": self.scene_indexes,
-            "tags": [tag.to_dict() for tag in self.tags],
-        }
+    def to_domain(self) -> Galleryinfo:
+        return Galleryinfo(
+            date=self.date,
+            galleryurl=self.galleryurl,
+            id=self.id,
+            japanese_title=self.japanese_title,
+            language_localname=LanguageLocalname(self.language_localname),
+            language_info=LanguageInfo(
+                language=self.language,
+                language_url=self.language_url,
+            ),
+            title=self.title,
+            type=Type(self.type),
+            video=self.video,
+            videofilename=self.videofilename,
+            blocked=self.blocked,
+            datepublished=self.datepublished,
+            artists=self.artists,
+            characters=self.characters,
+            files=self.files,
+            groups=self.groups,
+            languages=[lang.to_domain() for lang in self.languages],
+            parodys=self.parodys,
+            related=self.related,
+            scene_indexes=self.scene_indexes,
+            tags=self.tags,
+        )
