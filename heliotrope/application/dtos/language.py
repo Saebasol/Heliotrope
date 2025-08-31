@@ -14,7 +14,7 @@ class LanguageDTO(HeliotropeEntity):
     url: str
 
     @classmethod
-    def from_domain(cls, language: Language):
+    def from_domain(cls, language: Language) -> "LanguageDTO":
         return cls(
             galleryid=language.galleryid,
             language_localname=language.language_localname.name,

@@ -1,3 +1,5 @@
+from typing import Generator
+
 from heliotrope.domain.entities.info import parse_male_female_tag, parse_tags_dict_list
 from heliotrope.domain.repositories.artist import ArtistRepository
 from heliotrope.domain.repositories.charactor import CharacterRepository
@@ -27,7 +29,7 @@ class GetAllTagsUseCase:
         self.tag_repository = tag_repository
         self.type_repository = type_repository
 
-    def __await__(self):
+    def __await__(self) -> Generator[None, None, dict[str, list[str]]]:
         return self.execute().__await__()
 
     async def execute(self) -> dict[str, list[str]]:
