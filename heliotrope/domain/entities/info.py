@@ -15,6 +15,7 @@ def parse_tags_dict_list(tags_dict_list: list[Any]) -> list[str]:
         for k, v in tags.items()
         if k != "url"
         if k != "galleryurl"
+        if k != "language_url"
     ]
 
 
