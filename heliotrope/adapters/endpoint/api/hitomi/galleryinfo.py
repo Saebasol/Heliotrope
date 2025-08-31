@@ -3,6 +3,7 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
+from heliotrope.application.dtos.galleryinfo import GalleryinfoDTO
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
 from heliotrope.application.utils import check_int32
 from heliotrope.domain.exceptions import GalleryinfoNotFound
@@ -32,7 +33,7 @@ class HitomiGalleryinfoView(HTTPMethodView):
                 request.app.ctx.hitomi_la_galleryinfo_repository
             ).execute(id)
 
-        return json(galleryinfo.to_dict())
+        return json(GalleryinfoDTO.from_domain(galleryinfo).to_dict())
 
 
 hitomi_galleryinfo.add_route(HitomiGalleryinfoView.as_view(), "/<id:int>")

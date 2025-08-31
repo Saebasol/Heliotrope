@@ -1,10 +1,12 @@
 from sqlalchemy import select
 
+from heliotrope.domain.entities.type import Type
+from heliotrope.domain.repositories.type import TypeRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
 
 
-class SATypeRepository:
+class SATypeRepository(TypeRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
@@ -21,3 +23,10 @@ class SATypeRepository:
             session.add(type_schema)
             await session.commit()
             return type_schema
+
+    async def get_all_types(self) -> list[Type]:
+        async with self.sa.session_maker() as session:
+            result = await session.execute(select(TypeSchema))
+            return [
+                Type.from_dict(schema.to_dict()) for schema in result.scalars().all()
+            ]

@@ -1,11 +1,12 @@
 from sqlalchemy import and_, select
 
 from heliotrope.domain.entities.artist import Artist
+from heliotrope.domain.repositories.artist import ArtistRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.artist import ArtistSchema
 
 
-class SAArtistRepository:
+class SAArtistRepository(ArtistRepository):
     def __init__(self, sa: SQLAlchemy):
         self.sa = sa
 
@@ -28,3 +29,8 @@ class SAArtistRepository:
             session.add(schema)
             await session.commit()
             return schema
+
+    async def get_all_artists(self) -> list[Artist]:
+        async with self.sa.session_maker() as session:
+            result = await session.execute(select(ArtistSchema))
+            return [Artist.from_dict(row.to_dict()) for row in result.scalars().all()]

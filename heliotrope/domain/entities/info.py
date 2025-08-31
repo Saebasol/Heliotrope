@@ -15,6 +15,7 @@ def parse_tags_dict_list(tags_dict_list: list[Any]) -> list[str]:
         for k, v in tags.items()
         if k != "url"
         if k != "galleryurl"
+        if k != "language_url"
     ]
 
 
@@ -63,4 +64,5 @@ class Info(HeliotropeEntity):
         if "series" in type_hints and "parodys" in galleryinfo_dict:
             info_dict["series"] = parse_tags_dict_list(galleryinfo_dict["parodys"])
         info_dict["thumbnail"] = File.from_dict(galleryinfo_dict["files"][0])
+        info_dict["language"] = galleryinfo_dict["language_localname"]["name"]
         return cls(**info_dict)

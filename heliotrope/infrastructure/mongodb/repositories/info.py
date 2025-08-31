@@ -62,7 +62,7 @@ class MongoDBInfoRepository(InfoRepository):
 
         title = ""
         for query in querys:
-            if query.startswith(tuple(info_tags)):
+            if query.startswith(tuple(map(lambda x: x + ":", info_tags.keys()))):
                 tag = query.split(":")
                 key = tag[0]
                 value = tag[1]
@@ -70,7 +70,7 @@ class MongoDBInfoRepository(InfoRepository):
                     query_dict[info_tags[key]]["$all"].append(value)
                 else:
                     query_dict[info_tags[key]] = {"$all": [value]}
-            elif query.startswith(tuple(gender_common_tags)):
+            elif query.startswith(tuple(map(lambda x: x + ":", gender_common_tags))):
                 if "tags" in query_dict:
                     query_dict["tags"]["$all"].append(query)
                 else:

@@ -1,11 +1,12 @@
 from sqlalchemy import and_, select
 
 from heliotrope.domain.entities.tag import Tag
+from heliotrope.domain.repositories.tag import TagRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
 
 
-class SATagRepository:
+class SATagRepository(TagRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
@@ -30,3 +31,8 @@ class SATagRepository:
             session.add(schema)
             await session.commit()
             return schema
+
+    async def get_all_tags(self) -> list[Tag]:
+        async with self.sa.session_maker() as session:
+            result = await session.execute(select(TagSchema))
+            return [Tag.from_dict(row.to_dict()) for row in result.scalars().all()]
