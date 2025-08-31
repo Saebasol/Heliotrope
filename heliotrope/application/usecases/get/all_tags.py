@@ -47,11 +47,11 @@ class GetAllTagsUseCase:
         for tag in tags:
             parsed_tag = parse_male_female_tag(tag)
             if parsed_tag.startswith("tag:"):
-                tag_list.append(parsed_tag)
+                tag_list.append(parsed_tag.replace("tag:", ""))
             elif parsed_tag.startswith("female:"):
-                female_list.append(parsed_tag)
+                female_list.append(parsed_tag.replace("female:", ""))
             elif parsed_tag.startswith("male:"):
-                male_list.append(parsed_tag)
+                male_list.append(parsed_tag.replace("male:", ""))
 
         return {
             "artists": parse_tags_dict_list([artist.to_dict() for artist in artists]),
