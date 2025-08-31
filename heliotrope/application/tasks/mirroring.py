@@ -172,7 +172,9 @@ class MirroringTask:
     async def _integrity_check(self, ids: tuple[int, ...]) -> None:
         async def __safety(id: int) -> Galleryinfo | None:
             try:
-                return await GetGalleryinfoUseCase(self.hitomi_la).execute(id)
+                return await self._preprocess(
+                    GetGalleryinfoUseCase(self.hitomi_la).execute, id
+                )
             except GalleryinfoNotFound:
                 logger.warning(
                     f"Galleryinfo with ID {id} not found remotely. Maybe deleted?"
@@ -277,7 +279,8 @@ class MirroringTask:
                             self._integrity_check,
                             is_remote=False,
                         )
+                    except:
+                        self.skip_ids.clear()
                     finally:
                         self.progress.is_integrity_checking = False
-                        self.skip_ids.clear()
                         self.progress.reset()
