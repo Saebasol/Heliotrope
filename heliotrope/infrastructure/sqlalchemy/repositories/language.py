@@ -30,12 +30,10 @@ class SALanguageRepository:
             )
         )
 
-        language_info_schema = (
-            await self.language_info_repository.get_or_create_language_info(
-                LanguageInfoSchema(
-                    language=language.name,
-                    language_url=f"/index-{language.name.lower()}.html",
-                )
+        language_info_schema = await self.language_info_repository.get_or_create_language_info(
+            LanguageInfoSchema(
+                language=language.language_info.language,
+                language_url=f"/index-{language.language_info.language.lower()}.html",
             )
         )
 
@@ -43,7 +41,7 @@ class SALanguageRepository:
             result = await session.execute(
                 select(LanguageSchema).where(
                     LanguageSchema.galleryid == language.galleryid
-                    and LanguageSchema.url == language.url
+                    and LanguageSchema.url == language.language_info.language_url
                     and LanguageSchema.language_info_id == language_info_schema.id
                     and LanguageSchema.localname_id == language_localname_schema.id
                 )
@@ -57,9 +55,9 @@ class SALanguageRepository:
                 language_info_id=language_info_schema.id,
                 localname_id=language_localname_schema.id,
                 language_info=language_info_schema,
-                localname=language_localname_schema,
+                language_localname=language_localname_schema,
                 galleryid=language.galleryid,
-                url=language.url,
+                url=language.language_info.language_url,
             )
             session.add(schema)
             await session.commit()
