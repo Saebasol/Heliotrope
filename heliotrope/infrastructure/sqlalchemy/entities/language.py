@@ -1,5 +1,3 @@
-from dataclasses import field
-
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -13,8 +11,6 @@ from heliotrope.infrastructure.sqlalchemy.mixin import Schema
 
 
 class LanguageSchema(Schema):
-    """Schema for storing language information."""
-
     __tablename__ = "language"
 
     # 외래 키 관계
@@ -36,11 +32,8 @@ class LanguageSchema(Schema):
         uselist=False,
     )
 
-    localname: Mapped[LanguageLocalnameSchema] = relationship(
+    language_localname: Mapped[LanguageLocalnameSchema] = relationship(
         LanguageLocalnameSchema,
         lazy="selectin",
         uselist=False,
     )
-
-    name: str = field(init=False)
-    language_localname: str = field(init=False)

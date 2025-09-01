@@ -5,8 +5,6 @@ from heliotrope.infrastructure.sqlalchemy.mixin import Schema
 
 
 class LanguageInfoSchema(Schema):
-    """Schema for centralized language information storage."""
-
     __tablename__ = "language_info"
 
     language: Mapped[str] = mapped_column(String, nullable=False, unique=True)

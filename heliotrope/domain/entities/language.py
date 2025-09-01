@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from heliotrope.domain.base import HeliotropeEntity
+from heliotrope.domain.entities.language_info import LanguageInfo
 from heliotrope.domain.entities.language_localname import LanguageLocalname
 
 
@@ -9,5 +10,4 @@ from heliotrope.domain.entities.language_localname import LanguageLocalname
 class Language(HeliotropeEntity):
     galleryid: Optional[int]
     language_localname: LanguageLocalname
-    name: str
-    url: str
+    language_info: LanguageInfo

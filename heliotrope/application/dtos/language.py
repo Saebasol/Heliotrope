@@ -3,6 +3,7 @@ from typing import Optional
 
 from heliotrope.domain.base import HeliotropeEntity
 from heliotrope.domain.entities.language import Language
+from heliotrope.domain.entities.language_info import LanguageInfo
 from heliotrope.domain.entities.language_localname import LanguageLocalname
 
 
@@ -18,14 +19,16 @@ class LanguageDTO(HeliotropeEntity):
         return cls(
             galleryid=language.galleryid,
             language_localname=language.language_localname.name,
-            name=language.name,
-            url=language.url,
+            name=language.language_info.language,
+            url=language.language_info.language_url,
         )
 
     def to_domain(self) -> Language:
         return Language(
             galleryid=self.galleryid,
             language_localname=LanguageLocalname(self.language_localname),
-            name=self.name,
-            url=self.url,
+            language_info=LanguageInfo(
+                language=self.name,
+                language_url=self.url,
+            ),
         )
