@@ -18,17 +18,18 @@ class LanguageDTO(HeliotropeEntity):
     def from_domain(cls, language: Language) -> "LanguageDTO":
         return cls(
             galleryid=language.galleryid,
+            url=language.url,
             language_localname=language.language_localname.name,
             name=language.language_info.language,
-            url=language.language_info.language_url,
         )
 
     def to_domain(self) -> Language:
         return Language(
             galleryid=self.galleryid,
+            url=self.url,
             language_localname=LanguageLocalname(self.language_localname),
             language_info=LanguageInfo(
                 language=self.name,
-                language_url=self.url,
+                language_url=f"index-{self.name.lower()}.html",
             ),
         )
