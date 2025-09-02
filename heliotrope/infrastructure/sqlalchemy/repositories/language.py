@@ -41,7 +41,7 @@ class SALanguageRepository:
             result = await session.execute(
                 select(LanguageSchema).where(
                     LanguageSchema.galleryid == language.galleryid
-                    and LanguageSchema.url == language.language_info.language_url
+                    and LanguageSchema.url == language.url
                     and LanguageSchema.language_info_id == language_info_schema.id
                     and LanguageSchema.localname_id == language_localname_schema.id
                 )
