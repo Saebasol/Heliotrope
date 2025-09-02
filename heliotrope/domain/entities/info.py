@@ -59,7 +59,10 @@ class Info(HeliotropeEntity):
                     else:
                         info_dict[key] = parse_tags_dict_list(galleryinfo_dict[key])
                 else:
-                    info_dict[key] = galleryinfo_dict[key]
+                    if key == "type":
+                        info_dict[key] = galleryinfo_dict[key][key]
+                    else:
+                        info_dict[key] = galleryinfo_dict[key]
 
         if "series" in type_hints and "parodys" in galleryinfo_dict:
             info_dict["series"] = parse_tags_dict_list(galleryinfo_dict["parodys"])
