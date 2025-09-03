@@ -30,6 +30,6 @@ class LanguageDTO(HeliotropeEntity):
             language_localname=LanguageLocalname(self.language_localname),
             language_info=LanguageInfo(
                 language=self.name,
-                language_url=f"index-{self.name.lower()}.html",
+                language_url=f"/index-{self.name.lower()}.html",
             ),
         )
