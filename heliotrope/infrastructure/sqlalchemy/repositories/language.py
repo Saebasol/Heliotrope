@@ -57,7 +57,7 @@ class SALanguageRepository:
                 language_info=language_info_schema,
                 language_localname=language_localname_schema,
                 galleryid=language.galleryid,
-                url=language.language_info.language_url,
+                url=language.url,
             )
             session.add(schema)
             await session.commit()
