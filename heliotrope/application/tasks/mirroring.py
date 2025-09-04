@@ -191,8 +191,8 @@ class MirroringTask:
                 remote_result.id
             )
             diff = DeepDiff(
-                remote_result.to_dict(),
                 local_result.to_dict(),
+                remote_result.to_dict(),
                 ignore_order=True,
             )
             if diff:
