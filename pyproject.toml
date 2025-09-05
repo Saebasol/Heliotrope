@@ -17,7 +17,7 @@ pymongo = "^4.14.1"
 sanic-ext = "^24.12.0"
 sentry-sdk = "^2.35.0"
 asyncpg = "^0.30.0"
-deepdiff = "^8.6.0"
+deepdiff = "^8.6.1"
 
 [tool.pyright]
 include = ["heliotrope"]
