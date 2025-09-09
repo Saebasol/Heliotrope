@@ -2,8 +2,8 @@ from json import loads
 from struct import unpack
 from typing import Any
 
-from heliotrope.application.dtos.galleryinfo import GalleryinfoDTO
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
+from heliotrope.domain.entities.raw_galleryinfo import RawGalleryinfo
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
 from heliotrope.infrastructure.hitomila import HitomiLa
 
@@ -21,7 +21,7 @@ class HitomiLaGalleryinfoRepository(GalleryinfoRepository):
 
         js_to_json = loads(str(await response.text()).replace("var galleryinfo = ", ""))
 
-        return GalleryinfoDTO.from_dict(js_to_json).to_domain()
+        return RawGalleryinfo.from_dict(js_to_json).to_galleryinfo()
 
     async def __fetch_galleryinfo(self, headers: dict[str, Any]) -> list[int]:
         index: list[int] = []

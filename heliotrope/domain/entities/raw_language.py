@@ -8,14 +8,14 @@ from heliotrope.domain.entities.language_localname import LanguageLocalname
 
 
 @dataclass
-class LanguageDTO(HeliotropeEntity):
+class RawLanguage(HeliotropeEntity):
     galleryid: Optional[int]
     language_localname: str
     name: str
     url: str
 
     @classmethod
-    def from_domain(cls, language: Language) -> "LanguageDTO":
+    def from_language(cls, language: Language) -> "RawLanguage":
         return cls(
             galleryid=language.galleryid,
             url=language.url,
@@ -23,7 +23,7 @@ class LanguageDTO(HeliotropeEntity):
             name=language.language_info.language,
         )
 
-    def to_domain(self) -> Language:
+    def to_language(self) -> Language:
         return Language(
             galleryid=self.galleryid,
             url=self.url,
