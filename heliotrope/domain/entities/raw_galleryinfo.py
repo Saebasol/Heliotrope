@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Optional
 
-from heliotrope.application.dtos.language import LanguageDTO
 from heliotrope.domain.base import HeliotropeEntity
 from heliotrope.domain.entities.artist import Artist
 from heliotrope.domain.entities.character import Character
@@ -14,12 +13,13 @@ from heliotrope.domain.entities.group import Group
 from heliotrope.domain.entities.language_info import LanguageInfo
 from heliotrope.domain.entities.language_localname import LanguageLocalname
 from heliotrope.domain.entities.parody import Parody
+from heliotrope.domain.entities.raw_language import RawLanguage
 from heliotrope.domain.entities.tag import Tag
 from heliotrope.domain.entities.type import Type
 
 
 @dataclass
-class GalleryinfoDTO(HeliotropeEntity):
+class RawGalleryinfo(HeliotropeEntity):
     date: datetime
     galleryurl: str
     id: int
@@ -37,14 +37,14 @@ class GalleryinfoDTO(HeliotropeEntity):
     characters: list[Character] = field(default_factory=list[Character])
     files: list[File] = field(default_factory=list[File])
     groups: list[Group] = field(default_factory=list[Group])
-    languages: list[LanguageDTO] = field(default_factory=list[LanguageDTO])
+    languages: list[RawLanguage] = field(default_factory=list[RawLanguage])
     parodys: list[Parody] = field(default_factory=list[Parody])
     related: list[int] = field(default_factory=list[int])
     scene_indexes: list[int] = field(default_factory=list[int])
     tags: list[Tag] = field(default_factory=list[Tag])
 
     @classmethod
-    def from_domain(cls, galleryinfo: Galleryinfo) -> GalleryinfoDTO:
+    def from_galleryinfo(cls, galleryinfo: Galleryinfo) -> RawGalleryinfo:
         return cls(
             date=galleryinfo.date,
             galleryurl=galleryinfo.galleryurl,
@@ -63,14 +63,16 @@ class GalleryinfoDTO(HeliotropeEntity):
             characters=galleryinfo.characters,
             files=galleryinfo.files,
             groups=galleryinfo.groups,
-            languages=[LanguageDTO.from_domain(lang) for lang in galleryinfo.languages],
+            languages=[
+                RawLanguage.from_language(lang) for lang in galleryinfo.languages
+            ],
             parodys=galleryinfo.parodys,
             related=galleryinfo.related,
             scene_indexes=galleryinfo.scene_indexes,
             tags=galleryinfo.tags,
         )
 
-    def to_domain(self) -> Galleryinfo:
+    def to_galleryinfo(self) -> Galleryinfo:
         return Galleryinfo(
             date=self.date,
             galleryurl=self.galleryurl,
@@ -91,7 +93,7 @@ class GalleryinfoDTO(HeliotropeEntity):
             characters=self.characters,
             files=self.files,
             groups=self.groups,
-            languages=[lang.to_domain() for lang in self.languages],
+            languages=[lang.to_language() for lang in self.languages],
             parodys=self.parodys,
             related=self.related,
             scene_indexes=self.scene_indexes,
