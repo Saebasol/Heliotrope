@@ -7,10 +7,10 @@ from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
 from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
     LanguageLocalnameSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.mixin import Schema
+from heliotrope.infrastructure.sqlalchemy.mixin import ForeignKeySchema
 
 
-class LanguageSchema(Schema):
+class LanguageSchema(ForeignKeySchema):
     __tablename__ = "language"
 
     # 외래 키 관계

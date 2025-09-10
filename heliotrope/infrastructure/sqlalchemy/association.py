@@ -65,15 +65,3 @@ galleryinfo_tag = Table(
         "tag_id", Integer, ForeignKey("tag.id", ondelete="RESTRICT"), primary_key=True
     ),
 )
-
-galleryinfo_language = Table(
-    "galleryinfo_language",
-    Base.metadata,
-    galleryinfo_id(),
-    Column(
-        "language_id",
-        Integer,
-        ForeignKey("language.id", ondelete="RESTRICT"),
-        primary_key=True,
-    ),
-)

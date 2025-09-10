@@ -101,7 +101,7 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                     for group in galleryinfo.groups
                 ]
                 languages_schemas = [
-                    await self.language_repository.get_or_create_language(language)
+                    await self.language_repository.create_language(language)
                     for language in galleryinfo.languages
                 ]
                 parodys_schemas = [
