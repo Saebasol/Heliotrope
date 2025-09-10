@@ -10,7 +10,6 @@ from heliotrope.infrastructure.sqlalchemy.association import (
     galleryinfo_artist,
     galleryinfo_character,
     galleryinfo_group,
-    galleryinfo_language,
     galleryinfo_parody,
     galleryinfo_tag,
 )
@@ -87,10 +86,6 @@ class GalleryinfoSchema(Schema):
         GroupSchema,
         secondary=galleryinfo_group,
     )
-    languages: Mapped[list[LanguageSchema]] = many_to_many_relationship(
-        LanguageSchema,
-        secondary=galleryinfo_language,
-    )
     parodys: Mapped[list[ParodySchema]] = many_to_many_relationship(
         ParodySchema,
         secondary=galleryinfo_parody,
@@ -101,19 +96,24 @@ class GalleryinfoSchema(Schema):
     )
 
     related: Mapped[list[RelatedSchema]] = one_to_many_relationship(RelatedSchema)
+
     scene_indexes: Mapped[list[SceneIndexSchema]] = one_to_many_relationship(
         SceneIndexSchema
     )
     files: Mapped[list[FileSchema]] = one_to_many_relationship(FileSchema)
 
+    languages: Mapped[list[LanguageSchema]] = one_to_many_relationship(
+        LanguageSchema,
+    )
+
     type: Mapped[TypeSchema] = many_to_one_relationship(
-        TypeSchema, uselist=False, lazy="joined"
+        TypeSchema,
     )
 
     language_info: Mapped[LanguageInfoSchema] = many_to_one_relationship(
-        LanguageInfoSchema, uselist=False, lazy="joined"
+        LanguageInfoSchema,
     )
 
     language_localname: Mapped[LanguageLocalnameSchema] = many_to_one_relationship(
-        LanguageLocalnameSchema, uselist=False, lazy="joined"
+        LanguageLocalnameSchema,
     )
