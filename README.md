@@ -9,11 +9,11 @@
 
 ## Feature
 
-* 🚀Very fast response and processing with [Sanic framework](https://sanicframework.org/en/)
-* ⚡Blazingly fast search with [MongoDB](https://www.mongodb.com/)
-* 🔄Galleryinfo, Info auto mirroring.
-* 🖼️Pixiv.net, Hitomi.la image proxying.
-* 🏡[Production ready](https://github.com/Saebasol/heliotrope-deploy)
+* 🚀 Very fast response and processing with [Sanic framework](https://sanicframework.org/en/)
+* ⚡ Blazingly fast search with [MongoDB](https://www.mongodb.com/)
+* 🔄 Galleryinfo, Info auto mirroring.
+* 🖼️ Pixiv.net, Hitomi.la image proxying.
+* 🏡 Production ready with [Bouquet](#related-projects)
 
 ## SDK
 
@@ -37,4 +37,6 @@ pnpm add @saebasol/delphinium
 
 * [Hibiscus](https://github.com/Saebasol/Hibiscus)
   * A modern, self-hostable manga reader with a beautiful interface built on top of Heliotrope.
+* [Bouquet](https://github.com/Saebasol/Bouquet)
+  * Bouquet is a easy deployment solution for Heliotrope and Hibiscus.
   
