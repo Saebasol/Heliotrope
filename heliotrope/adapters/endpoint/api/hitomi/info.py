@@ -32,11 +32,7 @@ class HitomiInfoView(HTTPMethodView):
             except GalleryinfoNotFound:
                 raise InfoNotFound(str(id))
 
-        return json(
-            {
-                **request.app.ctx.javascript_interpreter.convert_thumbnail(info),
-            }
-        )
+        return json(info.to_dict())
 
 
 hitomi_info.add_route(HitomiInfoView.as_view(), "/<id:int>")

@@ -2,9 +2,11 @@ from sanic.blueprints import Blueprint
 from sanic.exceptions import InvalidUsage
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
+from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
 
+from heliotrope.application.dtos.search import PostSearchBodyDTO, PostSearchQueryDTO
 from heliotrope.application.usecases.get.info import SearchByQueryUseCase
 from heliotrope.application.utils import check_int32
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
@@ -15,33 +17,45 @@ hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 class HitomiSearchView(HTTPMethodView):
     @openapi.tag("Hitomi")
     @openapi.summary("Get search result in hitomi")
+    @openapi.parameter(  # pyright: ignore[reportUnknownMemberType]
+        name="offset",
+        location="query",
+        schema=Schema.make(  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+            int, default=1
+        ),
+        required=True,
+    )
     @openapi.body(  # pyright: ignore[reportUnknownMemberType]
         {
             "application/json": openapi.Object(
                 {
-                    "offset": openapi.Integer(default=1),  # type: ignore
                     "query": Schema.make(value=["sekigahara", "artist:tsukako"]),  # type: ignore
                 }
             )
         }
     )
-    async def post(self, request: HeliotropeRequest) -> HTTPResponse:
-        offset = (
-            int(offset) - 1
-            if (offset := request.json.get("offset")) and not (int(offset) - 1 < 0)
-            else 0
-        )
+    @validate(
+        json=PostSearchBodyDTO,
+        query=PostSearchQueryDTO,
+        query_argument="query",
+        body_argument="body",
+    )
+    async def post(
+        self,
+        request: HeliotropeRequest,
+        body: PostSearchBodyDTO,
+        query: PostSearchQueryDTO,
+    ) -> HTTPResponse:
+        check_int32(query.offset)
+        offset = query.offset - 1 if query.offset - 1 < 0 else 0
         check_int32(offset)
-        if (query := request.json.get("query")) and query and any(q for q in query):
+        if body.query and any(q for q in body.query):
             count, results = await SearchByQueryUseCase(
                 request.app.ctx.mongodb_repository
-            ).execute(query, offset)
+            ).execute(body.query, offset)
             return json(
                 {
-                    "result": [
-                        request.app.ctx.javascript_interpreter.convert_thumbnail(result)
-                        for result in results
-                    ],
+                    "result": [result.to_dict() for result in results],
                     "count": count,
                 }
             )
