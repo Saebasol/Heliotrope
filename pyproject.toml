@@ -15,7 +15,7 @@ sqlalchemy = "^2.0.43"
 pythonmonkey = "^1.2.0"
 pymongo = "^4.15.0"
 sanic-ext = "^24.12.0"
-sentry-sdk = "^2.37.1"
+sentry-sdk = "^2.38.0"
 asyncpg = "^0.30.0"
 deepdiff = "^8.6.1"
 
