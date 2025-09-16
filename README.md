@@ -15,6 +15,26 @@
 * 🖼️Pixiv.net, Hitomi.la image proxying.
 * 🏡[Production ready](https://github.com/Saebasol/heliotrope-deploy)
 
-## Wiki
+## SDK
 
-<https://github.com/Saebasol/Heliotrope/wiki>
+### Python
+* [Delphinium](https://github.com/Saebasol/Delphinium)
+```sh
+pip install delphinium
+```
+
+### JS/TS
+* [Delphinium-js](https://github.com/Saebasol/Delphinium-js)
+```sh
+npm install @saebasol/delphinium
+# or
+yarn add @saebasol/delphinium
+# or
+pnpm add @saebasol/delphinium
+```
+
+## Related Projects
+
+* [Hibiscus](https://github.com/Saebasol/Hibiscus)
+  * A modern, self-hostable manga reader with a beautiful interface built on top of Heliotrope.
+  
