@@ -5,6 +5,7 @@ from sanic.app import Sanic
 from sanic.request import Request
 
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
+from heliotrope.application.javascript.thumbnail import ThumbnailResolver
 from heliotrope.application.tasks.mirroring import MirroringTask
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
@@ -27,6 +28,7 @@ class HeliotropeContext(SimpleNamespace):
     hitomi_la_galleryinfo_repository: HitomiLaGalleryinfoRepository
     mongodb_repository: MongoDBInfoRepository
     javascript_interpreter: JavaScriptInterpreter
+    thumbnail_resolver: ThumbnailResolver
     mirroring_task: MirroringTask
 
 

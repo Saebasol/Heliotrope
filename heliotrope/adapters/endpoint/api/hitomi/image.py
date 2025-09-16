@@ -32,13 +32,19 @@ class HitomiImageView(HTTPMethodView):
                 request.app.ctx.hitomi_la_galleryinfo_repository
             ).execute(id)
 
-        files = request.app.ctx.javascript_interpreter.image_urls(
-            id, galleryinfo.files, False
-        )
-
         return json(
             {
-                "files": list(files),
+                "files": [
+                    {
+                        "name": file.name,
+                        "width": file.width,
+                        "height": file.height,
+                        "url": request.app.ctx.javascript_interpreter.image_url_from_image(
+                            id, file, False
+                        ),
+                    }
+                    for file in galleryinfo.files
+                ]
             }
         )
 

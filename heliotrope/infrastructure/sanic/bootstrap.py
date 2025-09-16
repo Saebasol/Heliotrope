@@ -7,6 +7,7 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
+from heliotrope.application.javascript.thumbnail import ThumbnailResolver
 from heliotrope.application.tasks.manager import TaskManager
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
@@ -67,6 +68,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
     heliotrope.ctx.javascript_interpreter = await JavaScriptInterpreter.setup(
         heliotrope.ctx.hitomi_la
+    )
+    heliotrope.ctx.thumbnail_resolver = ThumbnailResolver(
+        heliotrope.ctx.javascript_interpreter
     )
 
     refresh_gg_js = RefreshggJS(heliotrope)

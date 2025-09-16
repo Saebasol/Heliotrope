@@ -1,0 +1,4 @@
+{
+    "GALLERYINFO_DB_URL": "postgresql+asyncpg://postgres_user:heliotropepasswd@localhost/heliotrope_db",
+    "INFO_DB_URL": "mongodb://heliotrope:heliotropepasswd@localhost"
+}

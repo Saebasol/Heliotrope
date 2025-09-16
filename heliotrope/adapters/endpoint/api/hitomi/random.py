@@ -1,9 +1,11 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
+from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
 
+from heliotrope.application.dtos.search import PostSearchBodyDTO
 from heliotrope.application.usecases.get.info import GetRandomInfoUseCase
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
@@ -22,17 +24,15 @@ class HitomiRandomView(HTTPMethodView):
             )
         }
     )
-    async def post(self, request: HeliotropeRequest) -> HTTPResponse:
-        query: list[str] = request.json.get("query") if request.json else []
+    @validate(json=PostSearchBodyDTO, body_argument="body")
+    async def post(
+        self, request: HeliotropeRequest, body: PostSearchBodyDTO
+    ) -> HTTPResponse:
         info = await GetRandomInfoUseCase(request.app.ctx.mongodb_repository).execute(
-            query
+            body.query
         )
 
-        return json(
-            {
-                **request.app.ctx.javascript_interpreter.convert_thumbnail(info),
-            }
-        )
+        return json(info.to_dict())
 
 
 hitomi_random.add_route(HitomiRandomView.as_view(), "/")

@@ -6,7 +6,6 @@ from pythonmonkey import eval  # pyright: ignore[reportMissingTypeStubs]
 from sanic.log import logger
 
 from heliotrope.domain.entities.file import File
-from heliotrope.domain.entities.info import Info
 from heliotrope.infrastructure.hitomila import HitomiLa
 
 
@@ -16,26 +15,6 @@ class JavaScriptInterpreter:
         self.gg_code = ""
         eval(r"var gg = {}")
         eval("const domain2 = 'gold-usergeneratedcontent.net';")
-
-    def get_thumbnail(self, galleryid: int, image: File) -> str:
-        ext = "webp"
-        if image.hasavif:
-            ext = "avif"
-
-        return self.url_from_url_from_hash(galleryid, image, ext + "bigtn", ext, "tn")
-
-    def convert_thumbnail(self, info: Info) -> dict[str, str]:
-        thumnbnail_url = self.get_thumbnail(info.id, info.thumbnail)
-        info_dict = info.to_dict()
-        info_dict["thumbnail"] = thumnbnail_url
-        return info_dict
-
-    def image_urls(
-        self, galleryid: int, images: list[File], no_webp: bool
-    ) -> list[str]:
-        return [
-            self.image_url_from_image(galleryid, image, no_webp) for image in images
-        ]
 
     def image_url_from_image(self, galleryid: int, image: File, no_webp: bool) -> str:
         ext = "webp"
