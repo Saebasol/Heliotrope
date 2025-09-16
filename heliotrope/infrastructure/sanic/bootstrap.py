@@ -85,6 +85,25 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         if not namespace.is_running_first_process:
             namespace.is_running_first_process = True
             await heliotrope.ctx.sa.create_all_table()
+            await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
+            if heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH:
+                await heliotrope.ctx.mongodb.collection.create_search_index(
+                    {
+                        "name": "default",
+                        "definition": {
+                            "mappings": {
+                                "dynamic": True,
+                                "fields": {
+                                    "title": {
+                                        "analyzer": "lucene.korean",
+                                        "searchAnalyzer": "lucene.korean",
+                                        "type": "string",
+                                    }
+                                },
+                            }
+                        },
+                    }
+                )
             mirroring_task = MirroringTask(
                 heliotrope.ctx.hitomi_la_galleryinfo_repository,
                 heliotrope.ctx.sa_galleryinfo_repository,
