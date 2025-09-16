@@ -7,6 +7,7 @@ from heliotrope.adapters.endpoint.api.hitomi.list import hitomi_list
 from heliotrope.adapters.endpoint.api.hitomi.random import hitomi_random
 from heliotrope.adapters.endpoint.api.hitomi.search import hitomi_search
 from heliotrope.adapters.endpoint.api.hitomi.tags import hitomi_tags
+from heliotrope.adapters.endpoint.api.hitomi.thumbnail import hitomi_thumbnail
 
 hitomi_endpoint = Blueprint.group(
     hitomi_galleryinfo,
@@ -16,5 +17,6 @@ hitomi_endpoint = Blueprint.group(
     hitomi_search,
     hitomi_random,
     hitomi_tags,
+    hitomi_thumbnail,
     url_prefix="/hitomi",
 )
