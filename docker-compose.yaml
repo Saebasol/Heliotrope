@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres-heliotrope-dev
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: heliotropepasswd
+      POSTGRES_DB: heliotrope_db
+
+  mongodb:
+    container_name: mongo-heliotrope-dev
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: heliotrope
+      MONGO_INITDB_ROOT_PASSWORD: heliotropepasswd
+
+volumes:
+  mongodb_data:
+  pgdata:
