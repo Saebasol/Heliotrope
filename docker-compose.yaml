@@ -1,4 +1,24 @@
 services:
+  heliotrope:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: heliotrope-dev
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+      - mongodb
+    environment:
+      # https://github.com/Saebasol/Heliotrope/blob/main/heliotrope/infrastructure/sanic/config.py
+      SANIC_USE_ENV: "true"
+      SANIC_PRODUCTION: "true"
+      SANIC_HOST: "0.0.0.0"
+      SANIC_SENTRY_DSN: ""
+      SANIC_GALLERYINFO_DB_URL: postgresql+asyncpg://heliotrope_user:heliotropepasswd@postgres-heliotrope-dev:5432/heliotrope_db
+      SANIC_INFO_DB_URL: mongodb://heliotrope_user:heliotropepasswd@mongo-heliotrope-dev:27017
+      SANIC_INDEX_FILES: '["index-korean.nozomi"]'
+
   postgres:
     image: postgres
     container_name: postgres-heliotrope-dev
@@ -7,7 +27,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres_user
+      POSTGRES_USER: heliotrope_user
       POSTGRES_PASSWORD: heliotropepasswd
       POSTGRES_DB: heliotrope_db
 
@@ -19,7 +39,7 @@ services:
     volumes:
       - mongodb_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: heliotrope
+      MONGO_INITDB_ROOT_USERNAME: heliotrope_user
       MONGO_INITDB_ROOT_PASSWORD: heliotropepasswd
 
 volumes:
