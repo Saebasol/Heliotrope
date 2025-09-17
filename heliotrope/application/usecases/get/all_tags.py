@@ -9,8 +9,8 @@ from heliotrope.domain.repositories.tag import TagRepository
 from heliotrope.domain.repositories.type import TypeRepository
 
 
-def replace(name: str, prefix: str = "") -> str:
-    return prefix + name.replace(" ", "_")
+def replace(name: str) -> str:
+    return name.replace(" ", "_")
 
 
 class GetAllTagsUseCase:
@@ -49,11 +49,11 @@ class GetAllTagsUseCase:
         male_list: list[str] = []
         for tag in tags:
             if tag[1] is False and tag[2] is False:
-                tag_list.append(replace(tag[0], "tag:"))
+                tag_list.append(replace(tag[0]))
             elif tag[1] is True and tag[2] is False:
-                male_list.append(replace(tag[0], "male:"))
+                male_list.append(replace(tag[0]))
             elif tag[1] is False and tag[2] is True:
-                female_list.append(replace(tag[0], "female:"))
+                female_list.append(replace(tag[0]))
 
         return {
             "artists": [replace(artist) for artist in artists],
