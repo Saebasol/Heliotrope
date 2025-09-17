@@ -30,9 +30,7 @@ class SACharacterRepository(CharacterRepository):
             await session.commit()
             return schema
 
-    async def get_all_characters(self) -> list[Character]:
+    async def get_all_characters(self) -> list[str]:
         async with self.sa.session_maker() as session:
-            result = await session.execute(select(CharacterSchema))
-            return [
-                Character.from_dict(row.to_dict()) for row in result.scalars().all()
-            ]
+            result = await session.execute(select(CharacterSchema.character))
+            return [row for row in result.scalars().all()]

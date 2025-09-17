@@ -32,7 +32,9 @@ class SATagRepository(TagRepository):
             await session.commit()
             return schema
 
-    async def get_all_tags(self) -> list[Tag]:
+    async def get_all_tags(self) -> list[tuple[str, bool, bool]]:
         async with self.sa.session_maker() as session:
-            result = await session.execute(select(TagSchema))
-            return [Tag.from_dict(row.to_dict()) for row in result.scalars().all()]
+            result = await session.execute(
+                select(TagSchema.tag, TagSchema.male, TagSchema.female)
+            )
+            return [row for row in result.tuples()]

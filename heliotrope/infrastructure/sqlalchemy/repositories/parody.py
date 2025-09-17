@@ -30,7 +30,7 @@ class SAParodyRepository(ParodyRepository):
             await session.commit()
             return schema
 
-    async def get_all_parodies(self) -> list[Parody]:
+    async def get_all_parodies(self) -> list[str]:
         async with self.sa.session_maker() as session:
-            result = await session.execute(select(ParodySchema))
-            return [Parody.from_dict(row.to_dict()) for row in result.scalars().all()]
+            result = await session.execute(select(ParodySchema.parody))
+            return [row for row in result.scalars().all()]

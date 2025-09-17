@@ -30,7 +30,7 @@ class SAArtistRepository(ArtistRepository):
             await session.commit()
             return schema
 
-    async def get_all_artists(self) -> list[Artist]:
+    async def get_all_artists(self) -> list[str]:
         async with self.sa.session_maker() as session:
-            result = await session.execute(select(ArtistSchema))
-            return [Artist.from_dict(row.to_dict()) for row in result.scalars().all()]
+            result = await session.execute(select(ArtistSchema.artist))
+            return [row for row in result.scalars().all()]

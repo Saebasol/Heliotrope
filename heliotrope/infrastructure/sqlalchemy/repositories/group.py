@@ -27,7 +27,7 @@ class SAGroupRepository(GroupRepository):
             await session.commit()
             return schema
 
-    async def get_all_groups(self) -> list[Group]:
+    async def get_all_groups(self) -> list[str]:
         async with self.sa.session_maker() as session:
-            result = await session.execute(select(GroupSchema))
-            return [Group.from_dict(row.to_dict()) for row in result.scalars().all()]
+            result = await session.execute(select(GroupSchema.group))
+            return [row for row in result.scalars().all()]

@@ -1,6 +1,5 @@
 from sqlalchemy import and_, select
 
-from heliotrope.domain.entities.language_info import LanguageInfo
 from heliotrope.domain.repositories.language_info import LanguageInfoRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
@@ -34,12 +33,9 @@ class SALanguageInfoRepository(LanguageInfoRepository):
             await session.commit()
             return language_info_schema
 
-    async def get_all_language_infos(self) -> list[LanguageInfo]:
+    async def get_all_language_infos(self) -> list[str]:
         async with self.sa.session_maker() as session:
             async with session.begin():
-                stmt = select(LanguageInfoSchema)
+                stmt = select(LanguageInfoSchema.language)
                 result = await session.execute(stmt)
-                return [
-                    LanguageInfo.from_dict(schema.to_dict())
-                    for schema in result.scalars().all()
-                ]
+                return [schema for schema in result.scalars().all()]
