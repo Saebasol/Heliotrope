@@ -1,6 +1,5 @@
 from typing import Generator
 
-from heliotrope.domain.entities.info import parse_male_female_tag, parse_tags_dict_list
 from heliotrope.domain.repositories.artist import ArtistRepository
 from heliotrope.domain.repositories.charactor import CharacterRepository
 from heliotrope.domain.repositories.group import GroupRepository
@@ -8,6 +7,10 @@ from heliotrope.domain.repositories.language_info import LanguageInfoRepository
 from heliotrope.domain.repositories.parody import ParodyRepository
 from heliotrope.domain.repositories.tag import TagRepository
 from heliotrope.domain.repositories.type import TypeRepository
+
+
+def replace(name: str, prefix: str = "") -> str:
+    return prefix + name.replace(" ", "_")
 
 
 class GetAllTagsUseCase:
@@ -45,26 +48,21 @@ class GetAllTagsUseCase:
         female_list: list[str] = []
         male_list: list[str] = []
         for tag in tags:
-            parsed_tag = parse_male_female_tag(tag)
-            if parsed_tag.startswith("tag:"):
-                tag_list.append(parsed_tag.replace("tag:", ""))
-            elif parsed_tag.startswith("female:"):
-                female_list.append(parsed_tag.replace("female:", ""))
-            elif parsed_tag.startswith("male:"):
-                male_list.append(parsed_tag.replace("male:", ""))
+            if tag[1] is False and tag[2] is False:
+                tag_list.append(replace(tag[0], "tag:"))
+            elif tag[1] is True and tag[2] is False:
+                male_list.append(replace(tag[0], "male:"))
+            elif tag[1] is False and tag[2] is True:
+                female_list.append(replace(tag[0], "female:"))
 
         return {
-            "artists": parse_tags_dict_list([artist.to_dict() for artist in artists]),
-            "characters": parse_tags_dict_list(
-                [character.to_dict() for character in characters]
-            ),
-            "groups": parse_tags_dict_list([group.to_dict() for group in groups]),
-            "language": parse_tags_dict_list(
-                [language_info.to_dict() for language_info in language_infos]
-            ),
-            "series": parse_tags_dict_list([parody.to_dict() for parody in parodies]),
+            "artists": [replace(artist) for artist in artists],
+            "characters": [replace(character) for character in characters],
+            "groups": [replace(group) for group in groups],
+            "language": [replace(language_info) for language_info in language_infos],
+            "series": [replace(parody) for parody in parodies],
             "tag": tag_list,
             "female": female_list,
             "male": male_list,
-            "type": parse_tags_dict_list([type.to_dict() for type in types]),
+            "type": [replace(type) for type in types],
         }

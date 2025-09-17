@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
 
-from heliotrope.domain.entities.artist import Artist
-
 
 class ArtistRepository(ABC):
-
     @abstractmethod
-    async def get_all_artists(self) -> list[Artist]:
+    async def get_all_artists(self) -> list[str]:
         raise NotImplementedError
