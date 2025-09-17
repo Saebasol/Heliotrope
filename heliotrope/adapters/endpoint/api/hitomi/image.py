@@ -4,6 +4,7 @@ from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
+from heliotrope.application.usecases.get.resolved_image import GetResolvedImageUseCase
 from heliotrope.application.utils import check_int32
 from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
@@ -33,19 +34,14 @@ class HitomiImageView(HTTPMethodView):
             ).execute(id)
 
         return json(
-            {
-                "files": [
-                    {
-                        "name": file.name,
-                        "width": file.width,
-                        "height": file.height,
-                        "url": request.app.ctx.javascript_interpreter.image_url_from_image(
-                            id, file, False
-                        ),
-                    }
-                    for file in galleryinfo.files
-                ]
-            }
+            [
+                GetResolvedImageUseCase(
+                    request.app.ctx.pythonmonkey_resolved_image_repository
+                )
+                .execute(galleryinfo.id, file)
+                .to_dict()
+                for file in galleryinfo.files
+            ]
         )
 
 

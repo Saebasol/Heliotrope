@@ -6,8 +6,6 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
-from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
-from heliotrope.application.javascript.thumbnail import ThumbnailResolver
 from heliotrope.application.tasks.manager import TaskManager
 from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
@@ -18,6 +16,10 @@ from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
 )
 from heliotrope.infrastructure.mongodb import MongoDB
 from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
+from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
+from heliotrope.infrastructure.pythonmonkey.repositories.resolved_image import (
+    PythonMonkeyResolvedImageRepository,
+)
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sanic.error import not_found
@@ -66,11 +68,10 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         heliotrope.ctx.mongodb, heliotrope.config.USE_ATLAS_SEARCH
     )
 
-    heliotrope.ctx.javascript_interpreter = await JavaScriptInterpreter.setup(
-        heliotrope.ctx.hitomi_la
-    )
-    heliotrope.ctx.thumbnail_resolver = ThumbnailResolver(
-        heliotrope.ctx.javascript_interpreter
+    heliotrope.ctx.pythonmonkey_resolved_image_repository = (
+        PythonMonkeyResolvedImageRepository(
+            await JavaScriptInterpreter.setup(heliotrope.ctx.hitomi_la)
+        )
     )
 
     refresh_gg_js = RefreshggJS(heliotrope)
