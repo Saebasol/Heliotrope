@@ -7,7 +7,11 @@ from sanic_ext.extensions.openapi.types import Schema
 
 from heliotrope.application.dtos.thumbnail import GetThumbnailQueryDTO, Size
 from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
+from heliotrope.application.usecases.get.resolved_image import (
+    GetResolvedThumbnailUseCase,
+)
 from heliotrope.application.utils import check_int32
+from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_thumbnail = Blueprint("hitomi_thumbnail", url_prefix="/thumbnail")
@@ -40,20 +44,35 @@ class HitomiThumbnailView(HTTPMethodView):
         query: GetThumbnailQueryDTO,
     ) -> HTTPResponse:
         check_int32(id)
-        galleryinfo = await GetGalleryinfoUseCase(
-            request.app.ctx.hitomi_la_galleryinfo_repository
-        ).execute(id)
+        try:
+            galleryinfo = await GetGalleryinfoUseCase(
+                request.app.ctx.sa_galleryinfo_repository
+            ).execute(id)
+        except GalleryinfoNotFound:
+            galleryinfo = await GetGalleryinfoUseCase(
+                request.app.ctx.hitomi_la_galleryinfo_repository
+            ).execute(id)
         if query.single == "true":
-            url = request.app.ctx.thumbnail_resolver.get_thumbnail_url(
-                id, galleryinfo.files[0], query.size
+            return json(
+                [
+                    GetResolvedThumbnailUseCase(
+                        request.app.ctx.pythonmonkey_resolved_image_repository
+                    )
+                    .execute(galleryinfo.id, galleryinfo.files[0], query.size)
+                    .to_dict()
+                ]
             )
-            return json({"url": [url]})
 
-        urls = [
-            request.app.ctx.thumbnail_resolver.get_thumbnail_url(id, file, query.size)
-            for file in galleryinfo.files
-        ]
-        return json({"url": urls})
+        return json(
+            [
+                GetResolvedThumbnailUseCase(
+                    request.app.ctx.pythonmonkey_resolved_image_repository
+                )
+                .execute(galleryinfo.id, file, query.size)
+                .to_dict()
+                for file in galleryinfo.files
+            ]
+        )
 
 
 hitomi_thumbnail.add_route(HitomiThumbnailView.as_view(), "/<id:int>")

@@ -1,6 +1,36 @@
+from __future__ import annotations
+
 from heliotrope.application.dtos.thumbnail import Size
-from heliotrope.application.javascript.interpreter import JavaScriptInterpreter
 from heliotrope.domain.entities.file import File
+from heliotrope.domain.entities.resolved_image import ResolvedImage
+from heliotrope.domain.repositories.resolved_image import ResolvedImageRepository
+from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
+
+
+class PythonMonkeyResolvedImageRepository(ResolvedImageRepository):
+    def __init__(self, javascript_interpreter: JavaScriptInterpreter) -> None:
+        self._javascript_interpreter = javascript_interpreter
+        self._thumbnail_resolver = ThumbnailResolver(self._javascript_interpreter)
+
+    @property
+    def javascript_interpreter(self) -> JavaScriptInterpreter:
+        return self._javascript_interpreter
+
+    def resolve_thumbnail(
+        self, galleryinfo_id: int, file: File, size: Size
+    ) -> ResolvedImage:
+        return ResolvedImage(
+            url=self._thumbnail_resolver.get_thumbnail_url(galleryinfo_id, file, size),
+            file=file,
+        )
+
+    def resolve_image(self, galleryinfo_id: int, file: File) -> ResolvedImage:
+        return ResolvedImage(
+            url=self._javascript_interpreter.image_url_from_image(
+                galleryinfo_id, file, no_webp=False
+            ),
+            file=file,
+        )
 
 
 class ThumbnailResolver:
