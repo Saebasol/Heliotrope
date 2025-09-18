@@ -84,7 +84,7 @@ jobs:
       - name: Check test
         run: poetry run pytest --asyncio-mode=auto --cov=heliotrope --cov-report=xml
       - name: Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v5
 
   build-and-push-image:
     runs-on: ubuntu-latest
