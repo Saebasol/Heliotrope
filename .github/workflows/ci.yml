@@ -82,7 +82,9 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --with test
       - name: Check test
-        run: poetry run pytest --asyncio-mode=auto
+        run: poetry run pytest --asyncio-mode=auto --cov=heliotrope --cov-report=xml
+      - name: Codecov
+        uses: codecov/codecov-action@v1
 
   build-and-push-image:
     runs-on: ubuntu-latest
