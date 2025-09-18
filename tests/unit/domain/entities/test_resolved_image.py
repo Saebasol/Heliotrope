@@ -27,19 +27,21 @@ def test_resolved_image_serialization():
 
 
 def test_resolved_image_deserialization():
-    resolved_image = ResolvedImage.from_dict({
-        "url": "http://example.com/image.jpg",
-        "file": {
-            "hasavif": True,
-            "hash": "test_hash",
-            "height": 1080,
-            "name": "test.jpg",
-            "width": 1920,
-            "hasjxl": False,
-            "haswebp": False,
-            "single": False,
-        },
-    })
+    resolved_image = ResolvedImage.from_dict(
+        {
+            "url": "http://example.com/image.jpg",
+            "file": {
+                "hasavif": True,
+                "hash": "test_hash",
+                "height": 1080,
+                "name": "test.jpg",
+                "width": 1920,
+                "hasjxl": False,
+                "haswebp": False,
+                "single": False,
+            },
+        }
+    )
 
     assert resolved_image.url == "http://example.com/image.jpg"
     assert isinstance(resolved_image.file, File)
