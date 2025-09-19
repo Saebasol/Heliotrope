@@ -34,7 +34,7 @@ pytest-asyncio = "^1.2.0"
 
 [tool.poetry.group.type.dependencies]
 pyright = "^1.1.405"
-mypy = "^1.18.1"
+mypy = "^1.18.2"
 
 [tool.isort]
 src_paths = ["heliotrope", "tests"]
