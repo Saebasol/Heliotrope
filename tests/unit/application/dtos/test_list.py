@@ -2,6 +2,7 @@ from heliotrope.application.dtos.list import ListResultDTO
 from heliotrope.domain.entities.info import Info
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
+
 def test_list_result_dto_creation(sample_info: Info):
     character = ListResultDTO(list=[sample_info], count=1)
     assert character.list[0] == sample_info
