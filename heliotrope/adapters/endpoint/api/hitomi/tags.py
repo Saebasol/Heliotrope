@@ -25,7 +25,7 @@ class HitomiTagsView(HTTPMethodView):
             request.app.ctx.sa_galleryinfo_repository.tag_repository,
             request.app.ctx.sa_galleryinfo_repository.type_repository,
         )
-        return json(tags)
+        return json(tags.to_dict())
 
 
 hitomi_tags.add_route(HitomiTagsView.as_view(), "")
