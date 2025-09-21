@@ -10,7 +10,7 @@ class SAGroupRepository(GroupRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
-    async def get_or_create_group(self, group: Group) -> GroupSchema:
+    async def get_or_add_group(self, group: Group) -> int:
         async with self.sa.session_maker() as session:
             result = await session.execute(
                 select(GroupSchema).where(
@@ -20,12 +20,12 @@ class SAGroupRepository(GroupRepository):
             schema = result.scalars().first()
 
             if schema:
-                return schema
+                return schema.id
 
             schema = GroupSchema.from_dict(group.to_dict())
             session.add(schema)
             await session.commit()
-            return schema
+            return schema.id
 
     async def get_all_groups(self) -> list[str]:
         async with self.sa.session_maker() as session:

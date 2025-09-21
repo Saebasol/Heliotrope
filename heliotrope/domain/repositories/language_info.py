@@ -5,9 +5,7 @@ from heliotrope.domain.entities.language_info import LanguageInfo
 
 class LanguageInfoRepository(ABC):
     @abstractmethod
-    async def get_or_create_language_info(
-        self, language_info: LanguageInfo
-    ) -> LanguageInfo:
+    async def get_or_add_language_info(self, language_info: LanguageInfo) -> int:
         raise NotImplementedError
 
     @abstractmethod

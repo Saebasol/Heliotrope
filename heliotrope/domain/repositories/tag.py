@@ -5,7 +5,7 @@ from heliotrope.domain.entities.tag import Tag
 
 class TagRepository(ABC):
     @abstractmethod
-    async def get_or_create_tag(self, tag: Tag) -> Tag:
+    async def get_or_add_tag(self, tag: Tag) -> int:
         raise NotImplementedError
 
     @abstractmethod

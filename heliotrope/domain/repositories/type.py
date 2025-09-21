@@ -5,7 +5,7 @@ from heliotrope.domain.entities.type import Type
 
 class TypeRepository(ABC):
     @abstractmethod
-    async def get_or_create_type(self, type: Type) -> Type:
+    async def get_or_add_type(self, type: Type) -> int:
         raise NotImplementedError
 
     @abstractmethod

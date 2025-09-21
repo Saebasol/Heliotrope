@@ -10,7 +10,7 @@ class SATagRepository(TagRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
-    async def get_or_create_tag(self, tag: Tag) -> TagSchema:
+    async def get_or_add_tag(self, tag: Tag) -> int:
         async with self.sa.session_maker() as session:
             result = await session.execute(
                 select(TagSchema).where(
@@ -25,12 +25,12 @@ class SATagRepository(TagRepository):
             schema = result.scalars().first()
 
             if schema:
-                return schema
+                return schema.id
 
             schema = TagSchema.from_dict(tag.to_dict())
             session.add(schema)
             await session.commit()
-            return schema
+            return schema.id
 
     async def get_all_tags(self) -> list[tuple[str, bool, bool]]:
         async with self.sa.session_maker() as session:

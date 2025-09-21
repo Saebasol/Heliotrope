@@ -10,7 +10,7 @@ class SAArtistRepository(ArtistRepository):
     def __init__(self, sa: SQLAlchemy):
         self.sa = sa
 
-    async def get_or_create_artist(self, artist: Artist) -> ArtistSchema:
+    async def get_or_add_artist(self, artist: Artist) -> int:
         async with self.sa.session_maker() as session:
             result = await session.execute(
                 select(ArtistSchema).where(
@@ -23,12 +23,12 @@ class SAArtistRepository(ArtistRepository):
             schema = result.scalars().first()
 
             if schema:
-                return schema
+                return schema.id
 
             schema = ArtistSchema.from_dict(artist.to_dict())
             session.add(schema)
             await session.commit()
-            return schema
+            return schema.id
 
     async def get_all_artists(self) -> list[str]:
         async with self.sa.session_maker() as session:

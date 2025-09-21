@@ -24,9 +24,23 @@ from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sanic.error import not_found
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
+from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.character import (
+    SACharacterRepository,
+)
 from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
 )
+from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
+    SALanguageInfoRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.localname import (
+    SALanguageLocalnameRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 
 async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -62,7 +76,15 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         heliotrope.ctx.hitomi_la
     )
     heliotrope.ctx.sa_galleryinfo_repository = SAGalleryinfoRepository(
-        heliotrope.ctx.sa
+        heliotrope.ctx.sa,
+        SATypeRepository(heliotrope.ctx.sa),
+        SAArtistRepository(heliotrope.ctx.sa),
+        SALanguageInfoRepository(heliotrope.ctx.sa),
+        SALanguageLocalnameRepository(heliotrope.ctx.sa),
+        SACharacterRepository(heliotrope.ctx.sa),
+        SAGroupRepository(heliotrope.ctx.sa),
+        SAParodyRepository(heliotrope.ctx.sa),
+        SATagRepository(heliotrope.ctx.sa),
     )
     heliotrope.ctx.mongodb_repository = MongoDBInfoRepository(
         heliotrope.ctx.mongodb, heliotrope.config.USE_ATLAS_SEARCH

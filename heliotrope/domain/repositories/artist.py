@@ -5,7 +5,7 @@ from heliotrope.domain.entities.artist import Artist
 
 class ArtistRepository(ABC):
     @abstractmethod
-    async def get_or_create_artist(self, artist: Artist) -> Artist:
+    async def get_or_add_artist(self, artist: Artist) -> int:
         raise NotImplementedError
 
     @abstractmethod

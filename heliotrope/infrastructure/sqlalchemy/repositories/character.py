@@ -10,7 +10,7 @@ class SACharacterRepository(CharacterRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
-    async def get_or_create_character(self, character: Character) -> CharacterSchema:
+    async def get_or_add_character(self, character: Character) -> int:
         async with self.sa.session_maker() as session:
             result = await session.execute(
                 select(CharacterSchema).where(
@@ -23,12 +23,12 @@ class SACharacterRepository(CharacterRepository):
             schema = result.scalars().first()
 
             if schema:
-                return schema
+                return schema.id
 
             schema = CharacterSchema.from_dict(character.to_dict())
             session.add(schema)
             await session.commit()
-            return schema
+            return schema.id
 
     async def get_all_characters(self) -> list[str]:
         async with self.sa.session_maker() as session:
