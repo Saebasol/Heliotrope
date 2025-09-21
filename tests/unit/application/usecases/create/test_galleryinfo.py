@@ -7,11 +7,6 @@ from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from tests.unit.domain.entities.conftest import *
 
 
-@pytest.fixture
-def mock_repository():
-    return AsyncMock()
-
-
 @pytest.mark.asyncio
 async def test_create_galleryinfo_usecase(
     mock_repository: AsyncMock, sample_galleryinfo: Galleryinfo
