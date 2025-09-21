@@ -64,7 +64,7 @@ async def test_get_all_galleryinfo_ids(
 
 
 @pytest.mark.asyncio
-async def test_get_all_galleryinfo_ids_await(
+async def test_get_all_galleryinfo_ids_with_await_syntax(
     get_all_ids_usecase: GetAllGalleryinfoIdsUseCase,
     mock_repository: AsyncMock,
 ):
