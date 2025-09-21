@@ -1,7 +1,7 @@
 from typing import Generator
 
 from heliotrope.domain.repositories.artist import ArtistRepository
-from heliotrope.domain.repositories.charactor import CharacterRepository
+from heliotrope.domain.repositories.character import CharacterRepository
 from heliotrope.domain.repositories.group import GroupRepository
 from heliotrope.domain.repositories.language_info import LanguageInfoRepository
 from heliotrope.domain.repositories.parody import ParodyRepository

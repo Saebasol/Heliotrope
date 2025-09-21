@@ -1,7 +1,7 @@
 from sqlalchemy import and_, select
 
 from heliotrope.domain.entities.character import Character
-from heliotrope.domain.repositories.charactor import CharacterRepository
+from heliotrope.domain.repositories.character import CharacterRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.character import CharacterSchema
 
