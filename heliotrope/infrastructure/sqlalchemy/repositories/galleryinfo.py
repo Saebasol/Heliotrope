@@ -3,7 +3,18 @@ from typing import Optional
 from sqlalchemy import delete, select
 
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
+from heliotrope.domain.repositories.artist import ArtistRepository
+from heliotrope.domain.repositories.character import CharacterRepository
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
+from heliotrope.domain.repositories.group import GroupRepository
+from heliotrope.domain.repositories.language import LanguageRepository
+from heliotrope.domain.repositories.language_info import LanguageInfoRepository
+from heliotrope.domain.repositories.language_localname import (
+    LanguageLocalnameRepository,
+)
+from heliotrope.domain.repositories.parody import ParodyRepository
+from heliotrope.domain.repositories.tag import TagRepository
+from heliotrope.domain.repositories.type import TypeRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.file import FileSchema
 from heliotrope.infrastructure.sqlalchemy.entities.galleryinfo import GalleryinfoSchema
@@ -16,37 +27,32 @@ from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
 from heliotrope.infrastructure.sqlalchemy.entities.related import RelatedSchema
 from heliotrope.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
 from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
-from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.character import (
-    SACharacterRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.language import (
-    SALanguageRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
-    SALanguageInfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.localname import (
-    SALanguageLocalnameRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 
 class SAGalleryinfoRepository(GalleryinfoRepository):
-    def __init__(self, sa: SQLAlchemy) -> None:
+    def __init__(
+        self,
+        sa: SQLAlchemy,
+        type_repository: TypeRepository,
+        artist_repository: ArtistRepository,
+        language_info_repository: LanguageInfoRepository,
+        localname_repository: LanguageLocalnameRepository,
+        character_repository: CharacterRepository,
+        group_repository: GroupRepository,
+        parody_repository: ParodyRepository,
+        tag_repository: TagRepository,
+        language_repository: LanguageRepository,
+    ) -> None:
         self.sa = sa
-        self.type_repository = SATypeRepository(sa)
-        self.artist_repository = SAArtistRepository(sa)
-        self.language_info_repository = SALanguageInfoRepository(sa)
-        self.localname_repository = SALanguageLocalnameRepository(sa)
-        self.character_repository = SACharacterRepository(sa)
-        self.group_repository = SAGroupRepository(sa)
-        self.parody_repository = SAParodyRepository(sa)
-        self.tag_repository = SATagRepository(sa)
-        self.language_repository = SALanguageRepository(sa)
+        self.type_repository = type_repository
+        self.artist_repository = artist_repository
+        self.language_info_repository = language_info_repository
+        self.localname_repository = localname_repository
+        self.character_repository = character_repository
+        self.group_repository = group_repository
+        self.parody_repository = parody_repository
+        self.tag_repository = tag_repository
+        self.language_repository = language_repository
 
     async def get_galleryinfo(self, id: int) -> Optional[Galleryinfo]:
         async with self.sa.session_maker() as session:

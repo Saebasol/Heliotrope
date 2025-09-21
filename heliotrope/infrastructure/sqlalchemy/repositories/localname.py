@@ -1,12 +1,15 @@
 from sqlalchemy import select
 
+from heliotrope.domain.repositories.language_localname import (
+    LanguageLocalnameRepository,
+)
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
     LanguageLocalnameSchema,
 )
 
 
-class SALanguageLocalnameRepository:
+class SALanguageLocalnameRepository(LanguageLocalnameRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 

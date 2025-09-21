@@ -1,4 +1,9 @@
 from heliotrope.domain.entities.language import Language
+from heliotrope.domain.repositories.language import LanguageRepository
+from heliotrope.domain.repositories.language_info import LanguageInfoRepository
+from heliotrope.domain.repositories.language_localname import (
+    LanguageLocalnameRepository,
+)
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities.language import LanguageSchema
 from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
@@ -7,19 +12,18 @@ from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
 from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
     LanguageLocalnameSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
-    SALanguageInfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.localname import (
-    SALanguageLocalnameRepository,
-)
 
 
-class SALanguageRepository:
-    def __init__(self, sa: SQLAlchemy) -> None:
+class SALanguageRepository(LanguageRepository):
+    def __init__(
+        self,
+        sa: SQLAlchemy,
+        language_info_repository: LanguageInfoRepository,
+        language_localname_repository: LanguageLocalnameRepository,
+    ) -> None:
         self.sa = sa
-        self.language_info_repository = SALanguageInfoRepository(sa)
-        self.language_localname_repository = SALanguageLocalnameRepository(sa)
+        self.language_info_repository = language_info_repository
+        self.language_localname_repository = language_localname_repository
 
     async def create_language(self, language: Language) -> LanguageSchema:
         language_localname_schema = (
