@@ -7,6 +7,7 @@ from heliotrope.domain.entities.character import Character
 from heliotrope.domain.entities.file import File
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.entities.group import Group
+from heliotrope.domain.entities.info import Info
 from heliotrope.domain.entities.language import Language
 from heliotrope.domain.entities.language_info import LanguageInfo
 from heliotrope.domain.entities.language_localname import LanguageLocalname
@@ -165,4 +166,20 @@ def sample_galleryinfo(
         related=[54321, 67890],
         scene_indexes=[1, 2, 3],
         tags=[sample_tag],
+    )
+
+
+@pytest.fixture()
+def sample_info():
+    return Info(
+        id=12345,
+        title="Sample Title",
+        artists=["Artist Name"],
+        groups=["Group Name"],
+        type="Manga",
+        language="English",
+        series=["Series Name"],
+        characters=["Character Name"],
+        tags=["Tag Name"],
+        date=datetime(2023, 10, 1, 12, 0, 0),
     )
