@@ -51,7 +51,7 @@ class HitomiSearchView(HTTPMethodView):
         query: PostSearchQueryDTO,
     ) -> HTTPResponse:
         check_int32(query.offset)
-        offset = query.offset - 1 if query.offset - 1 < 0 else 0
+        offset = 0 if query.offset - 1 < 0 else query.offset - 1
         check_int32(offset)
         if body.query and any(q for q in body.query):
             count, results = await SearchByQueryUseCase(
