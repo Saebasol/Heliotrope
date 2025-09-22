@@ -83,7 +83,6 @@ async def test_get_galleryinfo_ids_different_pages(
 
 
 @pytest.mark.asyncio
-@pytest.mark.slow
 async def test_get_all_galleryinfo_ids(repository: HitomiLaGalleryinfoRepository):
     all_ids = await repository.get_all_galleryinfo_ids()
 
