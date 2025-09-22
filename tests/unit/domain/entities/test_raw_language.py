@@ -1,3 +1,4 @@
+from heliotrope.domain.entities.language import Language
 from heliotrope.domain.entities.raw_language import RawLanguage
 
 
@@ -71,3 +72,21 @@ def test_raw_language_equality():
 
     assert raw_language1 == raw_language2
     assert raw_language1 != raw_language3
+
+
+def test_raw_language_from_language(sample_language: Language):
+    raw_language = RawLanguage.from_language(sample_language)
+
+    assert raw_language.galleryid == sample_language.galleryid
+    assert raw_language.language_localname == sample_language.language_localname.name
+    assert raw_language.name == sample_language.language_info.language
+    assert raw_language.url == sample_language.url
+
+
+def test_raw_language_to_language(sample_raw_language: RawLanguage):
+    language = sample_raw_language.to_language()
+
+    assert language.galleryid == sample_raw_language.galleryid
+    assert language.language_localname.name == sample_raw_language.language_localname
+    assert language.language_info.language == sample_raw_language.name
+    assert language.url == sample_raw_language.url

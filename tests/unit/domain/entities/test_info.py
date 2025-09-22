@@ -1,6 +1,12 @@
 from datetime import datetime
 
-from heliotrope.domain.entities.info import Info
+from heliotrope.domain.entities.galleryinfo import Galleryinfo
+from heliotrope.domain.entities.info import (
+    Info,
+    parse_male_female_tag,
+    parse_tags_dict_list,
+)
+from heliotrope.domain.entities.tag import Tag
 
 
 def test_info_creation():
@@ -125,3 +131,55 @@ def test_info_equality():
 
     assert info1 == info2
     assert info1 != info3
+
+
+def test_info_from_galleryinfo(sample_galleryinfo: Galleryinfo):
+    info = Info.from_galleryinfo(sample_galleryinfo)
+
+    assert info.id == sample_galleryinfo.id
+    assert info.title == sample_galleryinfo.title
+    assert info.artists == [
+        artist.artist.replace(" ", "_") for artist in sample_galleryinfo.artists
+    ]
+    assert info.groups == [
+        group.group.replace(" ", "_") for group in sample_galleryinfo.groups
+    ]
+    assert info.type == sample_galleryinfo.type.type
+    assert info.language == sample_galleryinfo.language_info.language
+    assert info.series == [
+        parody.parody.replace(" ", "_") for parody in sample_galleryinfo.parodys
+    ]
+    assert info.characters == [
+        character.character.replace(" ", "_")
+        for character in sample_galleryinfo.characters
+    ]
+    assert info.tags == ["tag:Tag_Name"]
+    assert info.date == sample_galleryinfo.date
+
+
+def test_parse_tags_dict_list():
+    tags_dict_list = [
+        {"tag": "tag1", "url": "http://example.com/tag1"},
+        {"tag": "tag 2", "url": "http://example.com/tag2"},
+        {"language_url": "http://example.com/lang", "language": "english"},
+    ]
+    expected = ["tag1", "tag_2", "english"]
+    result = parse_tags_dict_list(tags_dict_list)
+    assert result == expected
+
+
+def test_parse_male_female_tag(sample_tag: Tag):
+    result = parse_male_female_tag(sample_tag)
+    assert result == "tag:Tag_Name"
+
+
+def test_parse_male_female_tag_is_female(sample_tag: Tag):
+    sample_tag.female = True
+    result = parse_male_female_tag(sample_tag)
+    assert result == "female:Tag_Name"
+
+
+def test_parse_male_female_tag_is_male(sample_tag: Tag):
+    sample_tag.male = True
+    result = parse_male_female_tag(sample_tag)
+    assert result == "male:Tag_Name"

@@ -14,6 +14,7 @@ from heliotrope.domain.entities.language_localname import LanguageLocalname
 from heliotrope.domain.entities.parody import Parody
 from heliotrope.domain.entities.raw_galleryinfo import RawGalleryinfo
 from heliotrope.domain.entities.raw_language import RawLanguage
+from heliotrope.domain.entities.resolved_image import ResolvedImage
 from heliotrope.domain.entities.tag import Tag
 from heliotrope.domain.entities.type import Type
 
@@ -83,6 +84,11 @@ def sample_language(
 @pytest.fixture()
 def sample_type():
     return Type(type="Manga")
+
+
+@pytest.fixture()
+def sample_resolved_image(sample_file: File):
+    return ResolvedImage(url="http://example.com/image.jpg", file=sample_file)
 
 
 @pytest.fixture()

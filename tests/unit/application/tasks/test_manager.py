@@ -1,3 +1,5 @@
+# pyright: reportPrivateUsage=false
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -14,11 +16,11 @@ def mock_app():
 
 
 @pytest.fixture
-def task_manager(mock_app):
+def task_manager(mock_app: TaskManager):
     return TaskManager(mock_app)
 
 
-def test_task_manager_init(mock_app):
+def test_task_manager_init(mock_app: MagicMock):
     manager = TaskManager(mock_app)
     assert manager.app == mock_app
     assert manager.registered_tasks == {}
@@ -28,7 +30,7 @@ def test_task_manager_init(mock_app):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_register_task(mock_logger, task_manager):
+def test_register_task(mock_logger: MagicMock, task_manager: TaskManager):
     mock_task_instance = MagicMock()
     mock_task_instance.get_name.return_value = "test_task"
     task_manager.app.add_task.return_value = mock_task_instance
@@ -44,12 +46,12 @@ def test_register_task(mock_logger, task_manager):
     mock_logger.debug.assert_called_with("Registering task: test_task")
 
 
-def test_get_task_status_not_exists(task_manager):
+def test_get_task_status_not_exists(task_manager: TaskManager):
     status = task_manager.get_task_status("nonexistent")
     assert status == {"exists": False}
 
 
-def test_get_task_status_exists(task_manager):
+def test_get_task_status_exists(task_manager: TaskManager):
     mock_task = MagicMock()
     mock_task.done.return_value = False
     mock_task.cancelled.return_value = False
@@ -72,7 +74,7 @@ def test_get_task_status_exists(task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_cancel_task_success(mock_logger, task_manager):
+def test_cancel_task_success(mock_logger: MagicMock, task_manager: TaskManager):
     mock_task = MagicMock()
     mock_task.done.return_value = False
     task_manager.registered_tasks["test_task"] = mock_task
@@ -84,12 +86,12 @@ def test_cancel_task_success(mock_logger, task_manager):
     mock_logger.info.assert_called_with("Task test_task cancelled")
 
 
-def test_cancel_task_not_exists(task_manager):
+def test_cancel_task_not_exists(task_manager: TaskManager):
     result = task_manager.cancel_task("nonexistent")
     assert result is False
 
 
-def test_reset_task_error(task_manager):
+def test_reset_task_error(task_manager: TaskManager):
     task_manager.task_errors["test_task"] = {
         "count": 3,
         "last_error": "Some error",
@@ -106,7 +108,9 @@ def test_reset_task_error(task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_handle_task_completion_cancelled(mock_logger, task_manager):
+def test_handle_task_completion_cancelled(
+    mock_logger: MagicMock, task_manager: TaskManager
+):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
     mock_task.cancelled.return_value = True
@@ -117,7 +121,9 @@ def test_handle_task_completion_cancelled(mock_logger, task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_handle_task_completion_calls_purge_tasks(mock_logger, task_manager):
+def test_handle_task_completion_calls_purge_tasks(
+    mock_logger: MagicMock, task_manager: TaskManager
+):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
     mock_task.cancelled.return_value = False
@@ -131,7 +137,9 @@ def test_handle_task_completion_calls_purge_tasks(mock_logger, task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_handle_task_completion_success(mock_logger, task_manager):
+def test_handle_task_completion_success(
+    mock_logger: MagicMock, task_manager: TaskManager
+):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
     mock_task.cancelled.return_value = False
@@ -146,7 +154,9 @@ def test_handle_task_completion_success(mock_logger, task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_handle_task_error_first_time(mock_logger, task_manager):
+def test_handle_task_error_first_time(
+    mock_logger: MagicMock, task_manager: TaskManager
+):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
 
@@ -168,7 +178,9 @@ def test_handle_task_error_first_time(mock_logger, task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_handle_task_error_max_retries(mock_logger, task_manager):
+def test_handle_task_error_max_retries(
+    mock_logger: MagicMock, task_manager: TaskManager
+):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
 
@@ -188,7 +200,7 @@ def test_handle_task_error_max_retries(mock_logger, task_manager):
     mock_logger.critical.assert_called_once()
 
 
-def test_cancel_task_already_done(task_manager):
+def test_cancel_task_already_done(task_manager: TaskManager):
     mock_task = MagicMock()
     mock_task.done.return_value = True
     task_manager.registered_tasks["test_task"] = mock_task
@@ -199,7 +211,9 @@ def test_cancel_task_already_done(task_manager):
 
 
 @patch("heliotrope.application.tasks.manager.logger")
-def test_handle_task_completion_with_error(mock_logger, task_manager):
+def test_handle_task_completion_with_error(
+    mock_logger: MagicMock, task_manager: TaskManager
+):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
     mock_task.cancelled.return_value = False
@@ -211,7 +225,7 @@ def test_handle_task_completion_with_error(mock_logger, task_manager):
     mock_handle_error.assert_called_once()
 
 
-def test_handle_task_error_different_error_type(task_manager):
+def test_handle_task_error_different_error_type(task_manager: TaskManager):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
 
@@ -233,7 +247,7 @@ def test_handle_task_error_different_error_type(task_manager):
     assert task_manager.task_errors["test_task"]["retry_delay"] == 30
 
 
-def test_handle_task_error_same_error_type(task_manager):
+def test_handle_task_error_same_error_type(task_manager: TaskManager):
     mock_task = MagicMock()
     mock_task.get_name.return_value = "test_task"
 
@@ -257,7 +271,9 @@ def test_handle_task_error_same_error_type(task_manager):
 @pytest.mark.asyncio
 @patch("heliotrope.application.tasks.manager.asyncio.sleep")
 @patch("heliotrope.application.tasks.manager.logger")
-async def test_schedule_retry(mock_logger, mock_sleep, task_manager):
+async def test_schedule_retry(
+    mock_logger: MagicMock, mock_sleep: MagicMock, task_manager: TaskManager
+):
     mock_task_func = AsyncMock()
     mock_new_task = MagicMock()
     task_manager.app.add_task.return_value = mock_new_task
@@ -276,6 +292,6 @@ async def test_schedule_retry(mock_logger, mock_sleep, task_manager):
     assert task_manager.app.add_task.call_count == 2  # retry scheduler + actual retry
 
 
-def test_reset_task_error_nonexistent_task(task_manager):
+def test_reset_task_error_nonexistent_task(task_manager: TaskManager):
     task_manager._reset_task_error("nonexistent")
     assert "nonexistent" not in task_manager.task_errors
