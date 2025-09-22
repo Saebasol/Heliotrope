@@ -18,12 +18,12 @@ class InfoRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_list_info(self, page: int = 1, item: int = 25) -> list[Info]:
+    async def get_list_info(self, page: int = 1, item: int = 15) -> list[Info]:
         raise NotImplementedError
 
     @abstractmethod
     async def search_by_query(
-        self, query: list[str], page: int = 0, item: int = 25
+        self, query: list[str], page: int = 0, item: int = 15
     ) -> tuple[int, list[Info]]:
         raise NotImplementedError
 
