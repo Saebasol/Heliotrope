@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import text
+from sqlalchemy import Connection, inspect
 
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
 from heliotrope.infrastructure.sqlalchemy.entities import (
@@ -12,9 +12,11 @@ async def test_create_all_tables(db_url: str):
     sqlalchemy = SQLAlchemy.create(db_url)
     await sqlalchemy.create_all_table()
 
-    async with sqlalchemy.engine.connect() as conn:
-        result = await conn.execute(
-            text("SELECT name FROM sqlite_master WHERE type='table'")
-        )
-        table_names = [row[0] for row in result.fetchall()]
-        assert len(table_names) > 0
+    async with sqlalchemy._engine.connect() as conn:
+
+        def get_tables(sync_conn: Connection):
+            inspector = inspect(sync_conn)
+            return inspector.get_table_names()
+
+        tables = await conn.run_sync(get_tables)
+        assert tables
