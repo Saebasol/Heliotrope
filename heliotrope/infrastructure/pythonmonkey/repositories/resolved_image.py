@@ -27,7 +27,7 @@ class PythonMonkeyResolvedImageRepository(ResolvedImageRepository):
     def resolve_image(self, galleryinfo_id: int, file: File) -> ResolvedImage:
         return ResolvedImage(
             url=self._javascript_interpreter.image_url_from_image(
-                galleryinfo_id, file, no_webp=False
+                galleryinfo_id, file, no_webp=True
             ),
             file=file,
         )

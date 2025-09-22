@@ -32,7 +32,7 @@ class HitomiListView(HTTPMethodView):
 
         info_list = await GetListInfoUseCase(
             request.app.ctx.mongodb_repository
-        ).execute(start_at_zero, 15)
+        ).execute(start_at_zero)
         return json(ListResultDTO(list=info_list, count=total).to_dict())
 
 
