@@ -91,6 +91,10 @@ def sample_language_schema():
         localname_id=1,
         galleryid=12345,
         url="http://example.com/gallery",
+        language_info=LanguageInfoSchema(
+            id=1, language="English", language_url="http://example.com/language"
+        ),
+        language_localname=LanguageLocalnameSchema(id=1, name="English"),
     )
 
 
@@ -128,21 +132,21 @@ def sample_galleryinfo_schema():
 
 @pytest.fixture()
 def sample_galleryinfo_schema_with_relations(
-    sample_artist_schema,
-    sample_character_schema,
-    sample_file_schema,
-    sample_group_schema,
-    sample_parody_schema,
-    sample_tag_schema,
-    sample_language_schema,
-    sample_type_schema,
-    sample_language_info_schema,
-    sample_language_localname_schema,
-    sample_related_schema,
-    sample_scene_index_schema,
+    sample_artist_schema: ArtistSchema,
+    sample_character_schema: CharacterSchema,
+    sample_file_schema: FileSchema,
+    sample_group_schema: GroupSchema,
+    sample_parody_schema: ParodySchema,
+    sample_tag_schema: TagSchema,
+    sample_language_schema: LanguageSchema,
+    sample_type_schema: TypeSchema,
+    sample_language_info_schema: LanguageInfoSchema,
+    sample_language_localname_schema: LanguageLocalnameSchema,
+    sample_related_schema: RelatedSchema,
+    sample_scene_index_schema: SceneIndexSchema,
 ):
-    """Complete galleryinfo with all relationships populated."""
     galleryinfo = GalleryinfoSchema(
+        id=1,
         date=datetime(2023, 10, 1, 12, 0, 0),
         title="Complete Sample Title",
         japanese_title="完全なサンプルタイトル",
