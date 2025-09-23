@@ -1,4 +1,4 @@
-from asyncio import AbstractEventLoop, sleep
+from asyncio import AbstractEventLoop
 from multiprocessing import Lock, Manager
 
 from sentry_sdk import init

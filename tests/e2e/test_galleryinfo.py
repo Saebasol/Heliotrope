@@ -1,8 +1,6 @@
 import httpx
 import pytest
 
-from heliotrope.infrastructure.sanic.app import Heliotrope
-
 
 @pytest.mark.asyncio
 async def test_galleryinfo(asgi_client: httpx.AsyncClient):
