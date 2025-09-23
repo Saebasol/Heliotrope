@@ -88,18 +88,19 @@ class MongoDBInfoRepository(InfoRepository):
             {"$sort": {"id": -1}},
         ]
         if self.use_atlas_search:  # pragma: no cover
-            pipeline.insert(
-                0,
-                {
-                    "$search": {
-                        "index": "default",
-                        "text": {
-                            "query": title,
-                            "path": ["title"],
-                        },
-                    }
-                },
-            )
+            if title:
+                pipeline.insert(
+                    0,
+                    {
+                        "$search": {
+                            "index": "default",
+                            "text": {
+                                "query": title,
+                                "path": ["title"],
+                            },
+                        }
+                    },
+                )
         else:
             pipeline[1]["$match"]["title"] = {"$regex": title, "$options": "i"}
 
