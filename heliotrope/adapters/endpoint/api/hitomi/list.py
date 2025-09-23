@@ -4,6 +4,7 @@ from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
 
+from heliotrope.application.dtos.list import ListResultDTO
 from heliotrope.application.usecases.get.info import (
     GetAllInfoIdsUseCase,
     GetListInfoUseCase,
@@ -31,14 +32,8 @@ class HitomiListView(HTTPMethodView):
 
         info_list = await GetListInfoUseCase(
             request.app.ctx.mongodb_repository
-        ).execute(start_at_zero, 15)
-
-        return json(
-            {
-                "list": [info.to_dict() for info in info_list],
-                "total": total,
-            }
-        )
+        ).execute(start_at_zero)
+        return json(ListResultDTO(list=info_list, count=total).to_dict())
 
 
 hitomi_list.add_route(HitomiListView.as_view(), "/<index:int>")

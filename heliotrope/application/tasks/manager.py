@@ -85,10 +85,13 @@ class TaskManager:
         current_error_type = type(error)
 
         if error_info["last_error_type"] == current_error_type:
+            retry_delay = error_info["retry_delay"] or self.base_retry_delay
+            error_info["retry_delay"] = retry_delay + self.base_retry_delay
             error_info["count"] += 1
         else:
             error_info["count"] = 1
             error_info["retry_delay"] = self.base_retry_delay
+            retry_delay = self.base_retry_delay
 
         error_info["last_error"] = str(error)
         error_info["last_error_type"] = current_error_type
@@ -106,9 +109,6 @@ class TaskManager:
             self.registered_tasks.pop(task_name, None)
             self.task_errors.pop(task_name, None)
             return
-
-        retry_delay = error_info["retry_delay"] or self.base_retry_delay
-        error_info["retry_delay"] = retry_delay + self.base_retry_delay
 
         self.task_errors[task_name] = error_info
 

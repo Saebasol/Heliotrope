@@ -14,11 +14,11 @@ class JavaScriptInterpreter:
         self.hitomi_la = hitomi_la
         self.gg_code = ""
         eval(r"var gg = {}")
-        eval("const domain2 = 'gold-usergeneratedcontent.net';")
+        eval("var domain2 = 'gold-usergeneratedcontent.net';")
 
     def image_url_from_image(self, galleryid: int, image: File, no_webp: bool) -> str:
         ext = "webp"
-        if image.hasavif:
+        if image.hasavif and no_webp:
             ext = "avif"
 
         return self.url_from_url_from_hash(galleryid, image, ext, "", "")
@@ -52,20 +52,20 @@ class JavaScriptInterpreter:
 
             start_pos = match.start()
             brace_count = 0
-            i = match.end() - 1  # 여는 중괄호 위치에서 시작
+            i = match.end() - 1  # Starting position of the function body
 
-            # 균형 맞는 닫는 중괄호 찾기
+            # Find the matching closing brace
             while i < len(js_code):
                 if js_code[i] == "{":
                     brace_count += 1
                 elif js_code[i] == "}":
                     brace_count -= 1
-                    if brace_count == 0:  # 균형이 맞춰진 경우
+                    if brace_count == 0:  # Found the matching closing brace
                         break
                 i += 1
 
             if i < len(js_code):
-                # 함수 전체 텍스트 추출
+                # Extract the entire function text
                 function_text = js_code[start_pos : i + 1]
                 functions.append(function_text)
 
@@ -91,7 +91,7 @@ class JavaScriptInterpreter:
         ) as response:
             return await response.text()
 
-    async def evulate_common_js(self) -> None:
+    async def evaluate_common_js(self) -> None:
         common_js_code = await self.get_common_js()
         to_eval = self.parse_common_js(common_js_code)
         eval(to_eval)
@@ -101,7 +101,7 @@ class JavaScriptInterpreter:
         logger.info("Setting up JavaScript interpreter")
         interpreter = cls(hitomi_la)
         logger.debug("Evaluating common.js")
-        await interpreter.evulate_common_js()
+        await interpreter.evaluate_common_js()
         logger.debug("Initializing gg.js")
         await interpreter.refresh_gg_js()
         return interpreter

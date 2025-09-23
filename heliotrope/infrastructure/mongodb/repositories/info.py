@@ -30,7 +30,7 @@ class MongoDBInfoRepository(InfoRepository):
         await self.mongodb.collection.insert_one(HitomiInfoJSON(**info.to_dict()))
         return info.id
 
-    async def get_list_info(self, page: int = 1, item: int = 25) -> list[Info]:
+    async def get_list_info(self, page: int = 1, item: int = 15) -> list[Info]:
         offset = page * item
         infos: list[Info] = []
 
@@ -87,7 +87,7 @@ class MongoDBInfoRepository(InfoRepository):
             {"$match": query_dict},
             {"$sort": {"id": -1}},
         ]
-        if self.use_atlas_search:
+        if self.use_atlas_search:  # pragma: no cover
             pipeline.insert(
                 0,
                 {
@@ -106,7 +106,7 @@ class MongoDBInfoRepository(InfoRepository):
         return pipeline
 
     async def search_by_query(
-        self, query: list[str], page: int = 0, item: int = 25
+        self, query: list[str], page: int = 0, item: int = 15
     ) -> tuple[int, list[Info]]:
         offset = page * item
         pipeline = self.make_pipeline(query)

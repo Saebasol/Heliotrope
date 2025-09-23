@@ -24,9 +24,23 @@ from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sanic.error import not_found
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
+from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.character import (
+    SACharacterRepository,
+)
 from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
 )
+from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
+    SALanguageInfoRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
+    SALanguageLocalnameRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 
 async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -40,7 +54,7 @@ async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) 
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
-    if heliotrope.config.PRODUCTION:
+    if heliotrope.config.PRODUCTION:  # pragma: no cover
         init(
             heliotrope.config.SENTRY_DSN,
             integrations=[SanicIntegration()],
@@ -62,7 +76,15 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         heliotrope.ctx.hitomi_la
     )
     heliotrope.ctx.sa_galleryinfo_repository = SAGalleryinfoRepository(
-        heliotrope.ctx.sa
+        heliotrope.ctx.sa,
+        SATypeRepository(heliotrope.ctx.sa),
+        SAArtistRepository(heliotrope.ctx.sa),
+        SALanguageInfoRepository(heliotrope.ctx.sa),
+        SALanguageLocalnameRepository(heliotrope.ctx.sa),
+        SACharacterRepository(heliotrope.ctx.sa),
+        SAGroupRepository(heliotrope.ctx.sa),
+        SAParodyRepository(heliotrope.ctx.sa),
+        SATagRepository(heliotrope.ctx.sa),
     )
     heliotrope.ctx.mongodb_repository = MongoDBInfoRepository(
         heliotrope.ctx.mongodb, heliotrope.config.USE_ATLAS_SEARCH
@@ -77,11 +99,12 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     refresh_gg_js = RefreshggJS(heliotrope)
     task_manager = TaskManager(heliotrope)
 
-    task_manager.register_task(
-        refresh_gg_js.start,
-        RefreshggJS.__name__,
-        heliotrope.config.REFRESH_GG_JS_DELAY,
-    )
+    if not heliotrope.test_mode:  # pragma: no cover
+        task_manager.register_task(
+            refresh_gg_js.start,
+            RefreshggJS.__name__,
+            heliotrope.config.REFRESH_GG_JS_DELAY,
+        )
 
     with Lock():
         namespace = heliotrope.shared_ctx.namespace
@@ -91,7 +114,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             namespace.is_running_first_process = True
             await heliotrope.ctx.sa.create_all_table()
             await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
-            if heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH:
+            if (
+                heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH
+            ):  # pragma: no cover
                 await heliotrope.ctx.mongodb.collection.create_search_index(
                     {
                         "name": "default",
@@ -122,16 +147,17 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
             )
 
-            task_manager.register_task(
-                mirroring_task.start_mirroring,
-                MirroringTask.__name__,
-                heliotrope.config.MIRRORING_DELAY,
-            )
-            task_manager.register_task(
-                mirroring_task.start_integrity_check,
-                "integrity_check",
-                heliotrope.config.INTEGRITY_CHECK_DELAY,
-            )
+            if not heliotrope.test_mode:  # pragma: no cover
+                task_manager.register_task(
+                    mirroring_task.start_mirroring,
+                    MirroringTask.__name__,
+                    heliotrope.config.MIRRORING_DELAY,
+                )
+                task_manager.register_task(
+                    mirroring_task.start_integrity_check,
+                    "integrity_check",
+                    heliotrope.config.INTEGRITY_CHECK_DELAY,
+                )
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -139,7 +165,8 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     await heliotrope.ctx.mongodb.client.close()
     await heliotrope.ctx.sa.engine.dispose()
     await heliotrope.ctx.hitomi_la.session.close()
-    heliotrope.shutdown_tasks()
+    for task in heliotrope.tasks:
+        await heliotrope.cancel_task(task.get_name())
 
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:

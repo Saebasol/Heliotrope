@@ -22,7 +22,7 @@ class GetListInfoUseCase:
     def __init__(self, info_repository: InfoRepository) -> None:
         self.info_repository = info_repository
 
-    async def execute(self, page: int = 1, item: int = 25) -> list[Info]:
+    async def execute(self, page: int = 1, item: int = 15) -> list[Info]:
         return await self.info_repository.get_list_info(page, item)
 
 

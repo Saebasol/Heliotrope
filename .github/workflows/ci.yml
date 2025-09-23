@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop, release, hotfix ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop, release, hotfix ]
+    branches: [ main ]
   release:
     types: [ published ]
 
@@ -62,10 +62,18 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: test_heliotrope
+          POSTGRES_USER: heliotrope_user
+          POSTGRES_PASSWORD: heliotropepasswd
+          POSTGRES_DB: heliotrope_db
         ports:
           - 127.0.0.1:5432:5432
+      mongo:
+        image: mongo
+        env:
+          MONGO_INITDB_ROOT_USERNAME: heliotrope_user
+          MONGO_INITDB_ROOT_PASSWORD: heliotropepasswd
+        ports:
+          - 127.0.0.1:27017:27017
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
@@ -82,7 +90,9 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --with test
       - name: Check test
-        run: poetry run pytest --asyncio-mode=auto
+        run: poetry run pytest --asyncio-mode=auto --cov=heliotrope --cov-report=xml
+      - name: Codecov
+        uses: codecov/codecov-action@v5
 
   build-and-push-image:
     runs-on: ubuntu-latest

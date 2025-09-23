@@ -6,7 +6,11 @@ from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
 
-from heliotrope.application.dtos.search import PostSearchBodyDTO, PostSearchQueryDTO
+from heliotrope.application.dtos.search import (
+    PostSearchBodyDTO,
+    PostSearchQueryDTO,
+    SearchResultDTO,
+)
 from heliotrope.application.usecases.get.info import SearchByQueryUseCase
 from heliotrope.application.utils import check_int32
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
@@ -53,12 +57,8 @@ class HitomiSearchView(HTTPMethodView):
             count, results = await SearchByQueryUseCase(
                 request.app.ctx.mongodb_repository
             ).execute(body.query, offset)
-            return json(
-                {
-                    "result": [result.to_dict() for result in results],
-                    "count": count,
-                }
-            )
+            return json(SearchResultDTO(result=results, count=count).to_dict())
+
         raise InvalidUsage
 
 

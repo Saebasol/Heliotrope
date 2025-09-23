@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 
+from heliotrope.domain.entities.info import Info
+from heliotrope.domain.serializer import Serializer
+
 
 @dataclass
 class PostSearchQueryDTO:
@@ -9,3 +12,9 @@ class PostSearchQueryDTO:
 @dataclass
 class PostSearchBodyDTO:
     query: list[str]
+
+
+@dataclass
+class SearchResultDTO(Serializer):
+    result: list[Info]
+    count: int

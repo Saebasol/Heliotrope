@@ -1,7 +1,7 @@
 """ondelete cascade
 
 Revision ID: 45c39123b775
-Revises: 
+Revises:
 Create Date: 2025-05-22 10:26:15.176866
 
 """

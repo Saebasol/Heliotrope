@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from contextvars import ContextVar
-
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio.engine import AsyncEngine, create_async_engine
 from sqlalchemy.ext.asyncio.session import AsyncSession
@@ -14,9 +12,6 @@ class SQLAlchemy:
         self._engine = engine
         self._session_maker = async_sessionmaker(
             self._engine, class_=AsyncSession, expire_on_commit=False
-        )
-        self._current_session: ContextVar[AsyncSession | None] = ContextVar(
-            "current_session", default=None
         )
 
     @property

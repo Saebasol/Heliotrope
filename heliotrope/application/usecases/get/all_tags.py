@@ -1,7 +1,8 @@
 from typing import Generator
 
+from heliotrope.domain.entities.all_tags import AllTags
 from heliotrope.domain.repositories.artist import ArtistRepository
-from heliotrope.domain.repositories.charactor import CharacterRepository
+from heliotrope.domain.repositories.character import CharacterRepository
 from heliotrope.domain.repositories.group import GroupRepository
 from heliotrope.domain.repositories.language_info import LanguageInfoRepository
 from heliotrope.domain.repositories.parody import ParodyRepository
@@ -32,10 +33,10 @@ class GetAllTagsUseCase:
         self.tag_repository = tag_repository
         self.type_repository = type_repository
 
-    def __await__(self) -> Generator[None, None, dict[str, list[str]]]:
+    def __await__(self) -> Generator[None, None, AllTags]:
         return self.execute().__await__()
 
-    async def execute(self) -> dict[str, list[str]]:
+    async def execute(self) -> AllTags:
         artists = await self.artist_repository.get_all_artists()
         characters = await self.character_repository.get_all_characters()
         groups = await self.group_repository.get_all_groups()
@@ -55,14 +56,14 @@ class GetAllTagsUseCase:
             elif tag[1] is False and tag[2] is True:
                 female_list.append(replace(tag[0]))
 
-        return {
-            "artists": [replace(artist) for artist in artists],
-            "characters": [replace(character) for character in characters],
-            "groups": [replace(group) for group in groups],
-            "language": [replace(language_info) for language_info in language_infos],
-            "series": [replace(parody) for parody in parodies],
-            "tag": tag_list,
-            "female": female_list,
-            "male": male_list,
-            "type": [replace(type) for type in types],
-        }
+        return AllTags(
+            artists=[replace(artist) for artist in artists],
+            characters=[replace(character) for character in characters],
+            groups=[replace(group) for group in groups],
+            language=[replace(language_info) for language_info in language_infos],
+            series=[replace(parody) for parody in parodies],
+            tag=tag_list,
+            female=female_list,
+            male=male_list,
+            type=[replace(type) for type in types],
+        )
