@@ -24,7 +24,7 @@ include = ["heliotrope"]
 typeCheckingMode = "strict"
 
 [tool.poetry.group.style.dependencies]
-black = "^24.10.0"
+black = "^25.9.0"
 isort = "^5.10.1"
 
 [tool.poetry.group.test.dependencies]
@@ -35,7 +35,7 @@ httpx = "^0.28.1"
 
 [tool.poetry.group.type.dependencies]
 pyright = "^1.1.405"
-mypy = "^1.18.1"
+mypy = "^1.18.2"
 
 [tool.isort]
 src_paths = ["heliotrope", "tests"]
