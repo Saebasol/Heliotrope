@@ -54,6 +54,6 @@ class SearchByQueryUseCase:
         self.info_repository = info_repository
 
     async def execute(
-        self, query: list[str], page: int = 0, item: int = 25
+        self, query: list[str], page: int = 0, item: int = 15
     ) -> tuple[int, list[Info]]:
         return await self.info_repository.search_by_query(query, page, item)
