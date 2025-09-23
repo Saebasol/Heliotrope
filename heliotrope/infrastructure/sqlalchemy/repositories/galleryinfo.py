@@ -3,49 +3,41 @@ from typing import Optional
 from sqlalchemy import delete, select
 
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.repositories.artist import ArtistRepository
-from heliotrope.domain.repositories.character import CharacterRepository
 from heliotrope.domain.repositories.galleryinfo import GalleryinfoRepository
-from heliotrope.domain.repositories.group import GroupRepository
-from heliotrope.domain.repositories.language_info import LanguageInfoRepository
-from heliotrope.domain.repositories.language_localname import (
-    LanguageLocalnameRepository,
-)
-from heliotrope.domain.repositories.parody import ParodyRepository
-from heliotrope.domain.repositories.tag import TagRepository
-from heliotrope.domain.repositories.type import TypeRepository
 from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.entities.artist import ArtistSchema
-from heliotrope.infrastructure.sqlalchemy.entities.character import CharacterSchema
 from heliotrope.infrastructure.sqlalchemy.entities.file import FileSchema
 from heliotrope.infrastructure.sqlalchemy.entities.galleryinfo import GalleryinfoSchema
-from heliotrope.infrastructure.sqlalchemy.entities.group import GroupSchema
 from heliotrope.infrastructure.sqlalchemy.entities.language import LanguageSchema
-from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
-    LanguageInfoSchema,
-)
-from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
-    LanguageLocalnameSchema,
-)
-from heliotrope.infrastructure.sqlalchemy.entities.parody import ParodySchema
 from heliotrope.infrastructure.sqlalchemy.entities.related import RelatedSchema
 from heliotrope.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
-from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
-from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
+from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.character import (
+    SACharacterRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
+    SALanguageInfoRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
+    SALanguageLocalnameRepository,
+)
+from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
+from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 
 class SAGalleryinfoRepository(GalleryinfoRepository):
     def __init__(
         self,
         sa: SQLAlchemy,
-        type_repository: TypeRepository,
-        artist_repository: ArtistRepository,
-        language_info_repository: LanguageInfoRepository,
-        localname_repository: LanguageLocalnameRepository,
-        character_repository: CharacterRepository,
-        group_repository: GroupRepository,
-        parody_repository: ParodyRepository,
-        tag_repository: TagRepository,
+        type_repository: SATypeRepository,
+        artist_repository: SAArtistRepository,
+        language_info_repository: SALanguageInfoRepository,
+        localname_repository: SALanguageLocalnameRepository,
+        character_repository: SACharacterRepository,
+        group_repository: SAGroupRepository,
+        parody_repository: SAParodyRepository,
+        tag_repository: SATagRepository,
     ) -> None:
         self.sa = sa
         self.type_repository = type_repository
@@ -79,112 +71,78 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
     async def add_galleryinfo(self, galleryinfo: Galleryinfo) -> int:
         async with self.sa.session_maker() as session:
             async with session.begin():
-                type_schema_id = await self.type_repository.get_or_add_type(
-                    galleryinfo.type
+                type_schema = await self.type_repository.get_or_add_type(
+                    session, galleryinfo.type
                 )
-                language_info_schema_id = (
+                language_info_schema = (
                     await self.language_info_repository.get_or_add_language_info(
-                        galleryinfo.language_info
+                        session, galleryinfo.language_info
                     )
                 )
-                gallery_localname_schema_id = (
-                    await self.localname_repository.get_or_add_localname(
-                        galleryinfo.language_localname
+                language_localname_schema = (
+                    await self.localname_repository.get_or_add_language_localname(
+                        session, galleryinfo.language_localname
                     )
                 )
 
                 artists_schemas = [
-                    ArtistSchema(
-                        id=await self.artist_repository.get_or_add_artist(artist),
-                        artist=artist.artist,
-                        url=artist.url,
-                    )
+                    await self.artist_repository.get_or_add_artist(session, artist)
                     for artist in galleryinfo.artists
                 ]
                 characters_schemas = [
-                    CharacterSchema(
-                        id=await self.character_repository.get_or_add_character(
-                            character
-                        ),
-                        character=character.character,
-                        url=character.url,
+                    await self.character_repository.get_or_add_character(
+                        session, character
                     )
                     for character in galleryinfo.characters
                 ]
+
                 groups_schemas = [
-                    GroupSchema(
-                        id=await self.group_repository.get_or_add_group(group),
-                        group=group.group,
-                        url=group.url,
-                    )
+                    await self.group_repository.get_or_add_group(session, group)
                     for group in galleryinfo.groups
                 ]
 
                 parodys_schemas = [
-                    ParodySchema(
-                        id=await self.parody_repository.get_or_add_parody(parody),
-                        parody=parody.parody,
-                        url=parody.url,
-                    )
+                    await self.parody_repository.get_or_add_parody(session, parody)
                     for parody in galleryinfo.parodys
                 ]
+
                 tags_schemas = [
-                    TagSchema(
-                        id=await self.tag_repository.get_or_add_tag(tag),
-                        tag=tag.tag,
-                        url=tag.url,
-                        male=tag.male,
-                        female=tag.female,
-                    )
+                    await self.tag_repository.get_or_add_tag(session, tag)
                     for tag in galleryinfo.tags
                 ]
 
                 languages_schemas: list[LanguageSchema] = []
                 for language in galleryinfo.languages:
-                    language_schema_language_localname_schema_id = (
-                        await self.localname_repository.get_or_add_localname(
-                            language.language_localname
+                    language_language_localname_schema = (
+                        await self.localname_repository.get_or_add_language_localname(
+                            session, language.language_localname
                         )
                     )
 
-                    language_schema_language_info_schema_id = (
+                    language_language_info_schema = (
                         await self.language_info_repository.get_or_add_language_info(
-                            language.language_info
+                            session, language.language_info
                         )
                     )
                     languages_schemas.append(
                         LanguageSchema(
                             galleryid=language.galleryid,
                             url=language.url,
-                            language_info_id=language_schema_language_info_schema_id,
-                            localname_id=language_schema_language_localname_schema_id,
-                            language_info=LanguageInfoSchema(
-                                id=language_schema_language_info_schema_id,
-                                language=language.language_info.language,
-                                language_url=language.language_info.language_url,
-                            ),
-                            language_localname=LanguageLocalnameSchema(
-                                id=language_schema_language_localname_schema_id,
-                                name=language.language_localname.name,
-                            ),
+                            language_info_id=language_language_info_schema.id,
+                            localname_id=language_language_localname_schema.id,
+                            language_info=language_info_schema,
+                            language_localname=language_localname_schema,
                         )
                     )
 
                 galleryinfo_schema = GalleryinfoSchema(
                     id=galleryinfo.id,
-                    type_id=type_schema_id,
-                    language_info_id=language_info_schema_id,
-                    localname_id=gallery_localname_schema_id,
-                    type=TypeSchema(id=type_schema_id, type=galleryinfo.type.type),
-                    language_info=LanguageInfoSchema(
-                        language=galleryinfo.language_info.language,
-                        language_url=galleryinfo.language_info.language_url,
-                        id=language_info_schema_id,
-                    ),
-                    language_localname=LanguageLocalnameSchema(
-                        name=galleryinfo.language_localname.name,
-                        id=gallery_localname_schema_id,
-                    ),
+                    type_id=type_schema.id,
+                    language_info_id=language_info_schema.id,
+                    localname_id=language_localname_schema.id,
+                    type=type_schema,
+                    language_info=language_info_schema,
+                    language_localname=language_localname_schema,
                     date=galleryinfo.date,
                     title=galleryinfo.title,
                     japanese_title=galleryinfo.japanese_title,
@@ -213,7 +171,8 @@ class SAGalleryinfoRepository(GalleryinfoRepository):
                     ],
                 )
 
-                await session.merge(galleryinfo_schema)
+                session.add(galleryinfo_schema)
+                await session.commit()
                 return galleryinfo_schema.id
 
     async def is_galleryinfo_exists(self, id: int) -> bool:

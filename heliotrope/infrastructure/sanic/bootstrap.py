@@ -35,7 +35,7 @@ from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepos
 from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
     SALanguageInfoRepository,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.localname import (
+from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
     SALanguageLocalnameRepository,
 )
 from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository

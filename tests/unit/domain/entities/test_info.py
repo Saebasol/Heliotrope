@@ -153,7 +153,7 @@ def test_info_from_galleryinfo(sample_galleryinfo: Galleryinfo):
         character.character.replace(" ", "_")
         for character in sample_galleryinfo.characters
     ]
-    assert info.tags == ["tag:Tag_Name"]
+    assert info.tags == ["tag:digital"]
     assert info.date == sample_galleryinfo.date
 
 
@@ -170,16 +170,16 @@ def test_parse_tags_dict_list():
 
 def test_parse_male_female_tag(sample_tag: Tag):
     result = parse_male_female_tag(sample_tag)
-    assert result == "tag:Tag_Name"
+    assert result == "tag:digital"
 
 
-def test_parse_male_female_tag_is_female(sample_tag: Tag):
-    sample_tag.female = True
-    result = parse_male_female_tag(sample_tag)
-    assert result == "female:Tag_Name"
+def test_parse_male_female_tag_is_female(sample_tag_female: Tag):
+    sample_tag_female.female = True
+    result = parse_male_female_tag(sample_tag_female)
+    assert result == "female:loli"
 
 
-def test_parse_male_female_tag_is_male(sample_tag: Tag):
-    sample_tag.male = True
-    result = parse_male_female_tag(sample_tag)
-    assert result == "male:Tag_Name"
+def test_parse_male_female_tag_is_male(sample_tag_male: Tag):
+    sample_tag_male.male = True
+    result = parse_male_female_tag(sample_tag_male)
+    assert result == "male:shota"

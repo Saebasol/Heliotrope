@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.type import Type
 from heliotrope.domain.repositories.type import TypeRepository
@@ -10,20 +11,19 @@ class SATypeRepository(TypeRepository):
     def __init__(self, sa: SQLAlchemy) -> None:
         self.sa = sa
 
-    async def get_or_add_type(self, type: Type) -> int:
-        async with self.sa.session_maker() as session:
-            result = await session.execute(
-                select(TypeSchema).where(TypeSchema.type == type.type)
-            )
-            schema = result.scalars().first()
+    async def get_or_add_type(self, session: AsyncSession, type: Type) -> TypeSchema:
+        result = await session.execute(
+            select(TypeSchema).where(TypeSchema.type == type.type)
+        )
+        schema = result.scalars().first()
 
-            if schema:
-                return schema.id
+        if schema:
+            return schema
 
-            type_schema = TypeSchema.from_dict(type.to_dict())
-            session.add(type_schema)
-            await session.commit()
-            return type_schema.id
+        type_schema = TypeSchema.from_dict(type.to_dict())
+        session.add(type_schema)
+        await session.flush()
+        return type_schema
 
     async def get_all_types(self) -> list[str]:
         async with self.sa.session_maker() as session:
