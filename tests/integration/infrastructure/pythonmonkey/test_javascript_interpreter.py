@@ -4,7 +4,7 @@ from pythonmonkey import eval  # pyright: ignore[reportMissingTypeStubs]
 from heliotrope.domain.entities.file import File
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
-from tests.integration.hitomila.conftest import hitomi_la as hitomi_la
+from tests.integration.infrastructure.hitomila.conftest import hitomi_la as hitomi_la
 
 
 @pytest.mark.asyncio
