@@ -2,6 +2,9 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.language_localname import LanguageLocalname
+from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+    LanguageLocalnameSchema,
+)
 from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
     SALanguageLocalnameRepository,
 )
@@ -16,15 +19,14 @@ async def test_get_or_add_language_localname_new_language_localname(
     language_localname_repository: SALanguageLocalnameRepository,
     session: AsyncSession,
 ):
-    language_localname_id = (
+    language_localname = (
         await language_localname_repository.get_or_add_language_localname(
             session, sample_language_localname
         )
     )
 
-    assert language_localname_id is not None
-    assert isinstance(language_localname_id, int)
-    assert language_localname_id > 0
+    assert language_localname is not None
+    assert isinstance(language_localname, LanguageLocalnameSchema)
 
 
 @pytest.mark.asyncio

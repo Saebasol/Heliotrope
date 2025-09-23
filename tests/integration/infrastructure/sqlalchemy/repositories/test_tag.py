@@ -2,6 +2,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.tag import Tag
+from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
 from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
 from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 
@@ -10,21 +11,22 @@ from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 async def test_get_or_add_tag_new_tag(
     sample_tag: Tag, tag_repository: SATagRepository, session: AsyncSession
 ):
-    tag_id = await tag_repository.get_or_add_tag(session, sample_tag)
+    tag = await tag_repository.get_or_add_tag(session, sample_tag)
 
-    assert tag_id is not None
-    assert isinstance(tag_id, int)
-    assert tag_id > 0
+    assert tag is not None
+    assert isinstance(tag, TagSchema)
 
 
 @pytest.mark.asyncio
 async def test_get_or_add_tag_existing_tag(
     sample_tag: Tag, tag_repository: SATagRepository, session: AsyncSession
 ):
-    first_id = await tag_repository.get_or_add_tag(session, sample_tag)
-    second_id = await tag_repository.get_or_add_tag(session, sample_tag)
+    first = await tag_repository.get_or_add_tag(session, sample_tag)
+    second = await tag_repository.get_or_add_tag(session, sample_tag)
 
-    assert first_id == second_id
+    await session.commit()
+
+    assert first == second
 
 
 @pytest.mark.asyncio
@@ -39,6 +41,8 @@ async def test_get_all_tags_with_data(
     await tag_repository.get_or_add_tag(session, sample_tag)
     await tag_repository.get_or_add_tag(session, sample_tag_female)
     await tag_repository.get_or_add_tag(session, sample_tag_male)
+
+    await session.commit()
 
     tags = await tag_repository.get_all_tags()
 

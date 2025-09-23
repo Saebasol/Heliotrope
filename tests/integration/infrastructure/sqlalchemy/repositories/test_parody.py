@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.parody import Parody
+from heliotrope.infrastructure.sqlalchemy.entities.parody import ParodySchema
 from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
 from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 
@@ -12,21 +13,22 @@ from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 async def test_get_or_add_parody_new_parody(
     sample_parody: Parody, parody_repository: SAParodyRepository, session: AsyncSession
 ):
-    parody_id = await parody_repository.get_or_add_parody(session, sample_parody)
+    parody = await parody_repository.get_or_add_parody(session, sample_parody)
 
-    assert parody_id is not None
-    assert isinstance(parody_id, int)
-    assert parody_id > 0
+    assert parody is not None
+    assert isinstance(parody, ParodySchema)
 
 
 @pytest.mark.asyncio
 async def test_get_or_add_parody_existing_parody(
     sample_parody: Parody, parody_repository: SAParodyRepository, session: AsyncSession
 ):
-    first_id = await parody_repository.get_or_add_parody(session, sample_parody)
-    second_id = await parody_repository.get_or_add_parody(session, sample_parody)
+    first = await parody_repository.get_or_add_parody(session, sample_parody)
+    second = await parody_repository.get_or_add_parody(session, sample_parody)
 
-    assert first_id == second_id
+    await session.commit()
+
+    assert first == second
 
 
 @pytest.mark.asyncio
@@ -46,6 +48,9 @@ async def test_get_all_parodies_with_data(
     await parody_repository.get_or_add_parody(session, parody1)
     await parody_repository.get_or_add_parody(session, parody2)
     await parody_repository.get_or_add_parody(session, parody3)
+
+    await session.commit()
+
     parodies = await parody_repository.get_all_parodies()
 
     assert len(parodies) == 3

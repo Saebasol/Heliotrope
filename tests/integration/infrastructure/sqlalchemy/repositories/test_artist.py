@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.artist import Artist
+from heliotrope.infrastructure.sqlalchemy.entities.artist import ArtistSchema
 from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
 from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 
@@ -12,21 +13,22 @@ from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 async def test_get_or_add_artist_new_artist(
     sample_artist: Artist, artist_repository: SAArtistRepository, session: AsyncSession
 ):
-    artist_id = await artist_repository.get_or_add_artist(session, sample_artist)
+    artist = await artist_repository.get_or_add_artist(session, sample_artist)
 
-    assert artist_id is not None
-    assert isinstance(artist_id, int)
-    assert artist_id > 0
+    assert artist is not None
+    assert isinstance(artist, ArtistSchema)
 
 
 @pytest.mark.asyncio
 async def test_get_or_add_artist_existing_artist(
     sample_artist: Artist, artist_repository: SAArtistRepository, session: AsyncSession
 ):
-    first_id = await artist_repository.get_or_add_artist(session, sample_artist)
-    second_id = await artist_repository.get_or_add_artist(session, sample_artist)
+    first = await artist_repository.get_or_add_artist(session, sample_artist)
+    second = await artist_repository.get_or_add_artist(session, sample_artist)
 
-    assert first_id == second_id
+    await session.commit()
+
+    assert first == second
 
 
 @pytest.mark.asyncio
@@ -46,6 +48,8 @@ async def test_get_all_artists_with_data(
     await artist_repository.get_or_add_artist(session, artist1)
     await artist_repository.get_or_add_artist(session, artist2)
     await artist_repository.get_or_add_artist(session, artist3)
+
+    await session.commit()
 
     artists = await artist_repository.get_all_artists()
 

@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.character import Character
+from heliotrope.infrastructure.sqlalchemy.entities.character import CharacterSchema
 from heliotrope.infrastructure.sqlalchemy.repositories.character import (
     SACharacterRepository,
 )
@@ -16,13 +17,12 @@ async def test_get_or_add_character_new_character(
     character_repository: SACharacterRepository,
     session: AsyncSession,
 ):
-    character_id = await character_repository.get_or_add_character(
+    character = await character_repository.get_or_add_character(
         session, sample_character
     )
 
-    assert character_id is not None
-    assert isinstance(character_id, int)
-    assert character_id > 0
+    assert character is not None
+    assert isinstance(character, CharacterSchema)
 
 
 @pytest.mark.asyncio
@@ -31,14 +31,11 @@ async def test_get_or_add_character_existing_character(
     character_repository: SACharacterRepository,
     session: AsyncSession,
 ):
-    first_id = await character_repository.get_or_add_character(
-        session, sample_character
-    )
-    second_id = await character_repository.get_or_add_character(
-        session, sample_character
-    )
+    first = await character_repository.get_or_add_character(session, sample_character)
+    second = await character_repository.get_or_add_character(session, sample_character)
+    await session.commit()
 
-    assert first_id == second_id
+    assert first == second
 
 
 @pytest.mark.asyncio
@@ -60,6 +57,8 @@ async def test_get_all_characters_with_data(
     await character_repository.get_or_add_character(session, character1)
     await character_repository.get_or_add_character(session, character2)
     await character_repository.get_or_add_character(session, character3)
+
+    await session.commit()
 
     characters = await character_repository.get_all_characters()
 

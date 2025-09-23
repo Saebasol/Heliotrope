@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from heliotrope.domain.entities.group import Group
+from heliotrope.infrastructure.sqlalchemy.entities.group import GroupSchema
 from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
 from tests.unit.domain.entities.conftest import sample_group as sample_group
 
@@ -12,21 +13,22 @@ from tests.unit.domain.entities.conftest import sample_group as sample_group
 async def test_get_or_add_group_new_group(
     sample_group: Group, group_repository: SAGroupRepository, session: AsyncSession
 ):
-    group_id = await group_repository.get_or_add_group(session, sample_group)
+    group = await group_repository.get_or_add_group(session, sample_group)
 
-    assert group_id is not None
-    assert isinstance(group_id, int)
-    assert group_id > 0
+    assert group is not None
+    assert isinstance(group, GroupSchema)
 
 
 @pytest.mark.asyncio
 async def test_get_or_add_group_existing_group(
     sample_group: Group, group_repository: SAGroupRepository, session: AsyncSession
 ):
-    first_id = await group_repository.get_or_add_group(session, sample_group)
-    second_id = await group_repository.get_or_add_group(session, sample_group)
+    first = await group_repository.get_or_add_group(session, sample_group)
+    second = await group_repository.get_or_add_group(session, sample_group)
 
-    assert first_id == second_id
+    await session.commit()
+
+    assert first == second
 
 
 @pytest.mark.asyncio
@@ -46,6 +48,8 @@ async def test_get_all_groups_with_data(
     await group_repository.get_or_add_group(session, group1)
     await group_repository.get_or_add_group(session, group2)
     await group_repository.get_or_add_group(session, group3)
+
+    await session.commit()
 
     groups = await group_repository.get_all_groups()
 

@@ -22,7 +22,7 @@ from tests.unit.domain.entities.conftest import *
 
 
 @pytest_asyncio.fixture()
-async def session_maker(sqlalchemy: SQLAlchemy):
+async def session(sqlalchemy: SQLAlchemy):
     async with sqlalchemy.session_maker() as session:
         yield session
 
