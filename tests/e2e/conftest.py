@@ -47,6 +47,7 @@ async def asgi_client(
             sample_galleryinfo
         )
         await heliotrope.ctx.mongodb_repository.add_info(sample_info)
+        await heliotrope.ctx.pythonmonkey_resolved_image_repository.javascript_interpreter.refresh_gg_js()
         yield client
         # Clean up the sample data from the repositories
         await heliotrope.ctx.sa_galleryinfo_repository.delete_galleryinfo(
