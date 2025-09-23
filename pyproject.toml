@@ -31,6 +31,7 @@ isort = "^5.10.1"
 pytest = "^8.4.2"
 pytest-cov = "^7.0.0"
 pytest-asyncio = "^1.2.0"
+httpx = "^0.28.1"
 
 [tool.poetry.group.type.dependencies]
 pyright = "^1.1.405"
