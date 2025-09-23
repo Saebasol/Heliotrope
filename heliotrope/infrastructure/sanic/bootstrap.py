@@ -1,4 +1,4 @@
-from asyncio import AbstractEventLoop
+from asyncio import AbstractEventLoop, sleep
 from multiprocessing import Lock, Manager
 
 from sentry_sdk import init
@@ -54,7 +54,7 @@ async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) 
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
-    if heliotrope.config.PRODUCTION:
+    if heliotrope.config.PRODUCTION:  # pragma: no cover
         init(
             heliotrope.config.SENTRY_DSN,
             integrations=[SanicIntegration()],
@@ -113,7 +113,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             namespace.is_running_first_process = True
             await heliotrope.ctx.sa.create_all_table()
             await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
-            if heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH:
+            if (
+                heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH
+            ):  # pragma: no cover
                 await heliotrope.ctx.mongodb.collection.create_search_index(
                     {
                         "name": "default",
@@ -161,7 +163,8 @@ async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     await heliotrope.ctx.mongodb.client.close()
     await heliotrope.ctx.sa.engine.dispose()
     await heliotrope.ctx.hitomi_la.session.close()
-    heliotrope.shutdown_tasks()
+    for task in heliotrope.tasks:
+        await heliotrope.cancel_task(task.get_name())
 
 
 def create_app(config: HeliotropeConfig) -> Heliotrope:

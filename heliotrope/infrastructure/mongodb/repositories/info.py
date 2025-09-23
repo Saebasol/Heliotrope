@@ -87,7 +87,7 @@ class MongoDBInfoRepository(InfoRepository):
             {"$match": query_dict},
             {"$sort": {"id": -1}},
         ]
-        if self.use_atlas_search:
+        if self.use_atlas_search:  # pragma: no cover
             pipeline.insert(
                 0,
                 {
