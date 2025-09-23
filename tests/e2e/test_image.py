@@ -3,7 +3,7 @@ import pytest
 
 from heliotrope.domain.entities.resolved_image import ResolvedImage
 from heliotrope.infrastructure.hitomila import HitomiLa
-from tests.integration.hitomila.conftest import hitomi_la as hitomi_la
+from tests.integration.infrastructure.hitomila.conftest import hitomi_la as hitomi_la
 from tests.unit.domain.entities.conftest import *
 
 
