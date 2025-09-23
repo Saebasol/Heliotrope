@@ -99,11 +99,12 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     refresh_gg_js = RefreshggJS(heliotrope)
     task_manager = TaskManager(heliotrope)
 
-    task_manager.register_task(
-        refresh_gg_js.start,
-        RefreshggJS.__name__,
-        heliotrope.config.REFRESH_GG_JS_DELAY,
-    )
+    if not heliotrope.test_mode:  # pragma: no cover
+        task_manager.register_task(
+            refresh_gg_js.start,
+            RefreshggJS.__name__,
+            heliotrope.config.REFRESH_GG_JS_DELAY,
+        )
 
     with Lock():
         namespace = heliotrope.shared_ctx.namespace
@@ -146,16 +147,17 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
             )
 
-            task_manager.register_task(
-                mirroring_task.start_mirroring,
-                MirroringTask.__name__,
-                heliotrope.config.MIRRORING_DELAY,
-            )
-            task_manager.register_task(
-                mirroring_task.start_integrity_check,
-                "integrity_check",
-                heliotrope.config.INTEGRITY_CHECK_DELAY,
-            )
+            if not heliotrope.test_mode:  # pragma: no cover
+                task_manager.register_task(
+                    mirroring_task.start_mirroring,
+                    MirroringTask.__name__,
+                    heliotrope.config.MIRRORING_DELAY,
+                )
+                task_manager.register_task(
+                    mirroring_task.start_integrity_check,
+                    "integrity_check",
+                    heliotrope.config.INTEGRITY_CHECK_DELAY,
+                )
 
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
