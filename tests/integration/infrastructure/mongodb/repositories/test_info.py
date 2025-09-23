@@ -4,7 +4,7 @@ import pytest_asyncio
 from heliotrope.domain.entities.info import Info
 from heliotrope.infrastructure.mongodb import MongoDB
 from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
-from tests.unit.domain.entities.conftest import sample_info
+from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 
 @pytest_asyncio.fixture()
