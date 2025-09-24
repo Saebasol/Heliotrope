@@ -7,7 +7,7 @@ from sentry_sdk.integrations.sanic import SanicIntegration
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.tasks.manager import TaskManager
-from heliotrope.application.tasks.mirroring import MirroringProgress, MirroringTask
+from heliotrope.application.tasks.mirroring import MirroringStatus, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
 from heliotrope.infrastructure.hitomila import HitomiLa
@@ -46,9 +46,9 @@ from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeReposit
 async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     manager = Manager()
     heliotrope.shared_ctx.namespace = manager.Namespace()
-    heliotrope.shared_ctx.mirroring_progress_dict = manager.dict()
-    heliotrope.shared_ctx.mirroring_progress_dict.update(
-        MirroringProgress.default().to_dict()
+    heliotrope.shared_ctx.mirroring_status_dict = manager.dict()
+    heliotrope.shared_ctx.mirroring_status_dict.update(
+        MirroringStatus.default().to_dict()
     )
     heliotrope.shared_ctx.namespace.is_running_first_process = False
 
@@ -108,7 +108,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
     with Lock():
         namespace = heliotrope.shared_ctx.namespace
-        mirroring_progress_dict = heliotrope.shared_ctx.mirroring_progress_dict
+        mirroring_status_dict = heliotrope.shared_ctx.mirroring_status_dict
 
         if not namespace.is_running_first_process:
             namespace.is_running_first_process = True
@@ -138,7 +138,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 heliotrope.ctx.hitomi_la_galleryinfo_repository,
                 heliotrope.ctx.sa_galleryinfo_repository,
                 heliotrope.ctx.mongodb_repository,
-                mirroring_progress_dict,
+                mirroring_status_dict,
             )
             mirroring_task.REMOTE_CONCURRENT_SIZE = (
                 heliotrope.config.MIRRORING_REMOTE_CONCURRENT_SIZE

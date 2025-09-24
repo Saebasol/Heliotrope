@@ -35,8 +35,8 @@ def now() -> str:
 
 
 class Proxy:
-    def __init__(self, progress_dict: dict[str, Any]) -> None:
-        self.progress_dict = progress_dict
+    def __init__(self, status_dict: dict[str, Any]) -> None:
+        self.status_dict = status_dict
 
     def reset(self) -> None:
         self.job_completed = 0
@@ -44,22 +44,22 @@ class Proxy:
         self.job_total = 0
 
     def __getattr__(self, name: str) -> Any:
-        if name in self.progress_dict:
-            return self.progress_dict[name]
+        if name in self.status_dict:
+            return self.status_dict[name]
 
         return super().__getattr__(  # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType, reportAttributeAccessIssue]
             name
         )
 
     def __setattr__(self, name: str, value: Any) -> None:
-        if name == "progress_dict":
+        if name == "status_dict":
             super().__setattr__(name, value)
         else:
-            self.progress_dict[name] = value
+            self.status_dict[name] = value
 
 
 @dataclass
-class MirroringProgress(Serializer):
+class MirroringStatus(Serializer):
     index_files: list[str]
     total: int
     job_total: int
@@ -77,7 +77,7 @@ class MirroringProgress(Serializer):
         self.job_total = 0
 
     @classmethod
-    def default(cls) -> "MirroringProgress":
+    def default(cls) -> "MirroringStatus":
         return cls(
             index_files=[],
             total=0,
@@ -101,13 +101,13 @@ class MirroringTask:
         hitomi_la_repo: HitomiLaGalleryinfoRepository,
         sqlalchemy_repo: SAGalleryinfoRepository,
         mongodb_repo: MongoDBInfoRepository,
-        mirroring_progress_dict: dict[str, Any],
+        mirroring_status_dict: dict[str, Any],
     ) -> None:
         self.hitomi_la = hitomi_la_repo
         self.sqlalchemy = sqlalchemy_repo
         self.mongodb = mongodb_repo
-        self.progress = cast(MirroringProgress, Proxy(mirroring_progress_dict))
-        self.progress.index_files = hitomi_la_repo.hitomi_la.index_files
+        self.status = cast(MirroringStatus, Proxy(mirroring_status_dict))
+        self.status.index_files = hitomi_la_repo.hitomi_la.index_files
         self._task_lock = Lock()
         self.skip_ids: set[int] = set()
 
@@ -142,15 +142,15 @@ class MirroringTask:
         is_remote: bool,
     ) -> None:
         size = self.REMOTE_CONCURRENT_SIZE if is_remote else self.LOCAL_CONCURRENT_SIZE
-        self.progress.total = len(ids)
-        self.progress.job_total = math.ceil(len(ids) / size)
+        self.status.total = len(ids)
+        self.status.job_total = math.ceil(len(ids) / size)
 
         for job in self._get_splited_id(ids, size):
             await process_function(job)
-            self.progress.job_completed += 1
+            self.status.job_completed += 1
 
-        self.progress.reset()
-        self.progress.mirrored = len(ids)
+        self.status.reset()
+        self.status.mirrored = len(ids)
 
     async def _fetch_and_store_galleryinfo(
         self, ids: tuple[int, ...], target_repository: SAGalleryinfoRepository
@@ -217,13 +217,13 @@ class MirroringTask:
 
         if remote_differences:
             mirroring_is_end = True
-            self.progress.is_mirroring_galleryinfo = True
+            self.status.is_mirroring_galleryinfo = True
             await self._process_in_jobs(
                 remote_differences,
                 lambda batch: self._fetch_and_store_galleryinfo(batch, self.sqlalchemy),
                 is_remote=True,
             )
-            self.progress.is_mirroring_galleryinfo = False
+            self.status.is_mirroring_galleryinfo = False
 
         local_differences = await self._get_differences(
             GetAllGalleryinfoIdsUseCase(self.sqlalchemy),
@@ -231,14 +231,14 @@ class MirroringTask:
         )
 
         if local_differences:
-            self.progress.is_converting_to_info = True
+            self.status.is_converting_to_info = True
             await self._process_in_jobs(
                 local_differences, self._fetch_and_store_info, is_remote=False
             )
-            self.progress.is_converting_to_info = False
+            self.status.is_converting_to_info = False
 
             if mirroring_is_end:
-                self.progress.last_mirrored = now()
+                self.status.last_mirrored = now()
 
         await self._process_in_jobs(
             local_differences, self._integrity_check, is_remote=False
@@ -247,15 +247,15 @@ class MirroringTask:
     async def start_mirroring(self, delay: float) -> None:
         logger.info(f"Starting Mirroring task with delay: {delay}")
         while True:
-            self.progress.last_checked = now()
+            self.status.last_checked = now()
             async with self._task_lock:
-                if not self.progress.is_integrity_checking:
+                if not self.status.is_integrity_checking:
                     try:
                         await self.mirror()
                     finally:
-                        self.progress.is_converting_to_info = False
-                        self.progress.is_mirroring_galleryinfo = False
-                        self.progress.reset()
+                        self.status.is_converting_to_info = False
+                        self.status.is_mirroring_galleryinfo = False
+                        self.status.reset()
 
             await sleep(delay)
 
@@ -263,13 +263,13 @@ class MirroringTask:
         logger.info(f"Starting Integrity Check task with delay: {delay}")
         while True:
             await sleep(delay)
-            self.progress.last_checked = now()
+            self.status.last_checked = now()
             async with self._task_lock:
                 if (
-                    not self.progress.is_mirroring_galleryinfo
-                    and not self.progress.is_converting_to_info
+                    not self.status.is_mirroring_galleryinfo
+                    and not self.status.is_converting_to_info
                 ):
-                    self.progress.is_integrity_checking = True
+                    self.status.is_integrity_checking = True
                     try:
                         await self._process_in_jobs(
                             tuple(
@@ -282,5 +282,5 @@ class MirroringTask:
                     except:
                         self.skip_ids.clear()
                     finally:
-                        self.progress.is_integrity_checking = False
-                        self.progress.reset()
+                        self.status.is_integrity_checking = False
+                        self.status.reset()
