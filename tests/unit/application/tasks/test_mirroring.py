@@ -53,15 +53,15 @@ def mock_mongodb_repo():
 def status_dict() -> dict[str, Any]:
     return {
         "index_files": [],
-        "total": 0,
-        "job_total": 0,
-        "job_completed": 0,
-        "mirrored": 0,
+        "total_items": 0,
+        "batch_total": 0,
+        "batch_completed": 0,
+        "items_processed": 0,
         "is_mirroring_galleryinfo": False,
         "is_converting_to_info": False,
-        "is_integrity_checking": False,
-        "last_checked": "",
-        "last_mirrored": "",
+        "is_checking_integrity": False,
+        "last_checked_at": "",
+        "last_mirrored_at": "",
     }
 
 
@@ -100,38 +100,38 @@ def test_proxy_setattr(status_dict: dict[str, Any]):
 
 def test_proxy_reset(status_dict: dict[str, Any]):
     proxy = Proxy(status_dict)
-    proxy.job_completed = 10
-    proxy.total = 100
-    proxy.job_total = 20
+    proxy.batch_completed = 10
+    proxy.total_items = 100
+    proxy.batch_total = 20
     proxy.reset()
-    assert proxy.job_completed == 0
-    assert proxy.total == 0
-    assert proxy.job_total == 0
+    assert proxy.batch_completed == 0
+    assert proxy.total_items == 0
+    assert proxy.batch_total == 0
 
 
 def test_mirroring_status_default():
     status = MirroringStatus.default()
     assert status.index_files == []
-    assert status.total == 0
-    assert status.job_total == 0
-    assert status.job_completed == 0
-    assert status.mirrored == 0
+    assert status.total_items == 0
+    assert status.batch_total == 0
+    assert status.batch_completed == 0
+    assert status.items_processed == 0
     assert status.is_mirroring_galleryinfo is False
     assert status.is_converting_to_info is False
-    assert status.is_integrity_checking is False
-    assert status.last_checked == ""
-    assert status.last_mirrored == ""
+    assert status.is_checking_integrity is False
+    assert status.last_checked_at == ""
+    assert status.last_mirrored_at == ""
 
 
 def test_mirroring_status_reset():
     status = MirroringStatus.default()
-    status.job_completed = 10
-    status.total = 100
-    status.job_total = 20
+    status.batch_completed = 10
+    status.total_items = 100
+    status.batch_total = 20
     status.reset()
-    assert status.job_completed == 0
-    assert status.total == 0
-    assert status.job_total == 0
+    assert status.batch_completed == 0
+    assert status.total_items == 0
+    assert status.batch_total == 0
 
 
 def test_mirroring_task_init(
@@ -199,8 +199,8 @@ async def test_process_in_jobs_remote(mirroring_task: MirroringTask):
     # Store status values before calling the method (since it resets)
     await mirroring_task._process_in_jobs(ids, mock_process, is_remote=True)
 
-    # Status is reset at the end, but mirrored should be set
-    assert mirroring_task.status.mirrored == 5
+    # Status is reset at the end, but items_processed should be set
+    assert mirroring_task.status.items_processed == 5
     assert len(process_calls) == 1
     assert process_calls[0] == ids
 
@@ -215,8 +215,8 @@ async def test_process_in_jobs_local(mirroring_task: MirroringTask):
 
     await mirroring_task._process_in_jobs(ids, mock_process, is_remote=False)
 
-    # Status is reset at the end, but mirrored should be set
-    assert mirroring_task.status.mirrored == 50
+    # Status is reset at the end, but items_processed should be set
+    assert mirroring_task.status.items_processed == 50
     assert len(process_calls) == 2
 
 
@@ -413,8 +413,8 @@ async def test_mirror_with_remote_differences(mirroring_task: MirroringTask):
 
                 # Should call _process_in_jobs twice (once for galleryinfo, once for integrity check)
                 assert mock_process_in_jobs.call_count == 2
-                # Since there are no local differences but remote differences exist, last_mirrored should not be set
-                assert mirroring_task.status.last_mirrored == ""
+                # Since there are no local differences but remote differences exist, last_mirrored_at should not be set
+                assert mirroring_task.status.last_mirrored_at == ""
 
 
 @pytest.mark.asyncio
@@ -472,7 +472,7 @@ async def test_start_mirroring_single_iteration(
         mock_logger.info.assert_called_with("Starting Mirroring task with delay: 1.0")
         # mirror() should be called at least once
         assert mock_mirror.call_count >= 1
-        assert mirroring_task.status.last_checked != ""
+        assert mirroring_task.status.last_checked_at != ""
 
 
 @pytest.mark.asyncio
@@ -548,8 +548,8 @@ async def test_process_in_jobs_empty_ids(mirroring_task: MirroringTask):
 
     await mirroring_task._process_in_jobs(ids, mock_process, is_remote=True)
 
-    # Status is reset at the end, but mirrored should be set
-    assert mirroring_task.status.mirrored == 0
+    # Status is reset at the end, but items_processed should be set
+    assert mirroring_task.status.items_processed == 0
     assert len(process_calls) == 0
 
 
@@ -576,7 +576,7 @@ async def test_start_mirroring_with_integrity_checking_flag(
     mirroring_task: MirroringTask,
 ):
     # Set integrity checking flag to True
-    mirroring_task.status.is_integrity_checking = True
+    mirroring_task.status.is_checking_integrity = True
 
     with patch.object(mirroring_task, "mirror") as mock_mirror:
         with patch(
@@ -681,7 +681,7 @@ async def test_mirror_with_both_differences(mirroring_task: MirroringTask):
 
                 # Should call _process_in_jobs three times (galleryinfo, info conversion, integrity check)
                 assert mock_process_in_jobs.call_count == 3
-                assert mirroring_task.status.last_mirrored == "mocked_time"
+                assert mirroring_task.status.last_mirrored_at == "mocked_time"
 
 
 @pytest.mark.asyncio
