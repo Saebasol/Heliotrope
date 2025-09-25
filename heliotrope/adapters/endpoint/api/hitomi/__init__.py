@@ -1,6 +1,7 @@
 from sanic.blueprints import Blueprint
 
 from heliotrope.adapters.endpoint.api.hitomi.galleryinfo import hitomi_galleryinfo
+from heliotrope.adapters.endpoint.api.hitomi.id import hitomi_id
 from heliotrope.adapters.endpoint.api.hitomi.image import hitomi_image
 from heliotrope.adapters.endpoint.api.hitomi.info import hitomi_info
 from heliotrope.adapters.endpoint.api.hitomi.list import hitomi_list
@@ -10,6 +11,7 @@ from heliotrope.adapters.endpoint.api.hitomi.tags import hitomi_tags
 from heliotrope.adapters.endpoint.api.hitomi.thumbnail import hitomi_thumbnail
 
 hitomi_endpoint = Blueprint.group(
+    hitomi_id,
     hitomi_galleryinfo,
     hitomi_image,
     hitomi_info,

@@ -13,7 +13,7 @@
         async function fetchStatus() {
             const response = await fetch('/api/status');
             mirroringStatus = await response.json();
-            if (!mirroringStatus.is_mirroring_galleryinfo && !mirroringStatus.is_converting_to_info) {
+            if (!mirroringStatus.is_mirroring_galleryinfo && !mirroringStatus.is_converting_to_info && !mirroringStatus.is_checking_integrity) {
                 isMirroring = false;
                 if (intervalId) {
                     clearInterval(intervalId);
