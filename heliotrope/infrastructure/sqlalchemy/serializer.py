@@ -31,6 +31,6 @@ class SchemaSerializer(Serializer):
             del serialized["id"]
             del serialized["galleryinfo_id"]
 
-        if "id" in serialized and not "title" in serialized:
+        if "id" in serialized and "title" not in serialized:
             del serialized["id"]
         return serialized

@@ -20,7 +20,7 @@ class HeliotropeConfig(Config):
         env_prefix: Optional[str] = SANIC_PREFIX,
         keep_alive: Optional[bool] = None,
         *,
-        converters: Optional[Sequence[Callable[[str], Any]]] = [list_converter]
+        converters: Optional[Sequence[Callable[[str], Any]]] = [list_converter],
     ):
         # Default
         self.update(

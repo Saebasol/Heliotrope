@@ -8,9 +8,7 @@ from heliotrope.application.tasks.refresh import RefreshggJS
 @pytest.fixture
 def mock_app():
     app = MagicMock()
-    app.ctx.pythonmonkey_resolved_image_repository.javascript_interpreter.refresh_gg_js = (
-        AsyncMock()
-    )
+    app.ctx.pythonmonkey_resolved_image_repository.javascript_interpreter.refresh_gg_js = AsyncMock()
     return app
 
 

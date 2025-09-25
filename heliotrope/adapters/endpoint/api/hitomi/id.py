@@ -19,7 +19,6 @@ class HitomiGalleryinfoView(HTTPMethodView):
         self,
         request: HeliotropeRequest,
     ) -> HTTPResponse:
-
         ids = await GetAllGalleryinfoIdsUseCase(
             request.app.ctx.sa_galleryinfo_repository
         )

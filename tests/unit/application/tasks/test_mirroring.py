@@ -8,28 +8,10 @@ from heliotrope.application.tasks.mirroring import (
     MirroringStatus,
     MirroringTask,
     Proxy,
-    now,
 )
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.entities.info import Info
 from heliotrope.domain.exceptions import GalleryinfoNotFound
-from tests.unit.domain.entities.conftest import (
-    sample_artist,
-    sample_character,
-    sample_file,
-    sample_galleryinfo,
-    sample_group,
-    sample_info,
-    sample_language,
-    sample_language_info,
-    sample_language_localname,
-    sample_parody,
-    sample_raw_galleryinfo,
-    sample_raw_language,
-    sample_resolved_image,
-    sample_tag,
-    sample_type,
-)
 
 
 @pytest.fixture

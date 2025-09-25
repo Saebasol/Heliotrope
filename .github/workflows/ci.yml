@@ -25,16 +25,12 @@ jobs:
       - name: Setup poetry
         run: |
           python -m pip install pip
-          pip install poetry
-          #add path for poetry
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          pip install uv
       - name: Install dependencies
-        run: poetry install --no-interaction --with style
-      - name: Check style with black
-        run: poetry run black --check .
-      - name: Check style with isort
-        run: poetry run isort --check .
-        
+        run: uv sync --group style
+      - name: Check style with ruff
+        run: uv run ruff format --check
+
   type:
     runs-on: ubuntu-latest
     steps:
@@ -47,15 +43,13 @@ jobs:
       - name: Setup poetry
         run: |
           python -m pip install pip
-          pip install poetry
-          #add path for poetry
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          pip install uv
       - name: Install dependencies
-        run: poetry install --no-interaction --with type
+        run: uv sync --group type
       - name: Check type
-        run: poetry run pyright
+        run: uv run pyright
       - name: Check untyped function
-        run: poetry run mypy ./heliotrope
+        run: uv run mypy
   test:
     runs-on: ubuntu-latest
     services:
@@ -84,13 +78,11 @@ jobs:
       - name: Setup poetry
         run: |
           python -m pip install pip
-          pip install poetry
-          #add path for poetry
-          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+          pip install uv
       - name: Install dependencies
-        run: poetry install --no-interaction --with test
+        run: uv sync --group test
       - name: Check test
-        run: poetry run pytest --asyncio-mode=auto --cov=heliotrope --cov-report=xml
+        run: uv run pytest --asyncio-mode=auto --cov=heliotrope --cov-report=xml
       - name: Codecov
         uses: codecov/codecov-action@v5
 
