@@ -37,7 +37,6 @@ async def test_get_all_tags_with_data(
     tag_repository: SATagRepository,
     session: AsyncSession,
 ):
-
     await tag_repository.get_or_add_tag(session, sample_tag)
     await tag_repository.get_or_add_tag(session, sample_tag_female)
     await tag_repository.get_or_add_tag(session, sample_tag_male)

@@ -1,50 +1,48 @@
-[tool.poetry]
+[project]
 name = "heliotrope"
 version = "7.0.0"
 description = "Hitomi.la mirror api"
-authors = ["Ryu Juheon <saidbysolo@gmail.com>"]
-license = "MIT License"
 readme = "README.md"
-package-mode = false
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.12.15",
+    "asyncpg>=0.30.0",
+    "deepdiff>=8.6.1",
+    "pymongo>=4.15.1",
+    "pythonmonkey>=1.2.0",
+    "ruff>=0.13.1",
+    "sanic>=25.3.0",
+    "sanic-ext>=24.12.0",
+    "sentry-sdk>=2.38.0",
+    "sqlalchemy>=2.0.43",
+]
 
-[tool.poetry.dependencies]
-python = "^3.13"
-sanic = "^25.3.0"
-aiohttp = "^3.12.15"
-sqlalchemy = "^2.0.43"
-pythonmonkey = "^1.2.0"
-pymongo = "^4.15.1"
-sanic-ext = "^24.12.0"
-sentry-sdk = "^2.38.0"
-asyncpg = "^0.30.0"
-deepdiff = "^8.6.1"
+[dependency-groups]
+style = [
+    "ruff>=0.13.1",
+]
+test = [
+    "httpx>=0.28.1",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=7.0.0",
+]
+type = [
+    "mypy>=1.18.2",
+    "pyright>=1.1.405",
+]
 
 [tool.pyright]
 include = ["heliotrope"]
 typeCheckingMode = "strict"
 
-[tool.poetry.group.style.dependencies]
-black = "^25.9.0"
-isort = "^5.10.1"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.4.2"
-pytest-cov = "^7.0.0"
-pytest-asyncio = "^1.2.0"
-httpx = "^0.28.1"
-
-[tool.poetry.group.type.dependencies]
-pyright = "^1.1.405"
-mypy = "^1.18.2"
-
-[tool.isort]
-src_paths = ["heliotrope", "tests"]
-profile = "black"
+[tool.ruff]
+include = ["heliotrope/**/*.py"]
+lint.extend-select = ["I"]
+lint.select = []
 
 [tool.mypy]
+packages = ["heliotrope"]
 disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before-def", "call-arg", "arg-type", "call-overload", "valid-type", "var-annotated", "override", "return", "empty-body", "return-value", "assignment", "method-assign", "type-var", "operator", "index", "list-item", "dict-item", "typeddict-item", "typeddict-unknown-key", "has-type", "import", "no-redef", "func-returns-value", "abstract", "type-abstract", "safe-super", "valid-newtype", "exit-return", "name-match", "literal-required", "no-overload-impl", "unused-coroutine", "top-level-await", "assert-type", "truthy-function", "str-format", "str-bytes-safe", "annotation-unchecked", "syntax", "misc"]
 disallow_untyped_defs = true
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

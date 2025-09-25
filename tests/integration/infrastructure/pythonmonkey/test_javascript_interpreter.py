@@ -117,7 +117,6 @@ async def test_image_url_from_image_avif(
     javascript_interpreter: JavaScriptInterpreter,
     hitomi_la: HitomiLa,
 ):
-
     test_file = File.from_dict(
         {
             "hasavif": True,
@@ -143,7 +142,6 @@ async def test_image_url_from_image_webp(
     javascript_interpreter: JavaScriptInterpreter,
     hitomi_la: HitomiLa,
 ):
-
     test_file = File.from_dict(
         {
             "hasavif": True,

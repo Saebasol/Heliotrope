@@ -7,11 +7,13 @@ RUN apt-get update && \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y --no-install-recommends nodejs
 
-COPY pyproject.toml poetry.lock poetry.toml ./
+COPY uv.lock pyproject.toml ./
 
-RUN pip install poetry
+RUN pip install uv
 
-RUN poetry install --no-interaction --only main
+RUN uv venv .venv
+
+RUN uv sync --frozen
 
 FROM python:3.13-slim AS production
 

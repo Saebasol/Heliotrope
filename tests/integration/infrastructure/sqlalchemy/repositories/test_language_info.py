@@ -10,9 +10,7 @@ from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
 from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
     SALanguageInfoRepository,
 )
-from tests.unit.domain.entities.conftest import (
-    sample_language_info as sample_language_info,
-)
+from tests.unit.domain.entities.conftest import sample_language_info
 
 
 @pytest.mark.asyncio

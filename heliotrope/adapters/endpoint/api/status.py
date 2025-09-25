@@ -5,17 +5,17 @@ from sanic_ext.extensions.openapi import openapi
 
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
-progress_endpoint = Blueprint("progress", url_prefix="/progress")
+status_endpoint = Blueprint("status", url_prefix="/status")
 
 
-class MirroringProgressView(HTTPMethodView):
-    @openapi.tag("progress")
-    @openapi.summary("Get mirroring progress")
+class MirroringStatusView(HTTPMethodView):
+    @openapi.tag("status")
+    @openapi.summary("Get mirroring status")
     async def get(self, request: HeliotropeRequest) -> HTTPResponse:
         return json(
-            request.app.shared_ctx.mirroring_progress_dict.copy(),
+            request.app.shared_ctx.mirroring_status_dict.copy(),
             headers={"Access-Control-Allow-Origin": "*"},
         )
 
 
-progress_endpoint.add_route(MirroringProgressView.as_view(), "/")
+status_endpoint.add_route(MirroringStatusView.as_view(), "/")

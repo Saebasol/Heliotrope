@@ -1,7 +1,4 @@
-from importlib import reload
-
 import pytest_asyncio
-from pythonmonkey import eval, stop  # pyright: ignore[reportMissingTypeStubs]
 
 from heliotrope.infrastructure.hitomila import HitomiLa
 from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter

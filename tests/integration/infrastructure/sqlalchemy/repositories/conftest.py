@@ -54,7 +54,6 @@ async def language_localname_repository(sqlalchemy: SQLAlchemy):
 
 @pytest_asyncio.fixture()
 async def parody_repository(sqlalchemy: SQLAlchemy):
-
     return SAParodyRepository(sqlalchemy)
 
 
