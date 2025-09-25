@@ -12,9 +12,7 @@ from heliotrope.application.tasks.mirroring import (
 from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from heliotrope.domain.entities.info import Info
 from heliotrope.domain.exceptions import GalleryinfoNotFound
-from tests.unit.domain.entities.conftest import (
-    sample_galleryinfo as sample_galleryinfo,
-)
+from tests.unit.domain.entities.conftest import *
 
 
 @pytest.fixture
