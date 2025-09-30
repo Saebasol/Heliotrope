@@ -23,17 +23,17 @@ class HitomiListView(HTTPMethodView):
     )
     async def get(self, request: HeliotropeRequest, index: int) -> HTTPResponse:
         check_int64(index)
-        total = len(await GetAllInfoIdsUseCase(request.app.ctx.mongodb_repository))
+        count = len(await GetAllInfoIdsUseCase(request.app.ctx.mongodb_repository))
 
         start_at_zero = index - 1
 
-        if start_at_zero < 0 or total < start_at_zero:
+        if start_at_zero < 0 or count < start_at_zero:
             raise InvalidUsage
 
-        info_list = await GetListInfoUseCase(
-            request.app.ctx.mongodb_repository
-        ).execute(start_at_zero)
-        return json(ListResultDTO(list=info_list, count=total).to_dict())
+        items = await GetListInfoUseCase(request.app.ctx.mongodb_repository).execute(
+            start_at_zero
+        )
+        return json(ListResultDTO(items=items, count=count).to_dict())
 
 
 hitomi_list.add_route(HitomiListView.as_view(), "/<index:int>")
