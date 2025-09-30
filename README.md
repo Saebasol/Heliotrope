@@ -9,11 +9,12 @@
 
 ## Feature
 
-* 🚀 Very fast response and processing with [Sanic framework](https://sanicframework.org/en/)
+* 🚀 Very fast response and processing with [Sanic framework](https://sanic.dev/)
 * ⚡ Blazingly fast search with [MongoDB](https://www.mongodb.com/)
 * 🔄 Galleryinfo, Info auto mirroring.
 * 🖼️ Pixiv.net, Hitomi.la image proxying.
 * 🏡 Production ready with [Bouquet](#related-projects)
+* 🧑‍💻 Easy to use SDKs for Python, JS/TS, Rust.
 
 ## SDK
 
@@ -33,10 +34,20 @@ yarn add @saebasol/delphinium
 pnpm add @saebasol/delphinium
 ```
 
+### Rust
+* [delphinium-rs](https://github.com/Saebasol/delphinium-rs)
+```toml
+[dependencies]
+delphinium = "1.0.0"
+``` 
+
+
 ## Related Projects
 
 * [Hibiscus](https://github.com/Saebasol/Hibiscus)
   * A modern, self-hostable manga reader with a beautiful interface built on top of Heliotrope.
 * [Bouquet](https://github.com/Saebasol/Bouquet)
   * Bouquet is a easy deployment solution for Heliotrope and Hibiscus.
+* [Hyacinth](https://github.com/Saebasol/Hyacinth)
+  * A tool to create a personal offline manga library. depends on Heliotrope for metadata.
   
