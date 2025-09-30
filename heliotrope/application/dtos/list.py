@@ -6,5 +6,5 @@ from heliotrope.domain.serializer import Serializer
 
 @dataclass
 class ListResultDTO(Serializer):
-    list: list[Info]
+    items: list[Info]
     count: int

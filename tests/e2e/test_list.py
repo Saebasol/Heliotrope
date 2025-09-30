@@ -10,7 +10,7 @@ async def test_list(asgi_client: httpx.AsyncClient):
     assert response.status_code == 200
     result = ListResultDTO(**response.json())
     assert isinstance(result.count, int)
-    assert isinstance(result.list, list)
+    assert isinstance(result.items, list)
 
 
 @pytest.mark.asyncio

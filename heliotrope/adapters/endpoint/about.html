@@ -42,12 +42,12 @@
                 statusElement.innerText = `Currently checking integrity ${lang} galleryinfo`;
                 checkedElement.innerText = `I am checking ${mirroringStatus.total_items} works, and ${mirroringStatus.batch_completed} out of ${mirroringStatus.batch_total} jobs have been completed.`;
             } else {
-                statusElement.innerText = `Currently I'm idle and i items_processed with the following languages: ${lang}`;
+                statusElement.innerText = `Currently I'm idle and I ${mirroringStatus.items_processed} with the following languages: ${lang}`;
                 if (mirroringStatus.items_processed === 0) {
-                    checkedElement.innerText = `I last checked on ${mirroringStatus.last_checked_at} and no works have been items_processed yet. were last items_processed on ${mirroringStatus.last_mirrored_at}.`
+                    checkedElement.innerText = `I last checked on ${mirroringStatus.last_checked_at} and no works have been ${mirroringStatus.items_processed} yet. were last ${mirroringStatus.items_processed} on ${mirroringStatus.last_mirrored_at}.`
                     return;
                 }
-                checkedElement.innerText = `I last checked on ${mirroringStatus.last_checked_at} and ${mirroringStatus.items_processed} works were last items_processed on ${mirroringStatus.last_mirrored_at}.`
+                checkedElement.innerText = `I last checked on ${mirroringStatus.last_checked_at} and ${mirroringStatus.items_processed} works were last ${mirroringStatus.items_processed} on ${mirroringStatus.last_mirrored_at}.`
             }
         }
 
