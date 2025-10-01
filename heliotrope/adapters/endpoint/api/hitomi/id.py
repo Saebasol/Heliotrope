@@ -21,9 +21,11 @@ class HitomiGalleryinfoView(HTTPMethodView):
     ) -> HTTPResponse:
         ids = await GetAllGalleryinfoIdsUseCase(
             request.app.ctx.sa_galleryinfo_repository
-        )
+        ).execute()
 
-        return raw(compress(pack(f"<{len(ids)}I", *ids)))
+        return raw(
+            compress(pack(f"<{len(ids)}I", *ids)), headers={"Content-Encoding": "gzip"}
+        )
 
 
 hitomi_id.add_route(HitomiGalleryinfoView.as_view(), "")
