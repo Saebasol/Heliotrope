@@ -18,12 +18,12 @@ def test_post_search_body_dto_creation():
 
 
 def test_search_result_dto_creation(sample_info: Info):
-    search_result_dto = SearchResultDTO(result=[sample_info], count=1)
-    assert search_result_dto.result[0] == sample_info
+    search_result_dto = SearchResultDTO(results=[sample_info], count=1)
+    assert search_result_dto.results[0] == sample_info
     assert search_result_dto.count == 1
 
 
 def test_search_result_dto_serialization(sample_info: Info):
-    dto = SearchResultDTO(result=[sample_info], count=1)
-    expected_dict = {"result": [sample_info.to_dict()], "count": 1}
+    dto = SearchResultDTO(results=[sample_info], count=1)
+    expected_dict = {"results": [sample_info.to_dict()], "count": 1}
     assert dto.to_dict() == expected_dict

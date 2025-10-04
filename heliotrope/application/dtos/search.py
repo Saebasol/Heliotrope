@@ -16,5 +16,5 @@ class PostSearchBodyDTO:
 
 @dataclass
 class SearchResultDTO(Serializer):
-    result: list[Info]
+    results: list[Info]
     count: int
