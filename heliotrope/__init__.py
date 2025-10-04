@@ -10,7 +10,7 @@ class VersionInfo(NamedTuple):
 
 
 version_info = VersionInfo(
-    major=7, minor=0, micro=0, releaselevel="candidate", serial=5
+    major=7, minor=0, micro=0, releaselevel="candidate", serial=6
 )
 
 __version__ = f"{version_info.major}.{version_info.minor}.{version_info.micro}"
