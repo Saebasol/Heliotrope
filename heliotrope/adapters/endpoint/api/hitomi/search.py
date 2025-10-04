@@ -57,7 +57,7 @@ class HitomiSearchView(HTTPMethodView):
             count, results = await SearchByQueryUseCase(
                 request.app.ctx.mongodb_repository
             ).execute(body.query, offset)
-            return json(SearchResultDTO(result=results, count=count).to_dict())
+            return json(SearchResultDTO(results=results, count=count).to_dict())
 
         raise InvalidUsage
 
