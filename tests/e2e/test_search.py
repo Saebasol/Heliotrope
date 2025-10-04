@@ -11,7 +11,7 @@ async def test_search(asgi_client: httpx.AsyncClient):
     )
     assert response.status_code == 200
     result = SearchResultDTO(**response.json())
-    assert isinstance(result.result, list)
+    assert isinstance(result.results, list)
     assert isinstance(result.count, int)
 
 
@@ -22,5 +22,5 @@ async def test_search_negative(asgi_client: httpx.AsyncClient):
     )
     assert response.status_code == 200
     result = SearchResultDTO(**response.json())
-    assert isinstance(result.result, list)
+    assert isinstance(result.results, list)
     assert isinstance(result.count, int)
