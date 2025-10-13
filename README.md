@@ -19,7 +19,7 @@
 ## Languages ​​supported by Saebasol
 
 * English: https://en.heliotrope.saebasol.org
-* Japanese: https://jp.heliotrope.saebasol.org
+* Japanese: https://ja.heliotrope.saebasol.org
 * Korean: https://heliotrope.saebasol.org (MongoDB Atlas Search Supported)
 
 Other languages ​​can also be used by users who distribute Heliotrope themselves!
