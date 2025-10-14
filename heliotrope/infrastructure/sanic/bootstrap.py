@@ -146,6 +146,9 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             mirroring_task.LOCAL_CONCURRENT_SIZE = (
                 heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
             )
+            mirroring_task.INTEGRITY_CHECK_RANGE_SIZE = (
+                heliotrope.config.INTEGRITY_CHECK_RANGE_SIZE
+            )
 
             if not heliotrope.test_mode:  # pragma: no cover
                 task_manager.register_task(
@@ -156,7 +159,8 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 task_manager.register_task(
                     mirroring_task.start_integrity_check,
                     "integrity_check",
-                    heliotrope.config.INTEGRITY_CHECK_DELAY,
+                    heliotrope.config.INTEGRITY_PARTIAL_CHECK_DELAY,
+                    heliotrope.config.INTEGRITY_CHECK_ALL_DELAY,
                 )
 
 
