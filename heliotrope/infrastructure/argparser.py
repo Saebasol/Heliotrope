@@ -90,7 +90,7 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
-        "--integrity-partial-check-delay",
+        "--integrity-check-partial-delay",
         type=int,
         default=86400,
         help="The delay between integrity check partial task (default: 86400)",
