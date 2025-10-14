@@ -1,6 +1,6 @@
 [project]
 name = "heliotrope"
-version = "7.1.0"
+version = "7.1.1"
 description = "Hitomi.la mirror api"
 readme = "README.md"
 requires-python = ">=3.13"
