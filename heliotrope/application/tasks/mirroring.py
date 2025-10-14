@@ -259,12 +259,12 @@ class MirroringTask:
     async def start_integrity_check(
         self, partial_check_delay: float, all_check_delay: float
     ) -> None:
-        if all_check_delay > partial_check_delay:
+        if partial_check_delay >= all_check_delay:
             logger.warning(
-                f"All check delay {all_check_delay} is greater than partial check delay {partial_check_delay}"
+                f"Partial check delay ({partial_check_delay}) is greater than or equal to all check delay ({all_check_delay})."
             )
             logger.warning(
-                f"In this case, the partial check delay is ignored. A full check is always performed."
+                f"In this case, partial check delay is ignored and overwritten by all check delay, so all checks are always performed."
             )
             partial_check_delay = all_check_delay
         logger.info(

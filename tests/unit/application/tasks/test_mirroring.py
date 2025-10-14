@@ -494,7 +494,7 @@ async def test_start_integrity_check_single_iteration(
                 raise
 
         mock_logger.info.assert_called_with(
-            "Starting Integrity Check task with paritial check delay: 2.0 and all check delay: 2.0"
+            "Starting Integrity Check task with paritial check delay: 1.0 and all check delay: 2.0"
         )
 
 
@@ -868,8 +868,8 @@ async def test_start_integrity_check_delay_logic_warning(
     mock_create_task: MagicMock,
     mirroring_task: MirroringTask,
 ):
-    """Test warning when all_check_delay > partial_check_delay"""
-    partial_delay = 5.0
+    """Test warning when partial_check_delay >= all_check_delay"""
+    partial_delay = 15.0  # Greater than all_delay to trigger warning
     all_delay = 10.0
 
     mock_task = AsyncMock()
@@ -908,9 +908,68 @@ async def test_start_integrity_check_delay_logic_warning(
         warning_calls = [
             call
             for call in mock_logger.warning.call_args_list
-            if "All check delay" in str(call) or "In this case" in str(call)
+            if "greater than or equal" in str(call) or "In this case" in str(call)
         ]
         assert len(warning_calls) >= 1  # At least one warning message
+
+
+@pytest.mark.asyncio
+@patch("heliotrope.application.tasks.mirroring.create_task")
+@patch("heliotrope.application.tasks.mirroring.sleep")
+@patch("heliotrope.application.tasks.mirroring.logger")
+async def test_start_integrity_check_equal_delays_warning(
+    mock_logger: MagicMock,
+    mock_sleep: MagicMock,
+    mock_create_task: MagicMock,
+    mirroring_task: MirroringTask,
+):
+    """Test warning when partial_check_delay == all_check_delay (>= condition)"""
+    partial_delay = 10.0
+    all_delay = 10.0  # Equal delays should trigger warning
+
+    mock_task = AsyncMock()
+    mock_create_task.return_value = mock_task
+
+    # Mock sleep to break loop after first iteration
+    call_count = 0
+
+    async def mock_sleep_func(delay):
+        nonlocal call_count
+        call_count += 1
+        if call_count > 2:
+            raise Exception("Break loop")
+
+    mock_sleep.side_effect = mock_sleep_func
+
+    with patch(
+        "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+    ) as mock_usecase:
+        # Mock the class to return a function that creates new awaitables each time
+        def mock_awaitable_factory(repo):
+            async def mock_awaitable():
+                return [1, 2, 3]
+
+            return mock_awaitable()
+
+        mock_usecase.side_effect = mock_awaitable_factory
+
+        try:
+            await mirroring_task.start_integrity_check(partial_delay, all_delay)
+        except Exception as e:
+            if str(e) != "Break loop":
+                raise
+
+        # Should log warning about equal delay configuration
+        warning_calls = [
+            call
+            for call in mock_logger.warning.call_args_list
+            if (
+                "greater than or equal" in str(call)
+                and "partial check delay" in str(call)
+            )
+            or "In this case" in str(call)
+        ]
+        assert len(warning_calls) >= 1  # At least one warning message for equal delays
 
 
 @pytest.mark.asyncio

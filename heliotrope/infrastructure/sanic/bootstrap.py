@@ -159,7 +159,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                 task_manager.register_task(
                     mirroring_task.start_integrity_check,
                     "integrity_check",
-                    heliotrope.config.INTEGRITY_PARTIAL_CHECK_DELAY,
+                    heliotrope.config.INTEGRITY_CHECK_PARTIAL_DELAY,
                     heliotrope.config.INTEGRITY_CHECK_ALL_DELAY,
                 )
 
