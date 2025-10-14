@@ -90,10 +90,17 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
-        "--integrity-check-delay",
+        "--integrity-partial-check-delay",
         type=int,
         default=86400,
-        help="The delay between integrity check task (default: 86400)",
+        help="The delay between integrity check partial task (default: 86400)",
+    )
+
+    config.add_argument(
+        "--integrity-check-all-delay",
+        type=int,
+        default=86400,
+        help="The delay between integrity check all task (default: 86400)",
     )
 
     config.add_argument(
@@ -121,6 +128,13 @@ def parse_args(argv: list[str]) -> Namespace:
         type=int,
         default=25,
         help="The number of concurrent requests to the local database (default: 5)",
+    )
+
+    config.add_argument(
+        "--integrity-check-range-size",
+        type=int,
+        default=100,
+        help="The range size for integrity checks (default: 100)",
     )
 
     config.add_argument(

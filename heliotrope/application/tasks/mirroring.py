@@ -1,5 +1,5 @@
 import math
-from asyncio import Lock, as_completed, sleep
+from asyncio import Lock, as_completed, create_task, sleep
 from dataclasses import dataclass
 from datetime import datetime
 from time import tzname
@@ -95,6 +95,7 @@ class MirroringStatus(Serializer):
 class MirroringTask:
     REMOTE_CONCURRENT_SIZE: int = 50
     LOCAL_CONCURRENT_SIZE: int = 25
+    INTEGRITY_CHECK_RANGE_SIZE: int = 100
 
     def __init__(
         self,
@@ -209,14 +210,12 @@ class MirroringTask:
                 )
 
     async def mirror(self) -> None:
-        mirroring_is_end = False
         remote_differences = await self._get_differences(
             GetAllGalleryinfoIdsUseCase(self.hitomi_la),
             GetAllGalleryinfoIdsUseCase(self.sqlalchemy),
         )
 
         if remote_differences:
-            mirroring_is_end = True
             self.status.is_mirroring_galleryinfo = True
             await self._process_in_jobs(
                 remote_differences,
@@ -236,9 +235,7 @@ class MirroringTask:
                 local_differences, self._fetch_and_store_info, is_remote=False
             )
             self.status.is_converting_to_info = False
-
-            if mirroring_is_end:
-                self.status.last_mirrored_at = now()
+            self.status.last_mirrored_at = now()
 
         await self._process_in_jobs(
             local_differences, self._integrity_check, is_remote=False
@@ -259,10 +256,27 @@ class MirroringTask:
 
             await sleep(delay)
 
-    async def start_integrity_check(self, delay: float) -> None:
-        logger.info(f"Starting Integrity Check task with delay: {delay}")
+    async def start_integrity_check(
+        self, partial_check_delay: float, all_check_delay: float
+    ) -> None:
+        if all_check_delay > partial_check_delay:
+            logger.warning(
+                f"All check delay {all_check_delay} is greater than partial check delay {partial_check_delay}"
+            )
+            logger.warning(
+                f"In this case, the partial check delay is ignored. A full check is always performed."
+            )
+            partial_check_delay = all_check_delay
+        logger.info(
+            f"Starting Integrity Check task with paritial check delay: {partial_check_delay} and all check delay: {all_check_delay}"
+        )
         while True:
-            await sleep(delay)
+            task = create_task(sleep(all_check_delay))
+            is_all_check = False
+            await sleep(partial_check_delay)
+            if task.done():
+                task = create_task(sleep(all_check_delay))
+                is_all_check = True
             self.status.last_checked_at = now()
             async with self._task_lock:
                 if (
@@ -270,12 +284,16 @@ class MirroringTask:
                     and not self.status.is_converting_to_info
                 ):
                     self.status.is_checking_integrity = True
+
+                    ids = tuple(
+                        set(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy))
+                        - self.skip_ids
+                    )
+                    if not is_all_check:
+                        ids = ids[: self.INTEGRITY_CHECK_RANGE_SIZE]
                     try:
                         await self._process_in_jobs(
-                            tuple(
-                                set(await GetAllGalleryinfoIdsUseCase(self.sqlalchemy))
-                                - self.skip_ids
-                            ),
+                            ids,
                             self._integrity_check,
                             is_remote=False,
                         )
