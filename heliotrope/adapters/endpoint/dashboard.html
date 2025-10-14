@@ -145,7 +145,6 @@
                         </div>
                         <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
                             <span id="batch-info">0 / 0 batches</span>
-                            <span id="items-info">0 / 0 items</span>
                         </div>
                     </div>
 
@@ -381,8 +380,6 @@
             document.getElementById('progress-bar').style.width = progressPercentage + '%';
             document.getElementById('batch-info').textContent =
                 `${data.batch_completed.toLocaleString()} / ${data.batch_total.toLocaleString()} batches`;
-            document.getElementById('items-info').textContent =
-                `${data.items_processed.toLocaleString()} / ${data.total_items.toLocaleString()} items`;
 
             // Update statistics
             document.getElementById('stat-total-items').textContent = data.total_items.toLocaleString();
