@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-      - name: Setup poetry
+      - name: Setup uv
         run: |
           python -m pip install pip
           pip install uv
@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-      - name: Setup poetry
+      - name: Setup uv
         run: |
           python -m pip install pip
           pip install uv
@@ -75,7 +75,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-      - name: Setup poetry
+      - name: Setup uv
         run: |
           python -m pip install pip
           pip install uv

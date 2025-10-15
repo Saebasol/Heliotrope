@@ -2,9 +2,11 @@ from argparse import Namespace
 from json import loads
 from typing import Any, Callable, Optional, Sequence, Union, cast
 
-from sanic.config import SANIC_PREFIX, Config
+from sanic.config import Config
 
 from heliotrope import __version__
+
+HELIOTROPE_PREFIX = "HELIOTROPE_"
 
 
 def list_converter(value: str) -> list[Any]:
@@ -17,7 +19,7 @@ class HeliotropeConfig(Config):
     def __init__(
         self,
         defaults: dict[str, Union[str, bool, int, float, None]] = {},
-        env_prefix: Optional[str] = SANIC_PREFIX,
+        env_prefix: Optional[str] = HELIOTROPE_PREFIX,
         keep_alive: Optional[bool] = None,
         *,
         converters: Optional[Sequence[Callable[[str], Any]]] = [list_converter],
@@ -35,12 +37,12 @@ class HeliotropeConfig(Config):
                 "INDEX_FILES": ["index-english.nozomi"],
                 "MIRRORING_DELAY": 3600,
                 "REFRESH_GG_JS_DELAY": 3600,
-                "INTEGRITY_CHECK_PARTIAL_DELAY": 3600,
-                "INTEGRITY_CHECK_ALL_DELAY": 86400,
+                "INTEGRITY_PARTIAL_CHECK_DELAY": 21600,
+                "INTEGRITY_ALL_CHECK_DELAY": 432000,
                 "USE_ATLAS_SEARCH": False,
                 "MIRRORING_REMOTE_CONCURRENT_SIZE": 50,
                 "MIRRORING_LOCAL_CONCURRENT_SIZE": 25,
-                "INTEGRITY_CHECK_RANGE_SIZE": 100,
+                "INTEGRITY_PARTIAL_CHECK_RANGE_SIZE": 100,
                 # Sanic config
                 "HOST": "127.0.0.1",
                 "PORT": 8000,
@@ -79,14 +81,14 @@ class HeliotropeConfig(Config):
     INFO_DB_URL: str
     MIRRORING_DELAY: float
     REFRESH_GG_JS_DELAY: float
-    INTEGRITY_CHECK_PARTIAL_DELAY: float
-    INTEGRITY_CHECK_ALL_DELAY: float
+    INTEGRITY_PARTIAL_CHECK_DELAY: float
+    INTEGRITY_ALL_CHECK_DELAY: float
     SUPERVISOR_DELAY: float
     INDEX_FILES: list[str]
     USE_ATLAS_SEARCH: bool
     MIRRORING_REMOTE_CONCURRENT_SIZE: int
     MIRRORING_LOCAL_CONCURRENT_SIZE: int
-    INTEGRITY_CHECK_RANGE_SIZE: int
+    INTEGRITY_PARTIAL_CHECK_RANGE_SIZE: int
     # Sanic config
     DEBUG: bool
     HOST: str
