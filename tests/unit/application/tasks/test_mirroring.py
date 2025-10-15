@@ -129,7 +129,7 @@ def test_mirroring_task_init(
     assert mirroring_task.skip_ids == set()
     assert mirroring_task.REMOTE_CONCURRENT_SIZE == 50
     assert mirroring_task.LOCAL_CONCURRENT_SIZE == 25
-    assert mirroring_task.INTEGRITY_CHECK_RANGE_SIZE == 100
+    assert mirroring_task.INTEGRITY_PARTIAL_CHECK_RANGE_SIZE == 100
 
 
 @pytest.mark.asyncio
