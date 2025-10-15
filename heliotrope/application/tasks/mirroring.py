@@ -270,8 +270,8 @@ class MirroringTask:
         logger.info(
             f"Starting Integrity Check task with paritial check delay: {partial_check_delay} and all check delay: {all_check_delay}"
         )
+        task = create_task(sleep(all_check_delay))
         while True:
-            task = create_task(sleep(all_check_delay))
             is_all_check = False
             await sleep(partial_check_delay)
             if task.done():
