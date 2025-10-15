@@ -95,7 +95,7 @@ class MirroringStatus(Serializer):
 class MirroringTask:
     REMOTE_CONCURRENT_SIZE: int = 50
     LOCAL_CONCURRENT_SIZE: int = 25
-    INTEGRITY_CHECK_RANGE_SIZE: int = 100
+    INTEGRITY_PARTIAL_CHECK_RANGE_SIZE: int = 100
 
     def __init__(
         self,
@@ -290,7 +290,7 @@ class MirroringTask:
                         - self.skip_ids
                     )
                     if not is_all_check:
-                        ids = ids[: self.INTEGRITY_CHECK_RANGE_SIZE]
+                        ids = ids[: self.INTEGRITY_PARTIAL_CHECK_RANGE_SIZE]
                     try:
                         await self._process_in_jobs(
                             ids,

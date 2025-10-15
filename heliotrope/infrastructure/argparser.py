@@ -90,17 +90,17 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
-        "--integrity-check-partial-delay",
+        "--integrity-partial-check-delay",
         type=int,
-        default=86400,
-        help="The delay between integrity check partial task (default: 86400)",
+        default=21600,
+        help="The delay between integrity partial task (default: 21600)",
     )
 
     config.add_argument(
-        "--integrity-check-all-delay",
+        "--integrity-all-check-delay",
         type=int,
-        default=86400,
-        help="The delay between integrity check all task (default: 86400)",
+        default=432000,
+        help="The delay between integrity all task (default: 432000)",
     )
 
     config.add_argument(
@@ -109,6 +109,7 @@ def parse_args(argv: list[str]) -> Namespace:
         default="",
         help="The secret to use for forwarded headers (default: '')",
     )
+
     config.add_argument(
         "--use-atlas-search",
         action="store_true",
@@ -131,10 +132,10 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
-        "--integrity-check-range-size",
+        "--integrity-partial-check-range-size",
         type=int,
         default=100,
-        help="The range size for integrity checks (default: 100)",
+        help="The range size for integrity partial checks (default: 100)",
     )
 
     config.add_argument(
