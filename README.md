@@ -15,6 +15,8 @@
 * 🖼️ Pixiv.net, Hitomi.la image proxying.
 * 🏡 Production ready with [Bouquet](#related-projects)
 * 🧑‍💻 Easy to use SDKs for Python, JS/TS, Rust.
+* 📚 Friendly [documentation](https://github.com/Saebasol/Heliotrope/wiki) on how to configure.
+
 
 ## Languages ​​supported by Saebasol
 
