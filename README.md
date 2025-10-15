@@ -24,7 +24,7 @@
 * Japanese: https://ja.heliotrope.saebasol.org
 * Korean: https://heliotrope.saebasol.org (MongoDB Atlas Search Supported)
 
-Other languages ​​can also be used by users who distribute Heliotrope themselves!
+[Other languages](https://github.com/Saebasol/Heliotrope/wiki/Configuration#supported-index-files) ​​can also be used by users who distribute Heliotrope themselves!
 
 ## SDK
 
