@@ -16,7 +16,6 @@ dependencies = [
     "sentry-sdk>=2.38.0",
     "sqlalchemy>=2.0.43",
 ]
-packages = "heliotrope"
 
 [dependency-groups]
 style = [
@@ -46,4 +45,11 @@ lint.select = []
 packages = ["heliotrope"]
 disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before-def", "call-arg", "arg-type", "call-overload", "valid-type", "var-annotated", "override", "return", "empty-body", "return-value", "assignment", "method-assign", "type-var", "operator", "index", "list-item", "dict-item", "typeddict-item", "typeddict-unknown-key", "has-type", "import", "no-redef", "func-returns-value", "abstract", "type-abstract", "safe-super", "valid-newtype", "exit-return", "name-match", "literal-required", "no-overload-impl", "unused-coroutine", "top-level-await", "assert-type", "truthy-function", "str-format", "str-bytes-safe", "annotation-unchecked", "syntax", "misc"]
 disallow_untyped_defs = true
+
+[tool.setuptools]
+packages = ["heliotrope"]
+
+[build-system]
+requires = ["setuptools>=72.0"]
+build-backend = "setuptools.build_meta"
 
