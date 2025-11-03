@@ -16,6 +16,7 @@ dependencies = [
     "sentry-sdk>=2.38.0",
     "sqlalchemy>=2.0.43",
 ]
+packages = "heliotrope"
 
 [dependency-groups]
 style = [
