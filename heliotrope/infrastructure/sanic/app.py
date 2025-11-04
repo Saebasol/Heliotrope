@@ -17,7 +17,6 @@ from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
 )
 
-from heliotrope.application.tasks.mirroring import MirroringTask
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 
 
@@ -29,7 +28,6 @@ class HeliotropeContext(SimpleNamespace):
     hitomi_la_galleryinfo_repository: HitomiLaGalleryinfoRepository
     mongodb_repository: MongoDBInfoRepository
     pythonmonkey_resolved_image_repository: PythonMonkeyResolvedImageRepository
-    mirroring_task: MirroringTask
 
 
 class Heliotrope(Sanic[HeliotropeConfig, HeliotropeContext]): ...

@@ -69,38 +69,10 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
-        "--index-files",
-        nargs="+",
-        default=["index-english.nozomi"],
-        help="The index to use (default: ['index-english.nozomi'])",
-    )
-
-    config.add_argument(
-        "--mirroring-delay",
-        type=int,
-        default=3600,
-        help="The delay between mirroring task (default: 3600)",
-    )
-
-    config.add_argument(
         "--refresh-delay",
         type=int,
         default=86400,
         help="The delay between refresh ggjs (default: 86400)",
-    )
-
-    config.add_argument(
-        "--integrity-partial-check-delay",
-        type=int,
-        default=21600,
-        help="The delay between integrity partial task (default: 21600)",
-    )
-
-    config.add_argument(
-        "--integrity-all-check-delay",
-        type=int,
-        default=432000,
-        help="The delay between integrity all task (default: 432000)",
     )
 
     config.add_argument(
@@ -115,27 +87,6 @@ def parse_args(argv: list[str]) -> Namespace:
         action="store_true",
         default=False,
         help="Use mongodb Atlas search (default: False)",
-    )
-
-    config.add_argument(
-        "--mirroring-remote-concurrent-size",
-        type=int,
-        default=50,
-        help="The number of concurrent requests to the remote server (default: 50)",
-    )
-
-    config.add_argument(
-        "--mirroring-local-concurrent-size",
-        type=int,
-        default=25,
-        help="The number of concurrent requests to the local database (default: 5)",
-    )
-
-    config.add_argument(
-        "--integrity-partial-check-range-size",
-        type=int,
-        default=100,
-        help="The range size for integrity partial checks (default: 100)",
     )
 
     config.add_argument(

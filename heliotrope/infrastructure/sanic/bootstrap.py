@@ -36,7 +36,6 @@ from yggdrasil.infrastructure.sqlalchemy.repositories.type import SATypeReposito
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.tasks.manager import TaskManager
-from heliotrope.application.tasks.mirroring import MirroringStatus, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
@@ -46,10 +45,6 @@ from heliotrope.infrastructure.sanic.error import not_found
 async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     manager = Manager()
     heliotrope.shared_ctx.namespace = manager.Namespace()
-    heliotrope.shared_ctx.mirroring_status_dict = manager.dict()
-    heliotrope.shared_ctx.mirroring_status_dict.update(
-        MirroringStatus.default().to_dict()
-    )
     heliotrope.shared_ctx.namespace.is_running_first_process = False
 
 
@@ -69,7 +64,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         )
 
     heliotrope.ctx.sa = SQLAlchemy.create(heliotrope.config.GALLERYINFO_DB_URL)
-    heliotrope.ctx.hitomi_la = await HitomiLa.create(heliotrope.config.INDEX_FILES)
+    heliotrope.ctx.hitomi_la = await HitomiLa.create([])
     heliotrope.ctx.mongodb = await MongoDB.create(heliotrope.config.INFO_DB_URL)
 
     heliotrope.ctx.hitomi_la_galleryinfo_repository = HitomiLaGalleryinfoRepository(
@@ -108,7 +103,6 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
 
     with Lock():
         namespace = heliotrope.shared_ctx.namespace
-        mirroring_status_dict = heliotrope.shared_ctx.mirroring_status_dict
 
         if not namespace.is_running_first_process:
             namespace.is_running_first_process = True
@@ -133,34 +127,6 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
                             }
                         },
                     }
-                )
-            mirroring_task = MirroringTask(
-                heliotrope.ctx.hitomi_la_galleryinfo_repository,
-                heliotrope.ctx.sa_galleryinfo_repository,
-                heliotrope.ctx.mongodb_repository,
-                mirroring_status_dict,
-            )
-            mirroring_task.REMOTE_CONCURRENT_SIZE = (
-                heliotrope.config.MIRRORING_REMOTE_CONCURRENT_SIZE
-            )
-            mirroring_task.LOCAL_CONCURRENT_SIZE = (
-                heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
-            )
-            mirroring_task.INTEGRITY_PARTIAL_CHECK_RANGE_SIZE = (
-                heliotrope.config.INTEGRITY_PARTIAL_CHECK_RANGE_SIZE
-            )
-
-            if not heliotrope.test_mode:  # pragma: no cover
-                task_manager.register_task(
-                    mirroring_task.start_mirroring,
-                    MirroringTask.__name__,
-                    heliotrope.config.MIRRORING_DELAY,
-                )
-                task_manager.register_task(
-                    mirroring_task.start_integrity_check,
-                    "integrity_check",
-                    heliotrope.config.INTEGRITY_PARTIAL_CHECK_DELAY,
-                    heliotrope.config.INTEGRITY_ALL_CHECK_DELAY,
                 )
 
 
