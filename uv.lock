@@ -396,7 +396,7 @@ dependencies = [
     { name = "sanic" },
     { name = "sanic-ext" },
     { name = "sentry-sdk" },
-    { name = "yggdrasil" },
+    { name = "yggdrasil", extra = ["infrastructure"] },
 ]
 
 [package.dev-dependencies]
@@ -422,7 +422,7 @@ requires-dist = [
     { name = "sanic", specifier = ">=25.3.0" },
     { name = "sanic-ext", specifier = ">=24.12.0" },
     { name = "sentry-sdk", specifier = ">=2.38.0" },
-    { name = "yggdrasil", git = "https://github.com/Saebasol/Yggdrasil?rev=1.0.0" },
+    { name = "yggdrasil", extras = ["infrastructure"], git = "https://github.com/Saebasol/Yggdrasil?rev=2.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -1145,10 +1145,13 @@ wheels = [
 
 [[package]]
 name = "yggdrasil"
-version = "1.0.0"
-source = { git = "https://github.com/Saebasol/Yggdrasil?rev=1.0.0#f9e60293315443fd3bad13789c9c37a35a42d264" }
-dependencies = [
+version = "2.0.0"
+source = { git = "https://github.com/Saebasol/Yggdrasil?rev=2.0.0#2a0dded7e093837a80641e87323042527887e408" }
+
+[package.optional-dependencies]
+infrastructure = [
     { name = "aiohttp" },
+    { name = "asyncpg" },
     { name = "pymongo" },
     { name = "pythonmonkey" },
     { name = "sqlalchemy" },

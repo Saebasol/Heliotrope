@@ -11,7 +11,7 @@ dependencies = [
     "sanic>=25.3.0",
     "sanic-ext>=24.12.0",
     "sentry-sdk>=2.38.0",
-    "yggdrasil",
+    "yggdrasil[infrastructure]",
 ]
 
 [dependency-groups]
@@ -44,5 +44,5 @@ disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before
 disallow_untyped_defs = true
 
 [tool.uv.sources]
-yggdrasil = { git = "https://github.com/Saebasol/Yggdrasil", rev = "1.0.0" }
+yggdrasil = { git = "https://github.com/Saebasol/Yggdrasil", rev = "2.0.0" }
 
