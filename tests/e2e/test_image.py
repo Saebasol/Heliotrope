@@ -1,10 +1,17 @@
 import httpx
 import pytest
+import pytest_asyncio
 from yggdrasil.domain.entities.resolved_image import ResolvedImage
 from yggdrasil.infrastructure.hitomila import HitomiLa
 
-from tests.integration.infrastructure.hitomila.conftest import hitomi_la as hitomi_la
-from tests.unit.domain.entities.conftest import *
+from tests.conftest import *
+
+
+@pytest_asyncio.fixture
+async def hitomi_la():
+    hitomi_la = await HitomiLa.create(["index-english.nozomi"])
+    yield hitomi_la
+    await hitomi_la.session.close()
 
 
 @pytest.mark.asyncio

@@ -6,27 +6,27 @@ from time import tzname
 from typing import Any, Callable, Coroutine, Generator, cast
 
 from deepdiff import DeepDiff
-from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
-from heliotrope.application.usecases.create.info import CreateInfoUseCase
-from heliotrope.application.usecases.delete.galleryinfo import DeleteGalleryinfoUseCase
-from heliotrope.application.usecases.delete.info import DeleteInfoUseCase
-from heliotrope.application.usecases.get.galleryinfo import (
+from sanic.log import logger
+from yggdrasil.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
+from yggdrasil.application.usecases.create.info import CreateInfoUseCase
+from yggdrasil.application.usecases.delete.galleryinfo import DeleteGalleryinfoUseCase
+from yggdrasil.application.usecases.delete.info import DeleteInfoUseCase
+from yggdrasil.application.usecases.get.galleryinfo import (
     GetAllGalleryinfoIdsUseCase,
     GetGalleryinfoUseCase,
 )
-from heliotrope.application.usecases.get.info import GetAllInfoIdsUseCase
-from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
-    HitomiLaGalleryinfoRepository,
-)
-from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
-    SAGalleryinfoRepository,
-)
-from sanic.log import logger
+from yggdrasil.application.usecases.get.info import GetAllInfoIdsUseCase
 from yggdrasil.domain.entities.galleryinfo import Galleryinfo
 from yggdrasil.domain.entities.info import Info
 from yggdrasil.domain.exceptions import GalleryinfoNotFound
 from yggdrasil.domain.serializer import Serializer
+from yggdrasil.infrastructure.hitomila.repositories.galleryinfo import (
+    HitomiLaGalleryinfoRepository,
+)
+from yggdrasil.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
+    SAGalleryinfoRepository,
+)
 
 
 def now() -> str:
