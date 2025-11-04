@@ -1,4 +1,4 @@
-from heliotrope.application.dtos.thumbnail import GetThumbnailQueryDTO, Size
+from yggdrasil.application.dtos.thumbnail import GetThumbnailQueryDTO, Size
 
 
 def test_size_enum_values():

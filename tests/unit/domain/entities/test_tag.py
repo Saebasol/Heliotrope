@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.tag import Tag
+from yggdrasil.domain.entities.tag import Tag
 
 
 def test_tag_creation():

@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.character import CharacterSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.character import CharacterSchema
 
 
 def test_character_schema_creation():

@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.type import TypeSchema
 
 
 def test_type_schema_creation():

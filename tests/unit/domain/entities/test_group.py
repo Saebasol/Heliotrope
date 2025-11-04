@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.group import Group
+from yggdrasil.domain.entities.group import Group
 
 
 def test_group_creation():

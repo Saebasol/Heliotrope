@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.language_localname import LanguageLocalname
+from yggdrasil.domain.entities.language_localname import LanguageLocalname
 
 
 def test_language_localname_creation():

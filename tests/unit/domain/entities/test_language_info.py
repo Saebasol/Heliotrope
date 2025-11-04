@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.language_info import LanguageInfo
+from yggdrasil.domain.entities.language_info import LanguageInfo
 
 
 def test_language_info_creation():

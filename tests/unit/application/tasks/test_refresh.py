@@ -1,8 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
-from heliotrope.application.tasks.refresh import RefreshggJS
+from yggdrasil.application.tasks.refresh import RefreshggJS
 
 
 @pytest.fixture
@@ -23,8 +22,8 @@ def test_refresh_gg_js_init(mock_app: MagicMock):
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.refresh.sleep")
-@patch("heliotrope.application.tasks.refresh.logger")
+@patch("yggdrasil.application.tasks.refresh.sleep")
+@patch("yggdrasil.application.tasks.refresh.logger")
 async def test_start_task(
     mock_logger: MagicMock, mock_sleep: MagicMock, refresh_task: RefreshggJS
 ):

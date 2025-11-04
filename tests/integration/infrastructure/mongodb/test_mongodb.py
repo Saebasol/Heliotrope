@@ -1,6 +1,5 @@
 import pytest
-
-from heliotrope.infrastructure.mongodb import MongoDB
+from yggdrasil.infrastructure.mongodb import MongoDB
 
 
 @pytest.mark.asyncio

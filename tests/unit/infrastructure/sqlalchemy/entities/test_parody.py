@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.parody import ParodySchema
+from yggdrasil.infrastructure.sqlalchemy.entities.parody import ParodySchema
 
 
 def test_parody_schema_creation():

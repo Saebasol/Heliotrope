@@ -1,6 +1,5 @@
 import pytest_asyncio
-
-from heliotrope.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.hitomila import HitomiLa
 
 
 @pytest_asyncio.fixture

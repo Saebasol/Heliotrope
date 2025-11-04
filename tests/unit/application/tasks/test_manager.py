@@ -3,8 +3,7 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
-from heliotrope.application.tasks.manager import TaskManager
+from yggdrasil.application.tasks.manager import TaskManager
 
 
 @pytest.fixture
@@ -29,7 +28,7 @@ def test_task_manager_init(mock_app: MagicMock):
     assert manager.base_retry_delay == 30
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_register_task(mock_logger: MagicMock, task_manager: TaskManager):
     mock_task_instance = MagicMock()
     mock_task_instance.get_name.return_value = "test_task"
@@ -73,7 +72,7 @@ def test_get_task_status_exists(task_manager: TaskManager):
     assert status["next_retry_delay"] == 60
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_cancel_task_success(mock_logger: MagicMock, task_manager: TaskManager):
     mock_task = MagicMock()
     mock_task.done.return_value = False
@@ -107,7 +106,7 @@ def test_reset_task_error(task_manager: TaskManager):
     assert task_manager.task_errors["test_task"]["retry_delay"] == 0
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_handle_task_completion_cancelled(
     mock_logger: MagicMock, task_manager: TaskManager
 ):
@@ -120,7 +119,7 @@ def test_handle_task_completion_cancelled(
     mock_logger.warning.assert_called_with("test_task - Task was cancelled")
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_handle_task_completion_calls_purge_tasks(
     mock_logger: MagicMock, task_manager: TaskManager
 ):
@@ -136,7 +135,7 @@ def test_handle_task_completion_calls_purge_tasks(
     task_manager.app.purge_tasks.assert_called_once()
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_handle_task_completion_success(
     mock_logger: MagicMock, task_manager: TaskManager
 ):
@@ -153,7 +152,7 @@ def test_handle_task_completion_success(
     assert task_manager.task_errors["test_task"]["count"] == 0
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_handle_task_error_first_time(
     mock_logger: MagicMock, task_manager: TaskManager
 ):
@@ -177,7 +176,7 @@ def test_handle_task_error_first_time(
     mock_schedule.assert_called_once()
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_handle_task_error_max_retries(
     mock_logger: MagicMock, task_manager: TaskManager
 ):
@@ -210,7 +209,7 @@ def test_cancel_task_already_done(task_manager: TaskManager):
     mock_task.cancel.assert_not_called()
 
 
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.logger")
 def test_handle_task_completion_with_error(
     mock_logger: MagicMock, task_manager: TaskManager
 ):
@@ -269,8 +268,8 @@ def test_handle_task_error_same_error_type(task_manager: TaskManager):
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.manager.asyncio.sleep")
-@patch("heliotrope.application.tasks.manager.logger")
+@patch("yggdrasil.application.tasks.manager.asyncio.sleep")
+@patch("yggdrasil.application.tasks.manager.logger")
 async def test_schedule_retry(
     mock_logger: MagicMock, mock_sleep: MagicMock, task_manager: TaskManager
 ):

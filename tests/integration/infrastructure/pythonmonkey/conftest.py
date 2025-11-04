@@ -1,7 +1,7 @@
 import pytest_asyncio
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.pythonmonkey import JavaScriptInterpreter
 
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
 from tests.integration.infrastructure.hitomila.conftest import hitomi_la as hitomi_la
 
 

@@ -1,23 +1,23 @@
 import pytest_asyncio
-
-from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.character import (
+from yggdrasil.infrastructure.sqlalchemy import SQLAlchemy
+from yggdrasil.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.character import (
     SACharacterRepository,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
+from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
+from yggdrasil.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_info import (
     SALanguageInfoRepository,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_localname import (
     SALanguageLocalnameRepository,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.tag import SATagRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.type import SATypeRepository
+
 from tests.unit.domain.entities.conftest import *
 
 

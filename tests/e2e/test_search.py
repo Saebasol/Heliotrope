@@ -1,7 +1,6 @@
 import httpx
 import pytest
-
-from heliotrope.application.dtos.search import SearchResultDTO
+from yggdrasil.application.dtos.search import SearchResultDTO
 
 
 @pytest.mark.asyncio

@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.parody import Parody
+from yggdrasil.domain.entities.parody import Parody
 
 
 def test_parody_creation():

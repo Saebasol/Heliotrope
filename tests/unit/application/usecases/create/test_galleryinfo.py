@@ -1,9 +1,9 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from yggdrasil.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
 
-from heliotrope.application.usecases.create.galleryinfo import CreateGalleryinfoUseCase
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from tests.unit.domain.entities.conftest import *
 
 

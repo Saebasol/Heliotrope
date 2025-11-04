@@ -2,14 +2,14 @@ from copy import deepcopy
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from heliotrope.domain.entities.language_info import LanguageInfo
-from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
+from yggdrasil.domain.entities.language_info import LanguageInfo
+from yggdrasil.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_info import (
     SALanguageInfoRepository,
 )
+
 from tests.unit.domain.entities.conftest import sample_language_info
 
 

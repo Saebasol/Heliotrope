@@ -1,5 +1,6 @@
-from heliotrope.application.dtos.list import ListResultDTO
-from heliotrope.domain.entities.info import Info
+from yggdrasil.application.dtos.list import ListResultDTO
+from yggdrasil.domain.entities.info import Info
+
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 

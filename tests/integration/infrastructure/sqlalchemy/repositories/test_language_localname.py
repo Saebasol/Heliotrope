@@ -1,13 +1,13 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from heliotrope.domain.entities.language_localname import LanguageLocalname
-from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+from yggdrasil.domain.entities.language_localname import LanguageLocalname
+from yggdrasil.infrastructure.sqlalchemy.entities.language_localname import (
     LanguageLocalnameSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_localname import (
     SALanguageLocalnameRepository,
 )
+
 from tests.unit.domain.entities.conftest import (
     sample_language_localname as sample_language_localname,
 )

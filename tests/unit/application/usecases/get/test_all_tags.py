@@ -1,9 +1,8 @@
 from unittest.mock import AsyncMock
 
 import pytest
-
-from heliotrope.application.usecases.get.all_tags import GetAllTagsUseCase
-from heliotrope.domain.entities.all_tags import AllTags
+from yggdrasil.application.usecases.get.all_tags import GetAllTagsUseCase
+from yggdrasil.domain.entities.all_tags import AllTags
 
 
 @pytest.fixture

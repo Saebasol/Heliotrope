@@ -1,7 +1,7 @@
 import httpx
 import pytest
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
 
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
 from tests.unit.domain.entities.conftest import *
 
 

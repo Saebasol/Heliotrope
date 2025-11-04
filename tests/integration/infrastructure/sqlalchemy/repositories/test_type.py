@@ -2,10 +2,10 @@ from copy import deepcopy
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+from yggdrasil.domain.entities.type import Type
+from yggdrasil.infrastructure.sqlalchemy.entities.type import TypeSchema
+from yggdrasil.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
-from heliotrope.domain.entities.type import Type
-from heliotrope.infrastructure.sqlalchemy.entities.type import TypeSchema
-from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 from tests.unit.domain.entities.conftest import sample_type as sample_type
 
 

@@ -1,22 +1,21 @@
 from datetime import date, datetime
 
 import pytest
-
-from heliotrope.domain.entities.artist import Artist
-from heliotrope.domain.entities.character import Character
-from heliotrope.domain.entities.file import File
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.entities.group import Group
-from heliotrope.domain.entities.info import Info
-from heliotrope.domain.entities.language import Language
-from heliotrope.domain.entities.language_info import LanguageInfo
-from heliotrope.domain.entities.language_localname import LanguageLocalname
-from heliotrope.domain.entities.parody import Parody
-from heliotrope.domain.entities.raw_galleryinfo import RawGalleryinfo
-from heliotrope.domain.entities.raw_language import RawLanguage
-from heliotrope.domain.entities.resolved_image import ResolvedImage
-from heliotrope.domain.entities.tag import Tag
-from heliotrope.domain.entities.type import Type
+from yggdrasil.domain.entities.artist import Artist
+from yggdrasil.domain.entities.character import Character
+from yggdrasil.domain.entities.file import File
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.entities.group import Group
+from yggdrasil.domain.entities.info import Info
+from yggdrasil.domain.entities.language import Language
+from yggdrasil.domain.entities.language_info import LanguageInfo
+from yggdrasil.domain.entities.language_localname import LanguageLocalname
+from yggdrasil.domain.entities.parody import Parody
+from yggdrasil.domain.entities.raw_galleryinfo import RawGalleryinfo
+from yggdrasil.domain.entities.raw_language import RawLanguage
+from yggdrasil.domain.entities.resolved_image import ResolvedImage
+from yggdrasil.domain.entities.tag import Tag
+from yggdrasil.domain.entities.type import Type
 
 
 @pytest.fixture()

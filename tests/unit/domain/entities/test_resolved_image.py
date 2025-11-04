@@ -1,5 +1,5 @@
-from heliotrope.domain.entities.file import File
-from heliotrope.domain.entities.resolved_image import ResolvedImage
+from yggdrasil.domain.entities.file import File
+from yggdrasil.domain.entities.resolved_image import ResolvedImage
 
 
 def test_resolved_image_creation():

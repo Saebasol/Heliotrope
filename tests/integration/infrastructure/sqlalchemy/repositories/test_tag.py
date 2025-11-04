@@ -1,9 +1,9 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+from yggdrasil.domain.entities.tag import Tag
+from yggdrasil.infrastructure.sqlalchemy.entities.tag import TagSchema
+from yggdrasil.infrastructure.sqlalchemy.repositories.tag import SATagRepository
 
-from heliotrope.domain.entities.tag import Tag
-from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
-from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
 from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 
 

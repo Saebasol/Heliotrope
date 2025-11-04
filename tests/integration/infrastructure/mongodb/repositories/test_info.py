@@ -1,9 +1,9 @@
 import pytest
 import pytest_asyncio
+from yggdrasil.domain.entities.info import Info
+from yggdrasil.infrastructure.mongodb import MongoDB
+from yggdrasil.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
 
-from heliotrope.domain.entities.info import Info
-from heliotrope.infrastructure.mongodb import MongoDB
-from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 

@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.group import GroupSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.group import GroupSchema
 
 
 def test_group_schema_creation():

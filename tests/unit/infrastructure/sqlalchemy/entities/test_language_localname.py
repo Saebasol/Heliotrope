@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+from yggdrasil.infrastructure.sqlalchemy.entities.language_localname import (
     LanguageLocalnameSchema,
 )
 

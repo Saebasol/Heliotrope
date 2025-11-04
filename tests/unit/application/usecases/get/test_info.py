@@ -1,16 +1,16 @@
 from unittest.mock import AsyncMock
 
 import pytest
-
-from heliotrope.application.usecases.get.info import (
+from yggdrasil.application.usecases.get.info import (
     GetAllInfoIdsUseCase,
     GetInfoUseCase,
     GetListInfoUseCase,
     GetRandomInfoUseCase,
     SearchByQueryUseCase,
 )
-from heliotrope.domain.entities.info import Info
-from heliotrope.domain.exceptions import InfoNotFound
+from yggdrasil.domain.entities.info import Info
+from yggdrasil.domain.exceptions import InfoNotFound
+
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 

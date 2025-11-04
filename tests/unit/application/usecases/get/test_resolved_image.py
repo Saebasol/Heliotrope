@@ -1,14 +1,14 @@
 from unittest.mock import MagicMock
 
 import pytest
-
-from heliotrope.application.dtos.thumbnail import Size
-from heliotrope.application.usecases.get.resolved_image import (
+from yggdrasil.application.dtos.thumbnail import Size
+from yggdrasil.application.usecases.get.resolved_image import (
     GetResolvedImageUseCase,
     GetResolvedThumbnailUseCase,
 )
-from heliotrope.domain.entities.file import File
-from heliotrope.domain.entities.resolved_image import ResolvedImage
+from yggdrasil.domain.entities.file import File
+from yggdrasil.domain.entities.resolved_image import ResolvedImage
+
 from tests.unit.domain.entities.conftest import sample_file as sample_file
 from tests.unit.domain.entities.conftest import (
     sample_resolved_image as sample_resolved_image,

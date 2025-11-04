@@ -2,10 +2,9 @@ import json
 
 import pytest
 import pytest_asyncio
-
-from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.base import Base
-from heliotrope.infrastructure.sqlalchemy.entities.galleryinfo import (
+from yggdrasil.infrastructure.sqlalchemy import SQLAlchemy
+from yggdrasil.infrastructure.sqlalchemy.base import Base
+from yggdrasil.infrastructure.sqlalchemy.entities.galleryinfo import (
     GalleryinfoSchema as GalleryinfoSchema,
 )
 

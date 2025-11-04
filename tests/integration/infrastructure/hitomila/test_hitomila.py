@@ -4,8 +4,7 @@ import asyncio
 import pytest
 import pytest_asyncio
 from aiohttp import ClientResponse, ClientSession, ClientTimeout
-
-from heliotrope.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.hitomila import HitomiLa
 
 
 @pytest_asyncio.fixture()

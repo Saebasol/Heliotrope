@@ -1,8 +1,7 @@
 import pytest
 from sqlalchemy import Connection, inspect
-
-from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.entities import (
+from yggdrasil.infrastructure.sqlalchemy import SQLAlchemy
+from yggdrasil.infrastructure.sqlalchemy.entities import (
     GalleryinfoSchema as GalleryinfoSchema,
 )
 

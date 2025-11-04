@@ -4,16 +4,16 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
-from heliotrope.application.tasks.mirroring import (
+from yggdrasil.application.tasks.mirroring import (
     MirroringStatus,
     MirroringTask,
     Proxy,
     now,
 )
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.entities.info import Info
-from heliotrope.domain.exceptions import GalleryinfoNotFound
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.entities.info import Info
+from yggdrasil.domain.exceptions import GalleryinfoNotFound
+
 from tests.unit.domain.entities.conftest import *
 
 
@@ -215,10 +215,10 @@ async def test_fetch_and_store_galleryinfo(
 
     # Mock GetGalleryinfoUseCase creation and execution
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
         with patch(
-            "heliotrope.application.tasks.mirroring.CreateGalleryinfoUseCase"
+            "yggdrasil.application.tasks.mirroring.CreateGalleryinfoUseCase"
         ) as mock_create_usecase:
             # Mock the use case instance
             mock_get_instance = AsyncMock()
@@ -241,10 +241,10 @@ async def test_fetch_and_store_info(
     ids = (1, 2, 3)
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
         with patch(
-            "heliotrope.application.tasks.mirroring.CreateInfoUseCase"
+            "yggdrasil.application.tasks.mirroring.CreateInfoUseCase"
         ) as mock_create_usecase:
             mock_get_instance = AsyncMock()
             mock_get_instance.execute.return_value = sample_galleryinfo
@@ -259,7 +259,7 @@ async def test_fetch_and_store_info(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_integrity_check_success(
     mock_logger: MagicMock,
     mirroring_task: MirroringTask,
@@ -268,9 +268,9 @@ async def test_integrity_check_success(
     ids = (1, 2, 3)
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
-        with patch("heliotrope.application.tasks.mirroring.DeepDiff", return_value={}):
+        with patch("yggdrasil.application.tasks.mirroring.DeepDiff", return_value={}):
             mock_get_instance = AsyncMock()
             mock_get_instance.execute.return_value = sample_galleryinfo
             mock_get_usecase.return_value = mock_get_instance
@@ -291,7 +291,7 @@ async def test_integrity_check_success(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_integrity_check_with_differences(
     mock_logger: MagicMock,
     mirroring_task: MirroringTask,
@@ -300,10 +300,10 @@ async def test_integrity_check_with_differences(
     ids = (1,)
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
         with patch(
-            "heliotrope.application.tasks.mirroring.DeepDiff",
+            "yggdrasil.application.tasks.mirroring.DeepDiff",
             return_value={
                 "values_changed": {
                     "root['title']": {"old_value": "old", "new_value": "new"}
@@ -311,16 +311,16 @@ async def test_integrity_check_with_differences(
             },
         ):
             with patch(
-                "heliotrope.application.tasks.mirroring.DeleteGalleryinfoUseCase"
+                "yggdrasil.application.tasks.mirroring.DeleteGalleryinfoUseCase"
             ) as mock_delete_gallery:
                 with patch(
-                    "heliotrope.application.tasks.mirroring.DeleteInfoUseCase"
+                    "yggdrasil.application.tasks.mirroring.DeleteInfoUseCase"
                 ) as mock_delete_info:
                     with patch(
-                        "heliotrope.application.tasks.mirroring.CreateGalleryinfoUseCase"
+                        "yggdrasil.application.tasks.mirroring.CreateGalleryinfoUseCase"
                     ) as mock_create_gallery:
                         with patch(
-                            "heliotrope.application.tasks.mirroring.CreateInfoUseCase"
+                            "yggdrasil.application.tasks.mirroring.CreateInfoUseCase"
                         ) as mock_create_info:
                             with patch.object(Info, "from_galleryinfo"):
                                 mock_get_instance = AsyncMock()
@@ -366,7 +366,7 @@ async def test_integrity_check_with_differences(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_integrity_check_galleryinfo_not_found(
     mock_logger: MagicMock, mirroring_task: MirroringTask
 ):
@@ -390,7 +390,7 @@ async def test_mirror_with_remote_differences(mirroring_task: MirroringTask):
     with patch.object(mirroring_task, "_get_differences") as mock_get_differences:
         with patch.object(mirroring_task, "_process_in_jobs") as mock_process_in_jobs:
             with patch(
-                "heliotrope.application.tasks.mirroring.now", return_value="mocked_time"
+                "yggdrasil.application.tasks.mirroring.now", return_value="mocked_time"
             ):
                 # First call returns remote differences, second call returns empty (no local differences)
                 mock_get_differences.side_effect = [remote_ids, ()]
@@ -432,8 +432,8 @@ async def test_mirror_no_differences(mirroring_task: MirroringTask):
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.sleep")
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.sleep")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_start_mirroring_single_iteration(
     mock_logger: MagicMock, mock_sleep: MagicMock, mirroring_task: MirroringTask
 ):
@@ -462,8 +462,8 @@ async def test_start_mirroring_single_iteration(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.sleep")
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.sleep")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_start_integrity_check_single_iteration(
     mock_logger: MagicMock, mock_sleep: MagicMock, mirroring_task: MirroringTask
 ):
@@ -479,7 +479,7 @@ async def test_start_integrity_check_single_iteration(
     mock_sleep.side_effect = mock_sleep_func
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+        "yggdrasil.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
     ) as mock_usecase:
         # Mock the class to return an awaitable that returns the list
         async def mock_awaitable():
@@ -542,7 +542,7 @@ async def test_process_in_jobs_empty_ids(mirroring_task: MirroringTask):
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_integrity_check_with_exception_in_preprocess(
     mock_logger: MagicMock, mirroring_task: MirroringTask
 ):
@@ -568,7 +568,7 @@ async def test_start_mirroring_with_integrity_checking_flag(
 
     with patch.object(mirroring_task, "mirror") as mock_mirror:
         with patch(
-            "heliotrope.application.tasks.mirroring.sleep",
+            "yggdrasil.application.tasks.mirroring.sleep",
             side_effect=[None, Exception("Break loop")],
         ):
             try:
@@ -591,7 +591,7 @@ async def test_start_integrity_check_with_mirroring_flags(
 
     with patch.object(mirroring_task, "_process_in_jobs") as mock_process_in_jobs:
         with patch(
-            "heliotrope.application.tasks.mirroring.sleep",
+            "yggdrasil.application.tasks.mirroring.sleep",
             side_effect=[None, Exception("Break loop")],
         ):
             try:
@@ -616,10 +616,10 @@ async def test_start_integrity_check_with_exception_clears_skip_ids(
         mirroring_task, "_process_in_jobs", side_effect=Exception("Test exception")
     ):
         with patch(
-            "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+            "yggdrasil.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
         ) as mock_usecase:
             with patch(
-                "heliotrope.application.tasks.mirroring.sleep",
+                "yggdrasil.application.tasks.mirroring.sleep",
                 side_effect=[None, Exception("Break loop")],
             ):
                 # Mock the class to return an awaitable that returns the list
@@ -661,7 +661,7 @@ async def test_mirror_with_both_differences(mirroring_task: MirroringTask):
     with patch.object(mirroring_task, "_get_differences") as mock_get_differences:
         with patch.object(mirroring_task, "_process_in_jobs") as mock_process_in_jobs:
             with patch(
-                "heliotrope.application.tasks.mirroring.now",
+                "yggdrasil.application.tasks.mirroring.now",
                 return_value="mocked_time",
             ):
                 # First call returns remote differences, second call returns local differences
@@ -682,10 +682,10 @@ async def test_fetch_and_store_galleryinfo_with_different_target_repo(
     different_target_repo = AsyncMock()
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
         with patch(
-            "heliotrope.application.tasks.mirroring.CreateGalleryinfoUseCase"
+            "yggdrasil.application.tasks.mirroring.CreateGalleryinfoUseCase"
         ) as mock_create_usecase:
             mock_get_instance = AsyncMock()
             mock_get_instance.execute.return_value = sample_galleryinfo
@@ -706,8 +706,8 @@ async def test_fetch_and_store_galleryinfo_with_different_target_repo(
 # Additional tests for better coverage and edge cases
 
 
-@patch("heliotrope.application.tasks.mirroring.tzname", ["UTC"])
-@patch("heliotrope.application.tasks.mirroring.datetime")
+@patch("yggdrasil.application.tasks.mirroring.tzname", ["UTC"])
+@patch("yggdrasil.application.tasks.mirroring.datetime")
 def test_now_function(mock_datetime: MagicMock):
     mock_datetime.now.return_value.strftime = MagicMock(
         return_value="2023-10-14 10:30:00"
@@ -796,7 +796,7 @@ async def test_integrity_check_safety_function_none_handling(
     preprocess_results = [None, sample_galleryinfo, None]
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
         mock_get_instance = AsyncMock()
         mock_get_instance.execute.return_value = sample_galleryinfo
@@ -859,9 +859,9 @@ async def test_mirror_integrity_check_with_empty_local_differences(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.create_task")
-@patch("heliotrope.application.tasks.mirroring.sleep")
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.create_task")
+@patch("yggdrasil.application.tasks.mirroring.sleep")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_start_integrity_check_delay_logic_warning(
     mock_logger: MagicMock,
     mock_sleep: MagicMock,
@@ -887,7 +887,7 @@ async def test_start_integrity_check_delay_logic_warning(
     mock_sleep.side_effect = mock_sleep_func
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+        "yggdrasil.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
     ) as mock_usecase:
         # Mock the class to return a function that creates new awaitables each time
         def mock_awaitable_factory(repo):
@@ -914,9 +914,9 @@ async def test_start_integrity_check_delay_logic_warning(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.create_task")
-@patch("heliotrope.application.tasks.mirroring.sleep")
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.create_task")
+@patch("yggdrasil.application.tasks.mirroring.sleep")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_start_integrity_check_equal_delays_warning(
     mock_logger: MagicMock,
     mock_sleep: MagicMock,
@@ -942,7 +942,7 @@ async def test_start_integrity_check_equal_delays_warning(
     mock_sleep.side_effect = mock_sleep_func
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+        "yggdrasil.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
     ) as mock_usecase:
         # Mock the class to return a function that creates new awaitables each time
         def mock_awaitable_factory(repo):
@@ -973,9 +973,9 @@ async def test_start_integrity_check_equal_delays_warning(
 
 
 @pytest.mark.asyncio
-@patch("heliotrope.application.tasks.mirroring.create_task")
-@patch("heliotrope.application.tasks.mirroring.sleep")
-@patch("heliotrope.application.tasks.mirroring.logger")
+@patch("yggdrasil.application.tasks.mirroring.create_task")
+@patch("yggdrasil.application.tasks.mirroring.sleep")
+@patch("yggdrasil.application.tasks.mirroring.logger")
 async def test_start_integrity_check_partial_vs_full_check(
     mock_logger: MagicMock,
     mock_sleep: MagicMock,
@@ -1003,7 +1003,7 @@ async def test_start_integrity_check_partial_vs_full_check(
     mock_sleep.side_effect = mock_sleep_func
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+        "yggdrasil.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
     ) as mock_usecase:
         with patch.object(mirroring_task, "_process_in_jobs") as mock_process_in_jobs:
             # Mock the class to return a function that creates new awaitables each time
@@ -1046,10 +1046,10 @@ async def test_fetch_and_store_info_with_info_conversion(
     ids = (1, 2)
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetGalleryinfoUseCase"
+        "yggdrasil.application.tasks.mirroring.GetGalleryinfoUseCase"
     ) as mock_get_usecase:
         with patch(
-            "heliotrope.application.tasks.mirroring.CreateInfoUseCase"
+            "yggdrasil.application.tasks.mirroring.CreateInfoUseCase"
         ) as mock_create_usecase:
             with patch.object(Info, "from_galleryinfo") as mock_from_galleryinfo:
                 mock_info = MagicMock()
@@ -1105,11 +1105,11 @@ async def test_start_integrity_check_skip_ids_filtering(mirroring_task: Mirrorin
     mirroring_task.skip_ids = {2, 4}  # Skip IDs 2 and 4
 
     with patch(
-        "heliotrope.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
+        "yggdrasil.application.tasks.mirroring.GetAllGalleryinfoIdsUseCase"
     ) as mock_usecase:
         with patch.object(mirroring_task, "_process_in_jobs") as mock_process_in_jobs:
             with patch(
-                "heliotrope.application.tasks.mirroring.sleep",
+                "yggdrasil.application.tasks.mirroring.sleep",
                 side_effect=[None, Exception("Break loop")],
             ):
                 # Mock the class to return an awaitable that returns the list

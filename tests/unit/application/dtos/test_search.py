@@ -1,9 +1,10 @@
-from heliotrope.application.dtos.search import (
+from yggdrasil.application.dtos.search import (
     PostSearchBodyDTO,
     PostSearchQueryDTO,
     SearchResultDTO,
 )
-from heliotrope.domain.entities.info import Info
+from yggdrasil.domain.entities.info import Info
+
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 

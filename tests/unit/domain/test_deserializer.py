@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
 import pytest
-
-from heliotrope.domain.deserializer import Deserializer
+from yggdrasil.domain.deserializer import Deserializer
 
 
 @dataclass

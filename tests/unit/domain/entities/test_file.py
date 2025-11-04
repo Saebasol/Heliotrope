@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.file import File
+from yggdrasil.domain.entities.file import File
 
 
 def test_file_creation():

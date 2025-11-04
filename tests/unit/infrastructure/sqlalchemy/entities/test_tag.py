@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.tag import TagSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.tag import TagSchema
 
 
 def test_tag_schema_creation():

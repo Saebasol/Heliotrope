@@ -1,10 +1,10 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from yggdrasil.application.usecases.delete.galleryinfo import DeleteGalleryinfoUseCase
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.exceptions import GalleryinfoNotFound
 
-from heliotrope.application.usecases.delete.galleryinfo import DeleteGalleryinfoUseCase
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.exceptions import GalleryinfoNotFound
 from tests.unit.domain.entities.conftest import *
 
 

@@ -3,22 +3,22 @@ from typing import Any
 
 from sanic.app import Sanic
 from sanic.request import Request
-
-from heliotrope.application.tasks.mirroring import MirroringTask
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.hitomila.repositories.galleryinfo import (
     HitomiLaGalleryinfoRepository,
 )
-from heliotrope.infrastructure.mongodb import MongoDB
-from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
-from heliotrope.infrastructure.pythonmonkey.repositories.resolved_image import (
+from yggdrasil.infrastructure.mongodb import MongoDB
+from yggdrasil.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
+from yggdrasil.infrastructure.pythonmonkey.repositories.resolved_image import (
     PythonMonkeyResolvedImageRepository,
 )
-from heliotrope.infrastructure.sanic.config import HeliotropeConfig
-from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
+from yggdrasil.infrastructure.sqlalchemy import SQLAlchemy
+from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
 )
+
+from heliotrope.application.tasks.mirroring import MirroringTask
+from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 
 
 class HeliotropeContext(SimpleNamespace):

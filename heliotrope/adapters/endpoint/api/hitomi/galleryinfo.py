@@ -2,11 +2,11 @@ from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
+from yggdrasil.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
+from yggdrasil.domain.entities.raw_galleryinfo import RawGalleryinfo
+from yggdrasil.domain.exceptions import GalleryinfoNotFound
 
-from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
 from heliotrope.application.utils import check_int32
-from heliotrope.domain.entities.raw_galleryinfo import RawGalleryinfo
-from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_galleryinfo = Blueprint("hitomi_galleryinfo", url_prefix="/galleryinfo")

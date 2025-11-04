@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.file import FileSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.file import FileSchema
 
 
 def test_file_schema_creation():

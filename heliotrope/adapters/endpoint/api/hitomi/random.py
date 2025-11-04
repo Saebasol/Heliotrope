@@ -4,9 +4,9 @@ from sanic.views import HTTPMethodView
 from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
+from yggdrasil.application.dtos.search import PostSearchBodyDTO
+from yggdrasil.application.usecases.get.info import GetRandomInfoUseCase
 
-from heliotrope.application.dtos.search import PostSearchBodyDTO
-from heliotrope.application.usecases.get.info import GetRandomInfoUseCase
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_random = Blueprint("hitomi_random", url_prefix="/random")

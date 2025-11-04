@@ -1,6 +1,6 @@
-from heliotrope.domain.entities.language import Language
-from heliotrope.domain.entities.language_info import LanguageInfo
-from heliotrope.domain.entities.language_localname import LanguageLocalname
+from yggdrasil.domain.entities.language import Language
+from yggdrasil.domain.entities.language_info import LanguageInfo
+from yggdrasil.domain.entities.language_localname import LanguageLocalname
 
 
 def test_language_creation():

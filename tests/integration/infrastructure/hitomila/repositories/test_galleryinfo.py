@@ -1,11 +1,11 @@
 # pyright: reportPrivateUsage=false
 import pytest
-
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.hitomila.repositories.galleryinfo import (
     HitomiLaGalleryinfoRepository,
 )
+
 from tests.unit.domain.entities.conftest import *
 
 

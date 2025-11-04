@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.related import RelatedSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.related import RelatedSchema
 
 
 def test_related_schema_creation():

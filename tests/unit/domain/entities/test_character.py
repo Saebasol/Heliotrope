@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.character import Character
+from yggdrasil.domain.entities.character import Character
 
 
 def test_character_creation():

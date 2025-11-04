@@ -1,9 +1,9 @@
 import httpx
 import pytest_asyncio
 from sanic import Sanic
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.entities.info import Info
 
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.entities.info import Info
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.bootstrap import create_app, main_process_startup
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig

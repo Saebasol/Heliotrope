@@ -1,12 +1,11 @@
 import pytest
 import pytest_asyncio
-
-from heliotrope.application.dtos.thumbnail import Size
-from heliotrope.domain.entities.file import File
-from heliotrope.domain.entities.resolved_image import ResolvedImage
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
-from heliotrope.infrastructure.pythonmonkey.repositories.resolved_image import (
+from yggdrasil.application.dtos.thumbnail import Size
+from yggdrasil.domain.entities.file import File
+from yggdrasil.domain.entities.resolved_image import ResolvedImage
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.pythonmonkey import JavaScriptInterpreter
+from yggdrasil.infrastructure.pythonmonkey.repositories.resolved_image import (
     PythonMonkeyResolvedImageRepository,
 )
 

@@ -1,4 +1,4 @@
-from heliotrope.domain.entities.type import Type
+from yggdrasil.domain.entities.type import Type
 
 
 def test_type_creation():

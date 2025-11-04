@@ -1,7 +1,7 @@
 import httpx
 import pytest
+from yggdrasil.domain.entities.info import Info
 
-from heliotrope.domain.entities.info import Info
 from tests.unit.domain.entities.conftest import *
 
 

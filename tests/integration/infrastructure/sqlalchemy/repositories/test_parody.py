@@ -2,10 +2,10 @@ from copy import deepcopy
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+from yggdrasil.domain.entities.parody import Parody
+from yggdrasil.infrastructure.sqlalchemy.entities.parody import ParodySchema
+from yggdrasil.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
 
-from heliotrope.domain.entities.parody import Parody
-from heliotrope.infrastructure.sqlalchemy.entities.parody import ParodySchema
-from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
 from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 
 

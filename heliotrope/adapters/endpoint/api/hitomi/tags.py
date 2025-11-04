@@ -2,8 +2,8 @@ from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
+from yggdrasil.application.usecases.get.all_tags import GetAllTagsUseCase
 
-from heliotrope.application.usecases.get.all_tags import GetAllTagsUseCase
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_tags = Blueprint("hitomi_tags", url_prefix="/tags")

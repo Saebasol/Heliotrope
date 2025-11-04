@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.entities.info import (
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.entities.info import (
     Info,
     parse_male_female_tag,
     parse_tags_dict_list,
 )
-from heliotrope.domain.entities.tag import Tag
+from yggdrasil.domain.entities.tag import Tag
 
 
 def test_info_creation():

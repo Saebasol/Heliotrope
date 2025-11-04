@@ -387,19 +387,16 @@ wheels = [
 
 [[package]]
 name = "heliotrope"
-version = "7.0.0"
+version = "7.2.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "aiohttp" },
     { name = "asyncpg" },
     { name = "deepdiff" },
-    { name = "pymongo" },
-    { name = "pythonmonkey" },
     { name = "ruff" },
     { name = "sanic" },
     { name = "sanic-ext" },
     { name = "sentry-sdk" },
-    { name = "sqlalchemy" },
+    { name = "yggdrasil" },
 ]
 
 [package.dev-dependencies]
@@ -419,16 +416,13 @@ type = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiohttp", specifier = ">=3.12.15" },
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "deepdiff", specifier = ">=8.6.1" },
-    { name = "pymongo", specifier = ">=4.15.1" },
-    { name = "pythonmonkey", specifier = ">=1.2.0" },
     { name = "ruff", specifier = ">=0.13.1" },
     { name = "sanic", specifier = ">=25.3.0" },
     { name = "sanic-ext", specifier = ">=24.12.0" },
     { name = "sentry-sdk", specifier = ">=2.38.0" },
-    { name = "sqlalchemy", specifier = ">=2.0.43" },
+    { name = "yggdrasil", git = "https://github.com/Saebasol/Yggdrasil?rev=1.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -1147,4 +1141,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/24/fd/725b8e73ac2a50e78a4534ac43c6addf5c1c2d65380dd48a9169cc6739a9/yarl-1.20.1-cp313-cp313t-win32.whl", hash = "sha256:b121ff6a7cbd4abc28985b6028235491941b9fe8fe226e6fdc539c977ea1739d", size = 86591, upload-time = "2025-06-10T00:45:25.793Z" },
     { url = "https://files.pythonhosted.org/packages/94/c3/b2e9f38bc3e11191981d57ea08cab2166e74ea770024a646617c9cddd9f6/yarl-1.20.1-cp313-cp313t-win_amd64.whl", hash = "sha256:541d050a355bbbc27e55d906bc91cb6fe42f96c01413dd0f4ed5a5240513874f", size = 93003, upload-time = "2025-06-10T00:45:27.752Z" },
     { url = "https://files.pythonhosted.org/packages/b4/2d/2345fce04cfd4bee161bf1e7d9cdc702e3e16109021035dbb24db654a622/yarl-1.20.1-py3-none-any.whl", hash = "sha256:83b8eb083fe4683c6115795d9fc1cfaf2cbbefb19b3a1cb68f6527460f483a77", size = 46542, upload-time = "2025-06-10T00:46:07.521Z" },
+]
+
+[[package]]
+name = "yggdrasil"
+version = "1.0.0"
+source = { git = "https://github.com/Saebasol/Yggdrasil?rev=1.0.0#f9e60293315443fd3bad13789c9c37a35a42d264" }
+dependencies = [
+    { name = "aiohttp" },
+    { name = "pymongo" },
+    { name = "pythonmonkey" },
+    { name = "sqlalchemy" },
 ]

@@ -2,8 +2,7 @@ import json
 
 import pytest
 import pytest_asyncio
-
-from heliotrope.infrastructure.mongodb import MongoDB
+from yggdrasil.infrastructure.mongodb import MongoDB
 
 
 @pytest.fixture()

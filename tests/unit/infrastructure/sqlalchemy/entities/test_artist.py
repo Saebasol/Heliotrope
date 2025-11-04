@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.artist import ArtistSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.artist import ArtistSchema
 
 
 def test_artist_schema_creation():

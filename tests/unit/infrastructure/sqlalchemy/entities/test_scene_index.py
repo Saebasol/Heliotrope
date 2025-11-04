@@ -1,4 +1,4 @@
-from heliotrope.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.scene_index import SceneIndexSchema
 
 
 def test_scene_index_schema_creation():

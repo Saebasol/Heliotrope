@@ -2,12 +2,12 @@ from copy import deepcopy
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from heliotrope.domain.entities.character import Character
-from heliotrope.infrastructure.sqlalchemy.entities.character import CharacterSchema
-from heliotrope.infrastructure.sqlalchemy.repositories.character import (
+from yggdrasil.domain.entities.character import Character
+from yggdrasil.infrastructure.sqlalchemy.entities.character import CharacterSchema
+from yggdrasil.infrastructure.sqlalchemy.repositories.character import (
     SACharacterRepository,
 )
+
 from tests.unit.domain.entities.conftest import sample_character as sample_character
 
 

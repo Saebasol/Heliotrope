@@ -1,9 +1,9 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from yggdrasil.application.usecases.create.info import CreateInfoUseCase
+from yggdrasil.domain.entities.info import Info
 
-from heliotrope.application.usecases.create.info import CreateInfoUseCase
-from heliotrope.domain.entities.info import Info
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 

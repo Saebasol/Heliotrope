@@ -1,11 +1,11 @@
 from copy import deepcopy
 
 import pytest
-
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
     SAGalleryinfoRepository,
 )
+
 from tests.unit.domain.entities.conftest import sample_galleryinfo as sample_galleryinfo
 
 

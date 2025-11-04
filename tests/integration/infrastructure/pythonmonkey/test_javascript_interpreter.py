@@ -1,9 +1,9 @@
 import pytest
 from pythonmonkey import eval  # pyright: ignore[reportMissingTypeStubs]
+from yggdrasil.domain.entities.file import File
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.pythonmonkey import JavaScriptInterpreter
 
-from heliotrope.domain.entities.file import File
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
 from tests.integration.infrastructure.hitomila.conftest import hitomi_la as hitomi_la
 
 

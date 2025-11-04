@@ -1,10 +1,10 @@
 from unittest.mock import AsyncMock
 
 import pytest
+from yggdrasil.application.usecases.delete.info import DeleteInfoUseCase
+from yggdrasil.domain.entities.info import Info
+from yggdrasil.domain.exceptions import InfoNotFound
 
-from heliotrope.application.usecases.delete.info import DeleteInfoUseCase
-from heliotrope.domain.entities.info import Info
-from heliotrope.domain.exceptions import InfoNotFound
 from tests.unit.domain.entities.conftest import sample_info as sample_info
 
 

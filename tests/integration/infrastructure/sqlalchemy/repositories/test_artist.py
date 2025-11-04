@@ -2,10 +2,10 @@ from copy import deepcopy
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+from yggdrasil.domain.entities.artist import Artist
+from yggdrasil.infrastructure.sqlalchemy.entities.artist import ArtistSchema
+from yggdrasil.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
 
-from heliotrope.domain.entities.artist import Artist
-from heliotrope.infrastructure.sqlalchemy.entities.artist import ArtistSchema
-from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
 from tests.unit.domain.entities.conftest import sample_artist as sample_artist
 
 

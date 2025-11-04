@@ -3,44 +3,44 @@ from multiprocessing import Lock, Manager
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
+from yggdrasil.domain.exceptions import GalleryinfoNotFound, InfoNotFound
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.hitomila.repositories.galleryinfo import (
+    HitomiLaGalleryinfoRepository,
+)
+from yggdrasil.infrastructure.mongodb import MongoDB
+from yggdrasil.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
+from yggdrasil.infrastructure.pythonmonkey import JavaScriptInterpreter
+from yggdrasil.infrastructure.pythonmonkey.repositories.resolved_image import (
+    PythonMonkeyResolvedImageRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy import SQLAlchemy
+from yggdrasil.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.character import (
+    SACharacterRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
+    SAGalleryinfoRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_info import (
+    SALanguageInfoRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_localname import (
+    SALanguageLocalnameRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.tag import SATagRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.tasks.manager import TaskManager
 from heliotrope.application.tasks.mirroring import MirroringStatus, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
-from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
-    HitomiLaGalleryinfoRepository,
-)
-from heliotrope.infrastructure.mongodb import MongoDB
-from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
-from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
-from heliotrope.infrastructure.pythonmonkey.repositories.resolved_image import (
-    PythonMonkeyResolvedImageRepository,
-)
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sanic.error import not_found
-from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.character import (
-    SACharacterRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
-    SAGalleryinfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
-    SALanguageInfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
-    SALanguageLocalnameRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 
 async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:

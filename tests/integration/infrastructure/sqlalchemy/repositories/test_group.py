@@ -2,10 +2,10 @@ from copy import deepcopy
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
+from yggdrasil.domain.entities.group import Group
+from yggdrasil.infrastructure.sqlalchemy.entities.group import GroupSchema
+from yggdrasil.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
 
-from heliotrope.domain.entities.group import Group
-from heliotrope.infrastructure.sqlalchemy.entities.group import GroupSchema
-from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
 from tests.unit.domain.entities.conftest import sample_group as sample_group
 
 

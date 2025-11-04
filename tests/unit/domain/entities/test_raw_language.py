@@ -1,5 +1,5 @@
-from heliotrope.domain.entities.language import Language
-from heliotrope.domain.entities.raw_language import RawLanguage
+from yggdrasil.domain.entities.language import Language
+from yggdrasil.domain.entities.raw_language import RawLanguage
 
 
 def test_raw_language_creation():

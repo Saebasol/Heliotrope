@@ -1,8 +1,8 @@
-from heliotrope.infrastructure.sqlalchemy.entities.language import LanguageSchema
-from heliotrope.infrastructure.sqlalchemy.entities.language_info import (
+from yggdrasil.infrastructure.sqlalchemy.entities.language import LanguageSchema
+from yggdrasil.infrastructure.sqlalchemy.entities.language_info import (
     LanguageInfoSchema,
 )
-from heliotrope.infrastructure.sqlalchemy.entities.language_localname import (
+from yggdrasil.infrastructure.sqlalchemy.entities.language_localname import (
     LanguageLocalnameSchema,
 )
 

@@ -1,14 +1,14 @@
 from datetime import date, datetime
 
-from heliotrope.domain.entities.artist import Artist
-from heliotrope.domain.entities.character import Character
-from heliotrope.domain.entities.file import File
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.entities.group import Group
-from heliotrope.domain.entities.parody import Parody
-from heliotrope.domain.entities.raw_galleryinfo import RawGalleryinfo
-from heliotrope.domain.entities.raw_language import RawLanguage
-from heliotrope.domain.entities.tag import Tag
+from yggdrasil.domain.entities.artist import Artist
+from yggdrasil.domain.entities.character import Character
+from yggdrasil.domain.entities.file import File
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.entities.group import Group
+from yggdrasil.domain.entities.parody import Parody
+from yggdrasil.domain.entities.raw_galleryinfo import RawGalleryinfo
+from yggdrasil.domain.entities.raw_language import RawLanguage
+from yggdrasil.domain.entities.tag import Tag
 
 
 def test_raw_galleryinfo_creation():
