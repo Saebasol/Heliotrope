@@ -47,7 +47,7 @@ disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before
 disallow_untyped_defs = true
 
 [tool.setuptools]
-packages = ["heliotrope/**/.py"]
+packages = ["heliotrope/*"]
 
 [build-system]
 requires = ["setuptools>=72.0"]
