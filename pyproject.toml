@@ -46,9 +46,9 @@ packages = ["heliotrope"]
 disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before-def", "call-arg", "arg-type", "call-overload", "valid-type", "var-annotated", "override", "return", "empty-body", "return-value", "assignment", "method-assign", "type-var", "operator", "index", "list-item", "dict-item", "typeddict-item", "typeddict-unknown-key", "has-type", "import", "no-redef", "func-returns-value", "abstract", "type-abstract", "safe-super", "valid-newtype", "exit-return", "name-match", "literal-required", "no-overload-impl", "unused-coroutine", "top-level-await", "assert-type", "truthy-function", "str-format", "str-bytes-safe", "annotation-unchecked", "syntax", "misc"]
 disallow_untyped_defs = true
 
-[tool.setuptools]
-packages = ["heliotrope"]
-include = ["heliotrope/**/*.py"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["heliotrope*"]
 
 [build-system]
 requires = ["setuptools>=72.0"]
