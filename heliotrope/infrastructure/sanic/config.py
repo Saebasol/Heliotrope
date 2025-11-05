@@ -73,7 +73,6 @@ class HeliotropeConfig(Config):
     GALLERYINFO_DB_URL: str
     INFO_DB_URL: str
     REFRESH_GG_JS_DELAY: float
-    SUPERVISOR_DELAY: float
     USE_ATLAS_SEARCH: bool
     # Sanic config
     DEBUG: bool
