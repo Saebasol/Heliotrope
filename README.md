@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/Saebasol/Heliotrope/branch/main/graph/badge.svg?token=CKRUjYaPSW)](https://codecov.io/gh/Saebasol/Heliotrope)
 [![Code Style](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Saebasol/Heliotrope?include_prereleases)](https://github.com/Saebasol/Heliotrope/releases)
+[![Discord](https://img.shields.io/discord/725643500171034691)](https://discord.saebasol.org)
 
 > Hitomi.la mirror api
 
@@ -20,8 +21,8 @@
 
 ## Languages ​​supported by Saebasol
 
-* English: https://en.heliotrope.saebasol.org
-* Japanese: https://ja.heliotrope.saebasol.org
+If you've deploy your API publicly and would like someone to use it, please let me know on [Discord](https://discord.saebasol.org)!
+
 * Korean: https://heliotrope.saebasol.org (MongoDB Atlas Search Supported)
 
 [Other languages](https://github.com/Saebasol/Heliotrope/wiki/Configuration#supported-index-files) ​​can also be used by users who distribute Heliotrope themselves!
