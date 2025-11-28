@@ -1,5 +1,4 @@
 from asyncio import AbstractEventLoop
-from multiprocessing import Lock, Manager
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
@@ -40,12 +39,6 @@ from heliotrope.application.tasks.refresh import RefreshggJS
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sanic.error import not_found
-
-
-async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
-    manager = Manager()
-    heliotrope.shared_ctx.namespace = manager.Namespace()
-    heliotrope.shared_ctx.namespace.is_running_first_process = False
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -101,34 +94,6 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             heliotrope.config.REFRESH_GG_JS_DELAY,
         )
 
-    with Lock():
-        namespace = heliotrope.shared_ctx.namespace
-
-        if not namespace.is_running_first_process:
-            namespace.is_running_first_process = True
-            await heliotrope.ctx.sa.create_all_table()
-            await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
-            if (
-                heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH
-            ):  # pragma: no cover
-                await heliotrope.ctx.mongodb.collection.create_search_index(
-                    {
-                        "name": "default",
-                        "definition": {
-                            "mappings": {
-                                "dynamic": True,
-                                "fields": {
-                                    "title": {
-                                        "analyzer": "lucene.korean",
-                                        "searchAnalyzer": "lucene.korean",
-                                        "type": "string",
-                                    }
-                                },
-                            }
-                        },
-                    }
-                )
-
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # Close session
@@ -146,7 +111,6 @@ def create_app(config: HeliotropeConfig) -> Heliotrope:
     )(not_found)
     heliotrope.config.update(config)
     heliotrope.blueprint(endpoint)
-    heliotrope.main_process_start(main_process_startup)
     heliotrope.before_server_start(startup)
     heliotrope.before_server_stop(closeup)
 
