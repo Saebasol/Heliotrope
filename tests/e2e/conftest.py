@@ -23,8 +23,6 @@ async def heliotrope():
     config.load_config_with_config_json("tests/config.json")
     heliotrope = create_app(config)
     heliotrope.asgi = True
-    await heliotrope.ctx.sa.create_all_table()
-    await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
     yield heliotrope
     Sanic.test_mode = False
 
@@ -44,6 +42,8 @@ async def asgi_client(
         await heliotrope._server_event("init", "before")
         await heliotrope._server_event("init", "after")
         # Add sample data to the repositories
+        await heliotrope.ctx.sa.create_all_table()
+        await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
         await heliotrope.ctx.sa_galleryinfo_repository.add_galleryinfo(
             sample_galleryinfo
         )
