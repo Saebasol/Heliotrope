@@ -23,6 +23,8 @@ async def heliotrope():
     config.load_config_with_config_json("tests/config.json")
     heliotrope = create_app(config)
     heliotrope.asgi = True
+    await heliotrope.ctx.sa.create_all_table()
+    await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
     yield heliotrope
     Sanic.test_mode = False
 
