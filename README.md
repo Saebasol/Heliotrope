@@ -10,11 +10,11 @@
 
 ## Feature
 
-* 🚀 Very fast response and processing with [Sanic framework](https://sanic.dev/)
-* ⚡ Blazingly fast search with [MongoDB](https://www.mongodb.com/)
-* 🔄 Galleryinfo, Info auto mirroring.
+* 🚀 Very fast response and processing with [Sanic framework](https://sanic.dev/).
+* ⚡ Blazingly fast search with [MongoDB](https://www.mongodb.com/).
+* 🔄 Galleryinfo, Info auto mirroring with [Sunflower](https://github.com/Saebasol/Sunflower).
 * 🖼️ Pixiv.net, Hitomi.la image proxying.
-* 🏡 Production ready with [Bouquet](#related-projects)
+* 🏡 Production ready with [Bouquet](#related-projects).
 * 🧑‍💻 Easy to use SDKs for Python, JS/TS, Rust.
 * 📚 Friendly [documentation](https://github.com/Saebasol/Heliotrope/wiki/) on how to configure.
 
@@ -55,10 +55,14 @@ delphinium = "1.0.0"
 
 ## Related Projects
 
+* [Yggdrasil](https://github.com/Saebasol/Yggdrasil)
+  * Common components shared between Saebasol's related projects.
+* [Sunflower](https://github.com/Saebasol/Sunflower)
+  * A mirroring tool for Hitomi.la galleryinfo and info files. Used to keep Heliotrope's database up to date.
 * [Hibiscus](https://github.com/Saebasol/Hibiscus)
   * A modern, self-hostable manga reader with a beautiful interface built on top of Heliotrope.
 * [Bouquet](https://github.com/Saebasol/Bouquet)
-  * Bouquet is a easy deployment solution for Heliotrope and Hibiscus.
+  * Bouquet is a easy deployment solution for Heliotrope, Sunflower and Hibiscus.
 * [Hyacinth](https://github.com/Saebasol/Hyacinth)
   * A tool to create a personal offline manga library. depends on Heliotrope for metadata.
   
