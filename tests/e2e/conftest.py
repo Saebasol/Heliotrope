@@ -39,7 +39,6 @@ async def asgi_client(
         heliotrope.router.reset()
         heliotrope.signal_router.reset()
         await heliotrope._startup()
-        await main_process_startup(heliotrope, None)
         await heliotrope._server_event("init", "before")
         await heliotrope._server_event("init", "after")
         # Add sample data to the repositories
