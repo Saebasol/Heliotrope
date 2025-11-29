@@ -3,12 +3,12 @@ from sanic.exceptions import InvalidUsage
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
-
-from heliotrope.application.dtos.list import ListResultDTO
-from heliotrope.application.usecases.get.info import (
+from yggdrasil.application.dtos.list import ListResultDTO
+from yggdrasil.application.usecases.get.info import (
     GetAllInfoIdsUseCase,
     GetListInfoUseCase,
 )
+
 from heliotrope.application.utils import check_int64
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 

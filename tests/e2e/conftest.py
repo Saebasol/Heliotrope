@@ -1,13 +1,13 @@
 import httpx
 import pytest_asyncio
 from sanic import Sanic
+from yggdrasil.domain.entities.galleryinfo import Galleryinfo
+from yggdrasil.domain.entities.info import Info
 
-from heliotrope.domain.entities.galleryinfo import Galleryinfo
-from heliotrope.domain.entities.info import Info
 from heliotrope.infrastructure.sanic.app import Heliotrope
-from heliotrope.infrastructure.sanic.bootstrap import create_app, main_process_startup
+from heliotrope.infrastructure.sanic.bootstrap import create_app
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
-from tests.unit.domain.entities.conftest import *
+from tests.conftest import *
 
 ASGI_HOST = "mockserver"
 ASGI_PORT = 1234
@@ -39,10 +39,11 @@ async def asgi_client(
         heliotrope.router.reset()
         heliotrope.signal_router.reset()
         await heliotrope._startup()
-        await main_process_startup(heliotrope, None)
         await heliotrope._server_event("init", "before")
         await heliotrope._server_event("init", "after")
         # Add sample data to the repositories
+        await heliotrope.ctx.sa.create_all_table()
+        await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
         await heliotrope.ctx.sa_galleryinfo_repository.add_galleryinfo(
             sample_galleryinfo
         )

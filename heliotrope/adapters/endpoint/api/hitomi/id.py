@@ -5,8 +5,8 @@ from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, raw
 from sanic.views import HTTPMethodView
 from sanic_ext.extensions.openapi import openapi
+from yggdrasil.application.usecases.get.galleryinfo import GetAllGalleryinfoIdsUseCase
 
-from heliotrope.application.usecases.get.galleryinfo import GetAllGalleryinfoIdsUseCase
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_id = Blueprint("hitomi_id", url_prefix="/id")

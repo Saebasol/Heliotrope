@@ -5,13 +5,13 @@ from sanic.views import HTTPMethodView
 from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
-
-from heliotrope.application.dtos.search import (
+from yggdrasil.application.dtos.search import (
     PostSearchBodyDTO,
     PostSearchQueryDTO,
     SearchResultDTO,
 )
-from heliotrope.application.usecases.get.info import SearchByQueryUseCase
+from yggdrasil.application.usecases.get.info import SearchByQueryUseCase
+
 from heliotrope.application.utils import check_int32
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 

@@ -4,14 +4,14 @@ from sanic.views import HTTPMethodView
 from sanic_ext import validate
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.openapi.types import Schema
-
-from heliotrope.application.dtos.thumbnail import GetThumbnailQueryDTO, Size
-from heliotrope.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
-from heliotrope.application.usecases.get.resolved_image import (
+from yggdrasil.application.dtos.thumbnail import GetThumbnailQueryDTO, Size
+from yggdrasil.application.usecases.get.galleryinfo import GetGalleryinfoUseCase
+from yggdrasil.application.usecases.get.resolved_image import (
     GetResolvedThumbnailUseCase,
 )
+from yggdrasil.domain.exceptions import GalleryinfoNotFound
+
 from heliotrope.application.utils import check_int32
-from heliotrope.domain.exceptions import GalleryinfoNotFound
 from heliotrope.infrastructure.sanic.app import HeliotropeRequest
 
 hitomi_thumbnail = Blueprint("hitomi_thumbnail", url_prefix="/thumbnail")

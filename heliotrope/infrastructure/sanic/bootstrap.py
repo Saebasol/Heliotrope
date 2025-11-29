@@ -1,56 +1,44 @@
 from asyncio import AbstractEventLoop
-from multiprocessing import Lock, Manager
 
 from sentry_sdk import init
 from sentry_sdk.integrations.sanic import SanicIntegration
+from yggdrasil.domain.exceptions import GalleryinfoNotFound, InfoNotFound
+from yggdrasil.infrastructure.hitomila import HitomiLa
+from yggdrasil.infrastructure.hitomila.repositories.galleryinfo import (
+    HitomiLaGalleryinfoRepository,
+)
+from yggdrasil.infrastructure.mongodb import MongoDB
+from yggdrasil.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
+from yggdrasil.infrastructure.pythonmonkey import JavaScriptInterpreter
+from yggdrasil.infrastructure.pythonmonkey.repositories.resolved_image import (
+    PythonMonkeyResolvedImageRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy import SQLAlchemy
+from yggdrasil.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.character import (
+    SACharacterRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.galleryinfo import (
+    SAGalleryinfoRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_info import (
+    SALanguageInfoRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.language_localname import (
+    SALanguageLocalnameRepository,
+)
+from yggdrasil.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.tag import SATagRepository
+from yggdrasil.infrastructure.sqlalchemy.repositories.type import SATypeRepository
 
 from heliotrope import __version__
 from heliotrope.adapters.endpoint import endpoint
 from heliotrope.application.tasks.manager import TaskManager
-from heliotrope.application.tasks.mirroring import MirroringStatus, MirroringTask
 from heliotrope.application.tasks.refresh import RefreshggJS
-from heliotrope.domain.exceptions import GalleryinfoNotFound, InfoNotFound
-from heliotrope.infrastructure.hitomila import HitomiLa
-from heliotrope.infrastructure.hitomila.repositories.galleryinfo import (
-    HitomiLaGalleryinfoRepository,
-)
-from heliotrope.infrastructure.mongodb import MongoDB
-from heliotrope.infrastructure.mongodb.repositories.info import MongoDBInfoRepository
-from heliotrope.infrastructure.pythonmonkey import JavaScriptInterpreter
-from heliotrope.infrastructure.pythonmonkey.repositories.resolved_image import (
-    PythonMonkeyResolvedImageRepository,
-)
 from heliotrope.infrastructure.sanic.app import Heliotrope
 from heliotrope.infrastructure.sanic.config import HeliotropeConfig
 from heliotrope.infrastructure.sanic.error import not_found
-from heliotrope.infrastructure.sqlalchemy import SQLAlchemy
-from heliotrope.infrastructure.sqlalchemy.repositories.artist import SAArtistRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.character import (
-    SACharacterRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.galleryinfo import (
-    SAGalleryinfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.group import SAGroupRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.language_info import (
-    SALanguageInfoRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.language_localname import (
-    SALanguageLocalnameRepository,
-)
-from heliotrope.infrastructure.sqlalchemy.repositories.parody import SAParodyRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.tag import SATagRepository
-from heliotrope.infrastructure.sqlalchemy.repositories.type import SATypeRepository
-
-
-async def main_process_startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
-    manager = Manager()
-    heliotrope.shared_ctx.namespace = manager.Namespace()
-    heliotrope.shared_ctx.mirroring_status_dict = manager.dict()
-    heliotrope.shared_ctx.mirroring_status_dict.update(
-        MirroringStatus.default().to_dict()
-    )
-    heliotrope.shared_ctx.namespace.is_running_first_process = False
 
 
 async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
@@ -69,7 +57,7 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
         )
 
     heliotrope.ctx.sa = SQLAlchemy.create(heliotrope.config.GALLERYINFO_DB_URL)
-    heliotrope.ctx.hitomi_la = await HitomiLa.create(heliotrope.config.INDEX_FILES)
+    heliotrope.ctx.hitomi_la = await HitomiLa.create([])
     heliotrope.ctx.mongodb = await MongoDB.create(heliotrope.config.INFO_DB_URL)
 
     heliotrope.ctx.hitomi_la_galleryinfo_repository = HitomiLaGalleryinfoRepository(
@@ -106,63 +94,6 @@ async def startup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
             heliotrope.config.REFRESH_GG_JS_DELAY,
         )
 
-    with Lock():
-        namespace = heliotrope.shared_ctx.namespace
-        mirroring_status_dict = heliotrope.shared_ctx.mirroring_status_dict
-
-        if not namespace.is_running_first_process:
-            namespace.is_running_first_process = True
-            await heliotrope.ctx.sa.create_all_table()
-            await heliotrope.ctx.mongodb.collection.create_index([("id", -1)])
-            if (
-                heliotrope.ctx.mongodb.is_atlas and heliotrope.config.USE_ATLAS_SEARCH
-            ):  # pragma: no cover
-                await heliotrope.ctx.mongodb.collection.create_search_index(
-                    {
-                        "name": "default",
-                        "definition": {
-                            "mappings": {
-                                "dynamic": True,
-                                "fields": {
-                                    "title": {
-                                        "analyzer": "lucene.korean",
-                                        "searchAnalyzer": "lucene.korean",
-                                        "type": "string",
-                                    }
-                                },
-                            }
-                        },
-                    }
-                )
-            mirroring_task = MirroringTask(
-                heliotrope.ctx.hitomi_la_galleryinfo_repository,
-                heliotrope.ctx.sa_galleryinfo_repository,
-                heliotrope.ctx.mongodb_repository,
-                mirroring_status_dict,
-            )
-            mirroring_task.REMOTE_CONCURRENT_SIZE = (
-                heliotrope.config.MIRRORING_REMOTE_CONCURRENT_SIZE
-            )
-            mirroring_task.LOCAL_CONCURRENT_SIZE = (
-                heliotrope.config.MIRRORING_LOCAL_CONCURRENT_SIZE
-            )
-            mirroring_task.INTEGRITY_PARTIAL_CHECK_RANGE_SIZE = (
-                heliotrope.config.INTEGRITY_PARTIAL_CHECK_RANGE_SIZE
-            )
-
-            if not heliotrope.test_mode:  # pragma: no cover
-                task_manager.register_task(
-                    mirroring_task.start_mirroring,
-                    MirroringTask.__name__,
-                    heliotrope.config.MIRRORING_DELAY,
-                )
-                task_manager.register_task(
-                    mirroring_task.start_integrity_check,
-                    "integrity_check",
-                    heliotrope.config.INTEGRITY_PARTIAL_CHECK_DELAY,
-                    heliotrope.config.INTEGRITY_ALL_CHECK_DELAY,
-                )
-
 
 async def closeup(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     # Close session
@@ -180,7 +111,6 @@ def create_app(config: HeliotropeConfig) -> Heliotrope:
     )(not_found)
     heliotrope.config.update(config)
     heliotrope.blueprint(endpoint)
-    heliotrope.main_process_start(main_process_startup)
     heliotrope.before_server_start(startup)
     heliotrope.before_server_stop(closeup)
 
