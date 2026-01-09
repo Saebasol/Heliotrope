@@ -930,7 +930,7 @@ wheels = [
 
 [[package]]
 name = "sanic"
-version = "25.3.0"
+version = "25.12.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -945,9 +945,9 @@ dependencies = [
     { name = "uvloop", marker = "implementation_name == 'cpython' and sys_platform != 'win32'" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/df/8b/08dc376390fe854ef32984973883b646ee68c6727da72ffcc65340d8f192/sanic-25.3.0.tar.gz", hash = "sha256:775d522001ec81f034ec8e4d7599e2175bfc097b8d57884f5e4c9322f5e369bb", size = 353027, upload-time = "2025-03-31T21:22:29.718Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/f6/5e9ba853d2872119a252bff0cad712c015c1ed5318cceab5da68c7d2f1c4/sanic-25.12.0.tar.gz", hash = "sha256:ec124338f83a781da8095ed2676e60eb40c7fe21e7aa649a879f8860b4c7bd7a", size = 373452, upload-time = "2025-12-31T19:36:49.087Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/e1/b36ddc16862d63d22986ae21b04a79c8fb7ec48d5d664acdfd1c2acf78ac/sanic-25.3.0-py3-none-any.whl", hash = "sha256:fb519b38b4c220569b0e2e868583ffeaffaab96a78b2e42ae78bc56a644a4cd7", size = 246416, upload-time = "2025-03-31T21:22:27.946Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/8a/16adaf66d358abfd0d24f2b76857196cf7effbf75c01306306bf39904e30/sanic-25.12.0-py3-none-any.whl", hash = "sha256:42ccf717f564aadab529a1522c489a709c4971c8123793ae07852aa110f8a913", size = 257787, upload-time = "2025-12-31T19:36:47.406Z" },
 ]
 
 [[package]]
@@ -1025,14 +1025,14 @@ wheels = [
 
 [[package]]
 name = "tracerite"
-version = "1.1.3"
+version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "html5tagger" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/27/b2/37b825b881f23bc56384c3142214ccbe5d9de7e7c5fe3d155fa032738b98/tracerite-1.1.3.tar.gz", hash = "sha256:119fc006f240aa03fffb41cf99cf82fda5c0449c7d4b6fe42c6340403578b31e", size = 269646, upload-time = "2025-06-19T17:47:42.289Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/15/b9/89b065c1818e5973c333a33311f823954ff4c7c48440c20b37669c5b752c/tracerite-2.3.1.tar.gz", hash = "sha256:f46ee672d240d500a2331781b09eb33564d473f6ae60cd871ebce6c2413cffa8", size = 61303, upload-time = "2025-12-30T22:51:19.32Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/bf/c65d36ec5a93048dd55b3247be26059970daad72263e35ecace2f3188b2c/tracerite-1.1.3-py3-none-any.whl", hash = "sha256:811d8e2e0fb563b77340eebe2e9f7b324acfe01e09ea58db8bcaecb24327c823", size = 12422, upload-time = "2025-06-19T17:47:40.173Z" },
+    { url = "https://files.pythonhosted.org/packages/b6/62/3f385a67ff3cc91209f107d20bbebdecf7a4e4aba55a43f9f71bddc424a9/tracerite-2.3.1-py3-none-any.whl", hash = "sha256:5f9595ba90f075b58e14a9baf84d8204fec3cdce50029f1c32d757af79d9ccbe", size = 65884, upload-time = "2025-12-30T22:51:18.1Z" },
 ]
 
 [[package]]
