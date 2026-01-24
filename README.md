@@ -24,6 +24,7 @@
 If you've deploy your API publicly and would like someone to use it, please let me know on [Discord](https://discord.saebasol.org)!
 
 * Korean: https://heliotrope.saebasol.org (MongoDB Atlas Search Supported)
+* English, Japanese, Korean: https://inst.psec.dev
 
 [Other languages](https://github.com/Saebasol/Heliotrope/wiki/Configuration#supported-index-files) ​​can also be used by users who distribute Heliotrope themselves!
 
