@@ -36,6 +36,7 @@ class HeliotropeConfig(Config):
                 "INFO_DB_URL": "",
                 "REFRESH_GG_JS_DELAY": 3600,
                 "USE_ATLAS_SEARCH": False,
+                "DISABLE_ORIGIN_FALLBACK": False,
                 # Sanic config
                 "HOST": "127.0.0.1",
                 "PORT": 8000,
@@ -74,6 +75,7 @@ class HeliotropeConfig(Config):
     INFO_DB_URL: str
     REFRESH_GG_JS_DELAY: float
     USE_ATLAS_SEARCH: bool
+    DISABLE_ORIGIN_FALLBACK: bool
     # Sanic config
     DEBUG: bool
     HOST: str

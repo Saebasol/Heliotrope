@@ -90,6 +90,13 @@ def parse_args(argv: list[str]) -> Namespace:
     )
 
     config.add_argument(
+        "--disable-origin-fallback",
+        action="store_true",
+        default=False,
+        help="Disable origin fallback (default: False)",
+    )
+
+    config.add_argument(
         "--config",
         type=str,
         default="",
