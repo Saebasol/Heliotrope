@@ -29,6 +29,8 @@ class HitomiImageView(HTTPMethodView):
                 request.app.ctx.sa_galleryinfo_repository
             ).execute(id)
         except GalleryinfoNotFound:
+            if request.app.config.DISABLE_ORIGIN_FALLBACK:
+                raise
             galleryinfo = await GetGalleryinfoUseCase(
                 request.app.ctx.hitomi_la_galleryinfo_repository
             ).execute(id)
