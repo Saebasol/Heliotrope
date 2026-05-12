@@ -14,7 +14,7 @@ dependencies = [
 
 [dependency-groups]
 style = [
-    "ruff>=0.13.1",
+    "ruff>=0.15.12",
 ]
 test = [
     "httpx>=0.28.1",
