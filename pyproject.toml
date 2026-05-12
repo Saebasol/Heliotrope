@@ -8,7 +8,7 @@ dependencies = [
     "greenlet>=3.2.4",
     "sanic>=25.3.0",
     "sanic-ext>=24.12.0",
-    "sentry-sdk>=2.38.0",
+    "sentry-sdk>=2.59.0",
     "yggdrasil[infrastructure]",
 ]
 
