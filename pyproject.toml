@@ -1,6 +1,6 @@
 [project]
 name = "heliotrope"
-version = "8.1.0"
+version = "8.2.0"
 description = "Hitomi.la mirror api"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -42,5 +42,5 @@ disable_error_code = ["attr-defined", "union-attr", "name-defined", "used-before
 disallow_untyped_defs = true
 
 [tool.uv.sources]
-yggdrasil = { git = "https://github.com/Saebasol/Yggdrasil", rev = "2.0.0" }
+yggdrasil = { git = "https://github.com/Saebasol/Yggdrasil", rev = "2.1.0" }
 
