@@ -24,7 +24,7 @@ test = [
 ]
 type = [
     "mypy>=2.1.0",
-    "pyright>=1.1.409",
+    "pyright>=1.1.410",
 ]
 
 [tool.pyright]
