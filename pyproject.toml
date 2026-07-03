@@ -5,7 +5,7 @@ description = "Hitomi.la mirror api"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "greenlet>=3.5.1",
+    "greenlet>=3.5.3",
     "sanic>=25.12.1",
     "sanic-ext>=24.12.0",
     "sentry-sdk>=2.60.0",
