@@ -9,7 +9,7 @@ class VersionInfo(NamedTuple):
     serial: int
 
 
-version_info = VersionInfo(major=8, minor=2, micro=1, releaselevel="final", serial=0)
+version_info = VersionInfo(major=8, minor=2, micro=2, releaselevel="final", serial=0)
 
 __version__ = f"{version_info.major}.{version_info.minor}.{version_info.micro}"
 
