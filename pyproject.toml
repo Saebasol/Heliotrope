@@ -23,7 +23,7 @@ test = [
     "pytest-cov>=7.0.0",
 ]
 type = [
-    "mypy>=2.1.0",
+    "mypy>=2.2.0",
     "pyright>=1.1.410",
 ]
 
